@@ -1630,7 +1630,112 @@ const LESSONS=[
   {s:'Learning English is __ than teaching it.',o:['easier','more easy','easy','easiest'],a:0,e:'easy 的比较级是 easier（变 y 为 i 加 er），不是 more easy。'},
   {s:'Tom is __ of the three boys.',o:['the strongest','strongest','strong','the stronger'],a:0,e:'三者以上用最高级，前面加 the。'}
  ]}
-];
+ ];
+
+/* =========================================================
+   难度分层题库（d:1 基础 / d:2 进阶 / d:3 冲刺）
+   全部手写原创，难度对齐江苏联盟真题风格。
+   d1 = 旧题库（单考点直给）；d2 = 双考点组合+强干扰项；d3 = 真题级陷阱（词义辨析嵌语法、母语迁移坑、语境时态）
+   掌握度达标自动解锁：批数≥2 且正确率≥50% → 进阶；批数≥4 且正确率≥60% → 冲刺
+   ========================================================= */
+const BANK_X={
+ L1:[
+  {s:'There __ two books and a pen on the desk.',o:['are','is','be','have'],a:0,d:2,e:'there be 就近原则：跟最近的 two books 一致 → are。对比「a pen and two books」那句——最近的名词是谁，be 就跟谁。'},
+  {s:'My uncle __ when he came to visit us.',o:['brought me a gift','brought a gift me','brought for me a gift','me brought a gift'],a:0,d:2,e:'双宾：bring sb sth，人前物后，宾语用宾格。要强调「为某人」可改写成 bring a gift for me。'},
+  {s:'We found __ strange that nobody mentioned the accident.',o:['it','that','this','what'],a:0,d:2,e:'it 形式宾语：真正的宾语是后面的 that 从句。find it + adj + that... 是固定结构。'},
+  {s:'__ no use arguing with him now.',o:['It is','That is','This is','He is'],a:0,d:3,e:'It is no use doing 是固定句型，it 形式主语，真正主语是 arguing。中文意思是「跟他吵也没用」。'},
+  {s:'Her suggestion sounds __.',o:['reasonable','reasonably','reason','to be reasonable'],a:0,d:2,e:'系动词 sound 后接形容词作表语。reasonably 是副词，不能作表语。'},
+  {s:'The old man who lives next door __ his dog every evening.',o:['walks','walk','walking','is walking'],a:0,d:3,e:'先砍修饰（who lives next door），主干是 The old man walks his dog。every evening 表习惯 → 一般现在时，第三人称单数加 s。'},
+  {s:'We consider him __ honest man.',o:['an','a','the','不填'],a:0,d:2,e:'宾补是名词短语 an honest man。honest 的 h 不发音，以元音音素开头 → an。冠词看读音不看拼写。'}
+ ],
+ L2:[
+  {s:'Is there __ in today\'s newspaper?',o:['anything interesting','interesting anything','something interesting','interesting something'],a:0,d:2,e:'不定代词的修饰语一律后置；疑问句用 anything 不用 something。两个考点叠加。'},
+  {s:'He is not __ to carry the heavy box.',o:['strong enough','enough strong','too strong','so strong'],a:0,d:2,e:'enough 修饰形容词必须后置：strong enough。enough strong 是错误语序。'},
+  {s:'The box is __ heavy for me __ carry.',o:['too...to','so...that','very...to','too...that'],a:0,d:2,e:'too + adj + to do = 太……而不能。so...that 后面要接完整从句，不能接 to do。'},
+  {s:'She bought __ bag yesterday.',o:['a beautiful little red','a red beautiful little','a little beautiful red','a red little beautiful'],a:0,d:3,e:'多个形容词排序：观点(beautiful) → 大小(little) → 颜色(red)。真题冷门点，记住口诀「观点-大小-形状-颜色」。'},
+  {s:'He __ goes to the cinema because he is always busy.',o:['seldom','seldomly','not often he','never not'],a:0,d:2,e:'频度副词放实义动词前。seldom 本身含否定意义，不能再加 not。'},
+  {s:'We will have a picnic tomorrow __ it rains.',o:['unless','if','because','although'],a:0,d:2,e:'unless = if not（除非 / 如果不）。不下雨才去野餐，逻辑是条件。'},
+  {s:'My brother works __ than I do.',o:['much harder','very harder','more harder','hard'],a:0,d:3,e:'双重考点：修饰比较级用 much / far / even（不能用 very）；hard 的比较级是 harder，不加 more。'}
+ ],
+ L3:[
+  {s:'He __ his keys, so he cannot open the door now.',o:['has lost','lost','loses','was losing'],a:0,d:2,e:'强调对现在的影响（现在开不了门）→ 现在完成时。后半句的 now 是信号。'},
+  {s:'It __ since nine o\'clock this morning.',o:['has been raining','is raining','rained','rains'],a:0,d:2,e:'since + 过去时间点 → 现在完成（进行）时，动作从九点延续到现在。'},
+  {s:'By the time you arrive tomorrow, I __ the report.',o:['will have finished','will finish','have finished','finished'],a:0,d:3,e:'by + 将来时间 → 将来完成时 will have done：「到明天你来时，我将已经写完」。'},
+  {s:'This is the first time I __ this city.',o:['have visited','visited','will visit','visit'],a:0,d:3,e:'It/This is the first time + 现在完成时，固定搭配。真题年年考。'},
+  {s:'Study hard, __ you will fall behind.',o:['or','and','so','but'],a:0,d:2,e:'祈使句 + or = 否则；+ and = 就会。这里语义是「否则会落后」。'},
+  {s:'He told me that he __ the film before.',o:['had seen','has seen','saw','sees'],a:0,d:2,e:'「看电影」发生在「告诉」之前 → 过去的过去 → 过去完成时 had seen。before 是信号词。'},
+  {s:'I __ to visit you last night, but it rained heavily.',o:['was planning','planned','have planned','plan'],a:0,d:3,e:'was planning 表「过去正打算（但没实现）」，与 but 后的转折呼应。这是语境时态题，不能只看 last night 选过去式。'},
+  {s:'The teacher said that light __ much faster than sound.',o:['travels','traveled','had traveled','would travel'],a:0,d:3,e:'宾语从句表达客观真理时，永远用一般现在时，不受主句过去时限制。'}
+ ],
+ L4:[
+  {s:'This is the school __ my son studies.',o:['where','which','that','whose'],a:0,d:2,e:'studies 主谓宾完整，只缺地点状语 → where。对比：the school which we visited（visit 缺宾语）。'},
+  {s:'The house __ windows face south belongs to Mr. Li.',o:['whose','which','its','that'],a:0,d:3,e:'「房子的窗户」= whose windows。whose 不只指人，物也可以用。'},
+  {s:'He failed the exam again, __ made his parents very angry.',o:['which','that','what','it'],a:0,d:3,e:'逗号后面的非限制性定语从句指代前面整件事 → 只能用 which，不能用 that。'},
+  {s:'I still remember the days __ we spent together in the countryside.',o:['which','when','in which','on which'],a:0,d:3,e:'最高频陷阱：spend 缺宾语（spent the days）→ 用 which。判断方法永远是看从句动词缺不缺成分，不看先行词是时间就选 when。'},
+  {s:'The man about __ you talked just now is our new manager.',o:['whom','who','which','that'],a:0,d:3,e:'介词后面指人只能用 whom。that 不能紧跟在介词后面。'},
+  {s:'__, the earth is round.',o:['As is known to all','Which is known to all','That is known to all','It is known to all'],a:0,d:3,e:'as 引导非限制性定语从句可以放句首，意为「正如」。which 引导的从句不能放句首。'},
+  {s:'The reason __ he was late was that he missed the bus.',o:['why','which','that','because'],a:0,d:2,e:'the reason why... was that...（不能用 because）。两个考点：why 引导定语从句 + that 引导表语从句。'}
+ ],
+ L5:[
+  {s:'__ he is very busy, he always helps us with the work.',o:['Although','Because','Until','If'],a:0,d:2,e:'两句逻辑是让步转折 → Although。记住铁律：句子里不能再出现 but。'},
+  {s:'__ hard he tries, he cannot catch up with us.',o:['However','Whatever','Although','No matter'],a:0,d:3,e:'However + adj/adv + 主谓 = 无论多么……。No matter 后面必须加 how 才行，不能直接接 hard。'},
+  {s:'Take your umbrella __ it rains.',o:['in case','so that','even if','until'],a:0,d:2,e:'in case = 以防万一。so that 表目的（以便），语义不通。'},
+  {s:'The problem was __ difficult __ nobody could solve it.',o:['so...that','too...to','such...that','very...that'],a:0,d:2,e:'so + 形容词 + that + 从句。too...to 后面接动词原形，不接从句。'},
+  {s:'__ the heavy rain, they went on working.',o:['Despite','Although','Because','Even if'],a:0,d:3,e:'Despite + 名词短语；Although + 完整句子。the heavy rain 是名词短语 → Despite。这是真题设坑的标准手法。'},
+  {s:'I will not believe it __ I see it with my own eyes.',o:['until','after','when','if'],a:0,d:2,e:'not...until = 直到……才。'},
+  {s:'__ I know, he has no difficulty in learning English.',o:['As far as','As long as','As well as','So that'],a:0,d:3,e:'as far as I know = 据我所知。as long as = 只要。四个短语长得像，考辨析。'}
+ ],
+ L6:[
+  {s:'__ we will go camping tomorrow depends on the weather.',o:['Whether','If','That','What'],a:0,d:3,e:'句首主语从句表「是否」只能用 whether，if 不能引导句首主语从句。'},
+  {s:'__ breaks the law will be punished.',o:['Whoever','Who','Anyone','Those who'],a:0,d:3,e:'whoever = anyone who，一个词既引导从句又作从句主语。Anyone 后面还缺一个 who。'},
+  {s:'Word came __ he had won the first prize.',o:['that','what','which','when'],a:0,d:3,e:'同位语从句解释 word/news 的内容，从句完整 → that。容易被误判为定语从句——判断方法：that 在从句里不作任何成分。'},
+  {s:'He asked me __ I had ever been to Beijing.',o:['if','that','what','which'],a:0,d:2,e:'一般问句变宾语从句：if/whether + 陈述语序，时态跟着主句的 asked 用过去范畴。'},
+  {s:'It depends on __ he will agree.',o:['whether','if','that','what'],a:0,d:2,e:'介词 on 后面只能用 whether，不能用 if。whether 的四个特权之一。'},
+  {s:'I don\'t know __ to accept the offer.',o:['whether','if','that','what'],a:0,d:2,e:'不定式前面用 whether to do，if 不能直接接不定式。whether 的四个特权之二。'},
+  {s:'This is the city __ I spent my childhood.',o:['where','which','that','when'],a:0,d:3,e:'spend my childhood 后面缺地点（spent my childhood in the city）→ where。如果句子是 the city which I visited 就选 which。'}
+ ],
+ L7:[
+  {s:'__ from space, the earth looks like a blue ball.',o:['Seen','Seeing','To see','See'],a:0,d:2,e:'地球是「被看」→ done 表被动。逻辑主语 the earth 与 see 是被动关系。'},
+  {s:'He hurried to the station, only __ the train had left.',o:['to find','finding','found','find'],a:0,d:3,e:'only to do 表出乎意料的结果：「结果却发现」。真题高频考点。'},
+  {s:'I regret __ you that you failed the exam.',o:['to tell','telling','tell','told'],a:0,d:3,e:'regret to do = 遗憾地要做（坏消息还没说）；regret doing = 后悔做过。这里是「遗憾地通知」。'},
+  {s:'__ is believing.',o:['Seeing','To see','Seen','See'],a:0,d:2,e:'动名词作主语表示一般事实：Seeing is believing 眼见为实。'},
+  {s:'The problem __ at the meeting yesterday is very important.',o:['discussed','discussing','to discuss','having discussed'],a:0,d:2,e:'problem「被讨论」且 yesterday 已完成 → done 作后置定语。现在分词 discussing 表主动，不对。'},
+  {s:'He apologized for __ able to come to my party.',o:['not being','being not','not to be','to not be'],a:0,d:3,e:'介词 for 后接动名词；否定式把 not 放在 doing 前面：not being able to。双重考点。'},
+  {s:'With the work __, he went home happily.',o:['finished','finishing','to finish','finish'],a:0,d:2,e:'with + 名词 + done 复合结构：work 与 finish 是被动关系（工作被完成）。'}
+ ],
+ L8:[
+  {s:'A new hospital __ in our town next year.',o:['will be built','will build','is built','has been built'],a:0,d:2,e:'next year 将来 + 医院被建 → will be done。时间信号与语态两个考点。'},
+  {s:'The project __ by the end of last month.',o:['had been completed','has been completed','was completed','completed'],a:0,d:3,e:'by + 过去时间 → 过去完成；工程是被完成 → had been done。「过去的过去 + 被动」叠加，冲刺级。'},
+  {s:'If I __ you, I would take the chance.',o:['were','was','am','would be'],a:0,d:2,e:'与现在相反的虚拟：if I were you 固定用法，一律用 were，不用 was。'},
+  {s:'__ it rain tomorrow, we would put off the sports meeting.',o:['Should','Would','Will','Must'],a:0,d:3,e:'省略 if 的虚拟：should rain = if it should rain，把 should 提到句首构成倒装。与将来相反。'},
+  {s:'The teacher demanded that the exam __ before Friday.',o:['(should) be finished','would be finished','was finished','must be finished'],a:0,d:3,e:'demand + that + 主语 + (should) do；这里是被动 → (should) be finished。虚拟语气 + 被动叠加。'},
+  {s:'It is high time we __.',o:['went to bed','go to bed','will go to bed','have gone to bed'],a:0,d:3,e:'It is (high) time that + 过去式 = 该是……的时候了。虚拟语气固定句型，必须用过去式。'},
+  {s:'I would rather you __ tomorrow.',o:['came','come','will come','had come'],a:0,d:3,e:'would rather + 从句用过去式表「宁愿」（指现在 / 将来）。区别于 would rather do（自己宁愿做）。'},
+  {s:'The accident __ on a rainy night last month.',o:['took place','was taken place','took place of','was happened'],a:0,d:2,e:'take place / happen 是不及物动词，永远没有被动。was taken place 是经典错误选项。'}
+ ],
+ L9:[
+  {s:'Never before __ such a beautiful sunset.',o:['have I seen','I have seen','I saw','did I saw'],a:0,d:3,e:'否定词 Never 开头 → 部分倒装：助动词 have 提到主语 I 前面。D 选项时态还不对（did 后接原形）。'},
+  {s:'Only when he returned home __ what had happened.',o:['did he learn','he learned','he did learn','learned he'],a:0,d:3,e:'Only + 状语从句开头，主句倒装：did he learn。注意倒装的是主句，从句本身不倒装。'},
+  {s:'__ than it began to rain.',o:['No sooner had I got home','No sooner I had got home','Hardly had I got home','As soon as I got home'],a:0,d:3,e:'No sooner...than 固定配对，No sooner 开头倒装。Hardly 要与 when 配对，不与 than；As soon as 是「一……就」不与 than 搭配。'},
+  {s:'—They have finished the work. —__.',o:['So they have','So have they','So they do','So do they'],a:0,d:3,e:'同一人「确实如此」→ So + 主语 + 助动词（不倒装）；另一人也一样 → So + 助动词 + 主语（倒装）。这里说「他们的确做完了」，助动词跟 have finished 用 have。'},
+  {s:'It was not until midnight __ he came back.',o:['that','when','which','so'],a:0,d:2,e:'not until 的强调句固定形式：It was not until...that...'},
+  {s:'Hardly __ sat down when the phone rang.',o:['had he','he had','did he','he did'],a:0,d:3,e:'Hardly...when 配对，Hardly 开头倒装：had he sat down（过去的过去用过去完成）。'},
+  {s:'It was in the countryside __ I spent my childhood.',o:['that','where','when','which'],a:0,d:2,e:'强调句判断法：去掉 It was...that 还原成 I spent my childhood in the countryside，句子完整 → 是强调句，用 that。不要被地点迷惑选 where。'}
+ ],
+ L10:[
+  {s:'The population of China is larger than __ of Japan.',o:['that','those','this','it'],a:0,d:2,e:'比较对象要一致：population 不可数 → that of Japan。those 用于可数复数。'},
+  {s:'He is __ of the two brothers.',o:['the taller','the tallest','taller','tall'],a:0,d:3,e:'两者之中「较……的那个」也要加 the：the taller of the two。真题经典陷阱——看到 two 就以为用比较级不加 the。'},
+  {s:'Our school is three times __ theirs.',o:['the size of','as size as','larger as','so large than'],a:0,d:3,e:'倍数 + the + 名词 + of = 是……的几倍。也可以说 three times as large as。'},
+  {s:'Mary, along with her parents, __ moved to Canada.',o:['has','have','are','were'],a:0,d:3,e:'along with 就前原则：谓语跟 Mary 一致 → 单数 has。插入语和逗号不影响主谓一致。'},
+  {s:'Twenty percent of the water in the lake __ polluted.',o:['is','are','were','have'],a:0,d:3,e:'百分数 + of + 名词，动词跟名词一致：water 不可数 → is。若后面是可数复数（如 students）则用 are。'},
+  {s:'The more we get together, __ we will be.',o:['the happier','happier','the more happy','happiest'],a:0,d:2,e:'the + 比较级, the + 比较级 = 越……越……。happy 的比较级是 happier（变 y 为 i）。'},
+  {s:'This car is superior __ that one in quality.',o:['to','than','over','from'],a:0,d:2,e:'superior / inferior / senior / junior + to，永远不接 than。'}
+ ]
+};
+LESSONS.forEach(L=>{
+  const x=BANK_X[L.id]; if(!x) return;
+  x.forEach(q=>{ if(!L.bank.some(b=>b.s===q.s)) L.bank.push(q); });
+});
 
 /* 出题生成器：bank 循环完仍能出「新题」 */
 const GENS={
@@ -1967,19 +2072,33 @@ function dueLessons(){
     return gap>=need;
   }).map(L=>L.id);
 }
+function unlockedTier(lid){
+  const st=lstate(lid), m=masteryOf(lid);
+  if(st.batches>=4&&m>=60) return 3;
+  if(st.batches>=2&&m>=50) return 2;
+  return 1;
+}
+function tierName(d){return d>=3?'冲刺':(d===2?'进阶':'基础');}
 function pickItems(lid,n){
   const L=LESSONS.find(x=>x.id===lid), st=lstate(lid);
-  let pool=L.bank.map((b,i)=>({b,i})).filter(x=>!st.seen.includes(x.i));
+  const tier=unlockedTier(lid);
+  const within=x=>((x.b.d||1)<=tier);
+  let pool=L.bank.map((b,i)=>({b,i})).filter(x=>!st.seen.includes(x.i)&&within(x));
   shuffle(pool);
-  let sel=pool.slice(0,n).map(x=>({kind:'bank',lid:lid,i:x.i,s:x.b.s,o:x.b.o,a:x.b.a,e:x.b.e}));
+  let sel=pool.slice(0,n).map(x=>({kind:'bank',lid:lid,i:x.i,s:x.b.s,o:x.b.o,a:x.b.a,e:x.b.e,d:x.b.d||1}));
   if(sel.length<n&&GENS[lid]){
     const gen=shuffle(GENS[lid]());
-    sel=sel.concat(gen.slice(0,n-sel.length).map(g=>({kind:'gen',lid:lid,s:g.s,o:g.o,a:g.a,e:g.e})));
+    sel=sel.concat(gen.slice(0,n-sel.length).map(g=>({kind:'gen',lid:lid,s:g.s,o:g.o,a:g.a,e:g.e,d:1})));
   }
   if(sel.length<n){
-    const rest=L.bank.map((b,i)=>({b,i})).filter(x=>!sel.some(q=>q.kind==='bank'&&q.i===x.i));
+    const rest=L.bank.map((b,i)=>({b,i})).filter(x=>within(x)&&!sel.some(q=>q.kind==='bank'&&q.i===x.i));
     shuffle(rest);
-    sel=sel.concat(rest.slice(0,n-sel.length).map(x=>({kind:'bank',lid:lid,i:x.i,s:x.b.s,o:x.b.o,a:x.b.a,e:x.b.e,reuse:true})));
+    sel=sel.concat(rest.slice(0,n-sel.length).map(x=>({kind:'bank',lid:lid,i:x.i,s:x.b.s,o:x.b.o,a:x.b.a,e:x.b.e,d:x.b.d||1,reuse:true})));
+  }
+  if(sel.length<n){ /* 兜底：解锁层实在不够时才跨层重排 */
+    const rest2=L.bank.map((b,i)=>({b,i})).filter(x=>!sel.some(q=>q.kind==='bank'&&q.i===x.i));
+    shuffle(rest2);
+    sel=sel.concat(rest2.slice(0,n-sel.length).map(x=>({kind:'bank',lid:lid,i:x.i,s:x.b.s,o:x.b.o,a:x.b.a,e:x.b.e,d:x.b.d||1,reuse:true})));
   }
   sel.forEach(q=>{
     const arr=q.o.map((t,k)=>({t:esc(t),ok:k===q.a}));
@@ -2047,8 +2166,10 @@ function learnList(){
     const st=lstate(L.id), ms=masteryOf(L.id);
     const status=!st.learned?'<span class="pill">未学</span>':
       (ms>=70&&st.batches>=1?'<span class="pill ok">过关 '+ms+'%</span>':'<span class="pill warn">练习中 '+ms+'%</span>');
+    const tier=unlockedTier(L.id);
+    const tpill=!st.learned?'':(tier>=3?'<span class="pill">冲刺题已解锁</span>':(tier>=2?'<span class="pill warn">进阶题已解锁</span>':''));
     return '<div class="card lesson"><div class="lh"><div><div class="lt">'+esc(L.t)+' <span class="wk">'+esc(L.wk)+'</span></div>'+
-      '<div class="ls">'+esc(L.sub)+'</div></div>'+status+'</div>'+
+      '<div class="ls">'+esc(L.sub)+'</div></div><div>'+status+tpill+'</div></div>'+
       '<div class="lbtns"><button class="btn pri" onclick="openLesson(\''+L.id+'\')">学知识点</button>'+
       '<button class="btn" onclick="startQuiz(\''+L.id+'\')">'+(st.learned?'再练一批':'开始练习')+'</button></div></div>';
   }).join('');
@@ -2056,7 +2177,7 @@ function learnList(){
     '<div class="note good" style="margin-top:0;margin-bottom:14px;"><b>复习到期：</b>'+due.map(id=>esc(LESSONS.find(L=>L.id===id).t)).join('、')+
     ' —— 记忆靠重复，现在混排 8 题（约 6 分钟）。<button class="btn pri" style="margin-left:10px;padding:6px 14px;" onclick="startReview()">开始混排复习</button></div>':
     '<div class="note" style="margin-top:0;margin-bottom:14px;">学完的知识点会在第 1、3、7、14 天自动到期，到期会出现在这里和「今日」页。今天暂无到期复习。</div>';
-  return '<div class="vhead"><h1>课堂</h1><p>先学知识点（有讲解、公式、例句），再做题（答完立刻看讲解），练完换新一批。旧知识点按记忆曲线自动回来复习。</p></div>'+
+  return '<div class="vhead"><h1>课堂</h1><p>先学知识点，再做题（答完立刻看讲解），练完换新一批。题目分三级：<b>基础 → 进阶 → 冲刺</b>，练满 2 批且正确率 50% 解锁进阶，练满 4 批且正确率 60% 解锁冲刺——难度跟着你的水平走。</p></div>'+
     rev+rows;
 }
 function learnTeach(L){
@@ -2072,6 +2193,14 @@ function learnQuiz(){
   const drill=LV.mode==='drill';
   if(LV.qi>=LV.items.length){
     const total=LV.items.length, r=LV.right, pct=Math.round(r/total*100);
+    const tierStat={};
+    LV.items.forEach(q=>{
+      const k=tierName(q.d||1);
+      tierStat[k]=tierStat[k]||[0,0];
+      tierStat[k][1]++;
+      if(!LV.wrongs.includes(q)) tierStat[k][0]++;
+    });
+    const tierLine=Object.keys(tierStat).map(k=>k+' '+tierStat[k][0]+'/'+tierStat[k][1]).join('　·　');
     const wrongRows=LV.wrongs.map(q=>
       '<div class="witem"><div class="wq">'+esc(q.s.replace('__','<b>____</b>'))+'</div>'+
       '<div class="wa">正确：<b>'+q.opts[q.a2]+'</b></div><div class="we">'+esc(q.e)+'</div></div>').join('');
@@ -2079,7 +2208,8 @@ function learnQuiz(){
     return '<div class="vhead"><h1>'+(drill?'混排复习完成':'本批练习完成')+'</h1></div>'+
       '<div class="card"><div class="empty" style="padding:30px 16px;">'+
       '<div style="font-size:34px;font-weight:700;color:'+(pct>=70?'var(--green,#2e7d43)':'var(--amber)')+';">'+r+' / '+total+'</div>'+
-      '<div style="margin-top:6px;color:var(--ink-3);">'+(pct>=70?'过关。正确率 70% 以上，这个知识点进入复习循环。':'还没过关。下面的错题看一遍讲解，再练一批——错题才是你的提分点。')+'</div></div>'+
+      '<div style="margin-top:6px;color:var(--ink-3);">'+(pct>=70?'过关。正确率 70% 以上，这个知识点进入复习循环。':'还没过关。下面的错题看一遍讲解，再练一批——错题才是你的提分点。')+'</div>'+
+      '<div style="margin-top:10px;font-size:12px;color:var(--ink-3);">分层成绩：'+tierLine+'</div></div>'+
       (LV.wrongs.length?'<h3 style="margin:16px 0 6px;">错题讲解</h3>'+wrongRows:'')+
       '<div style="margin-top:16px;display:flex;gap:9px;flex-wrap:wrap;">'+
       (drill?'<button class="btn" onclick="exitLesson()">返回课堂</button>'
@@ -2105,7 +2235,7 @@ function learnQuiz(){
   return '<div class="vhead"><h1>'+(drill?'混排复习':'练习：'+esc(LESSONS.find(x=>x.id===LV.lid).t))+'</h1>'+
     '<p>'+(drill?'旧知识点混在一起考——对抗遗忘最有效的方式':(LV.items.some(q=>q.reuse)?'这批包含重排的旧题（选项顺序已打乱）':'先别猜，想一下考点再选'))+'</p></div>'+
     '<div class="card"><div style="display:flex;justify-content:space-between;font-size:11.8px;color:var(--ink-4);margin-bottom:8px;">'+
-    '<span>第 '+(LV.qi+1)+' / '+LV.items.length+' 题'+(drill&&q.src?'　来自 '+esc(q.src):'')+'</span>'+
+    '<span>第 '+(LV.qi+1)+' / '+LV.items.length+' 题'+(drill&&q.src?'　来自 '+esc(q.src):'')+'　<b>［'+tierName(q.d)+'题］</b></span>'+
     '<span>本批对 '+LV.right+' 错 '+LV.wrongs.length+'</span></div>'+
     '<div class="bar" style="margin-bottom:16px;"><i style="width:'+prog+'%"></i></div>'+
     '<div class="qtext">'+q.s.replace('__','<span class="blank">____</span>')+'</div>'+
