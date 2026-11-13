@@ -1319,7 +1319,7 @@ const MEMO={
    ========================================================= */
 const WEEKS=[
  {w:1,theme:'句子骨架：五大基本句型、词性、怎么查词',words:300,
-  points:['主+谓','主+谓+宾','主+系+表','主+谓+双宾','主+谓+宾+补','there be 与 it 句型'],
+  points:['先修课 L0：词性与术语入门（第一次学必看）','主+谓','主+谓+宾','主+系+表','主+谓+双宾','主+谓+宾+补','there be 与 it 句型'],
   check:'能独立画出 10 个简单句的主语和谓语'},
  {w:2,theme:'简单句扩展：定语、状语在句中的位置',words:150,
   points:['形容词作定语，前置','介词短语作定语，后置','副词作状语，位置灵活','状语可句首、可句尾'],
@@ -1340,20 +1340,20 @@ const WEEKS=[
   points:['to do 作目的、结果状语','doing 作主语、宾语、介词后','done 表被动、完成','doing vs done 作定语','having done 先于主句'],
   check:'阅读 8 题对 5 题'},
  {w:8,theme:'阅读四大题型 + 完形逻辑词',words:150,
-  points:['细节题：定位 + 同义替换','干扰项四特征','逻辑衔接词六类','完形先通读再填空'],
+  points:['细节题：定位 + 同义替换','干扰项四特征','逻辑衔接词六类','完形先通读再填空','穿插补课：L8 被动语态 + 虚拟语气'],
   check:'阅读 8 题对 5–6 题，单篇限时 10 分钟'},
  {w:9,theme:'汉译英 + 写作三段式',words:150,
-  points:['中英差异四条','保命六句','现象解释型 / 对比选择型 / 问题解决型','不少于 100 词'],
+  points:['中英差异四条','保命六句','现象解释型 / 对比选择型 / 问题解决型','不少于 100 词','穿插补课：L9 倒装与强调'],
   check:'不看范文写出 3 篇 100 词作文'},
  {w:10,theme:'整套真题计时 + 错题回炉',words:0,
-  points:['90 分钟整卷','顺序：阅读→语法→完形→翻译→作文','错题本回看','作文手写计时 20 分钟'],
+  points:['90 分钟整卷','顺序：阅读→语法→完形→翻译→作文','错题本回看','作文手写计时 20 分钟','穿插补课：L10 比较结构 + 主谓一致'],
   check:'模考 ≥ 60 分，且时间够用'}
 ];
 
 const TASKS=[
  {k:'t1',n:'回炉昨天的词块',m:15},
  {k:'t2',n:'新词（按今天的目标数）',m:20},
- {k:'t3',n:'课堂：学练本周语法点（左侧「课堂」）',m:20},
+ {k:'t3',n:'课堂：学练本周知识点（第 1–7 周主线课 / 第 8–10 周高频补充课）',m:20},
  {k:'t4',n:'精读一段真题 + 手写 5 句',m:35},
  {k:'t5',n:'记句子本（原句/切分/主干/译文/错因）',m:10}
 ];
@@ -1887,7 +1887,24 @@ function viewToday(){
   let points=W.points.map(p=>'<li>'+esc(p)+'</li>').join('');
 
   const first=(S.sentences.length===0&&done===0)?
-    '<div class="note good" style="margin-bottom:14px;"><b>第一次用：</b>先点左边「背词」过 25 个（点卡片翻面 → 选「认识 / 模糊 / 不认识」），再点「拆句」练 5 句。所有记录自动存在这台电脑的浏览器里，关掉再打开还在。</div>':'';
+    '<div class="note good" style="margin-bottom:14px;"><b>第一次用：</b>① 点左边「课堂」先学《先看懂这些词》（术语入门，不然后面的课文看不懂）→ ② 点「背词」过 25 个（点卡片翻面 → 选「认识 / 模糊 / 不认识」）→ ③ 点「拆句」练 5 句。所有记录自动存在这台电脑的浏览器里，关掉再打开还在。</div>':'';
+
+  const l0st=lstate('L0');
+  let lessonBtns;
+  if(wk<=7){
+    lessonBtns=(wk===1&&!l0st.learned?
+        '<button class="btn pri" onclick="openLesson(\'L0\')">① 先修课：术语入门（先学这个）</button>'+
+        '<button class="btn" onclick="openLesson(\'L1\')">② 进入课堂：句子骨架</button>'
+      :'<button class="btn pri" onclick="openLesson(\'L'+wk+'\')">进入课堂（学知识点）</button>')+
+      '<button class="btn" onclick="go(\'vocab\')">开始背词</button>'+
+      '<button class="btn" onclick="go(\'train\')">开始拆句</button>'+
+      '<button class="btn ghost" onclick="go(\'ref\')">速查表</button>';
+  }else{
+    lessonBtns='<button class="btn pri" onclick="go(\'learn\')">课堂：高频补充三课（被动·虚拟 / 倒装·强调 / 比较·一致）</button>'+
+      '<button class="btn" onclick="go(\'ref\')">速查：阅读题型与翻译套路</button>'+
+      '<button class="btn" onclick="go(\'book\')">句子本回炉</button>';
+  }
+  const cardTitle=wk<=7?'本周只攻这一个语法点':'本周主线：题型训练 + 整卷（语法缺口用「高频补充」补齐）';
 
   return '<div class="vhead"><h1>第 '+Math.min(d,70)+' 天 · '+esc(W.theme)+'</h1>'+
     '<p>'+(d>70?'70 天计划已完成，进入真题二轮复习':'今天总共 100 分钟，顺序不要换：先复习，再学新，最后精读')+'</p></div>'+
@@ -1907,12 +1924,8 @@ function viewToday(){
     first+
     '<div class="card"><h3>今日五件事 <span class="sub">按顺序做，做完打勾</span></h3>'+tasks+'</div>'+
     reviewCard()+
-    '<div class="card"><h3>本周只攻这一个语法点</h3><ul class="tight">'+points+'</ul>'+
-      '<div style="margin-top:12px;display:flex;gap:9px;flex-wrap:wrap;">'+
-      '<button class="btn pri" onclick="openLesson(\'L'+wk+'\')">进入课堂（学知识点）</button>'+
-      '<button class="btn" onclick="go(\'vocab\')">开始背词</button>'+
-      '<button class="btn" onclick="go(\'train\')">开始拆句</button>'+
-      '<button class="btn ghost" onclick="go(\'ref\')">速查表</button></div></div>'+
+    '<div class="card"><h3>'+cardTitle+'</h3><ul class="tight">'+points+'</ul>'+
+      '<div style="margin-top:12px;display:flex;gap:9px;flex-wrap:wrap;">'+lessonBtns+'</div></div>'+
     '';
 }
 function reviewCard(){
