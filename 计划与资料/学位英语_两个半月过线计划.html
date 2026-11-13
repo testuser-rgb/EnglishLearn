@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学位英语 · 两个半月过线作战计划</title>
+<style>
+  :root{
+    --ink:#16202e; --ink-2:#3d4c60; --ink-3:#6b7c91;
+    --line:#e3e9f2; --bg:#f6f8fb; --card:#ffffff;
+    --blue:#14539a; --blue-soft:#eaf1fa;
+    --teal:#0f766e; --teal-soft:#e6f4f1;
+    --amber:#b45309; --amber-soft:#fdf3e4;
+    --rose:#a8324a; --rose-soft:#fbeef1;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB","Segoe UI",system-ui,sans-serif;
+    font-size:15px; line-height:1.78; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1060px; margin:0 auto; padding:44px 28px 80px;}
+
+  header{border-bottom:2px solid var(--blue); padding-bottom:22px; margin-bottom:34px;}
+  .kicker{font-size:12.5px; letter-spacing:.18em; color:var(--blue); font-weight:700; margin-bottom:10px;}
+  h1{font-size:29px; line-height:1.35; margin:0 0 12px; letter-spacing:-.01em;}
+  .sub{color:var(--ink-3); font-size:13.5px; line-height:1.95;}
+  .sub b{color:var(--ink-2); font-weight:600;}
+
+  .params{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:20px;}
+  .pm{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px;}
+  .pm .k{font-size:11.5px; color:var(--ink-3); letter-spacing:.04em;}
+  .pm .v{font-size:16px; font-weight:700; color:var(--blue); margin-top:2px;}
+
+  section{margin-bottom:42px;}
+  .sec-head{display:flex; align-items:center; gap:12px; margin-bottom:16px;}
+  .num{flex:none; width:28px; height:28px; border-radius:8px; background:var(--blue); color:#fff;
+    font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center;}
+  h2{font-size:19px; margin:0; letter-spacing:-.01em;}
+  h2 small{font-weight:400; color:var(--ink-3); font-size:13px; margin-left:8px; letter-spacing:0;}
+  .lead{color:var(--ink-2); font-size:14px; margin:0 0 14px;}
+
+  .tcard{background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  thead th{background:#eef3fa; color:var(--ink-2); text-align:left; font-weight:700;
+    padding:11px 14px; border-bottom:1px solid var(--line); font-size:13px; white-space:nowrap;}
+  tbody td{padding:10px 14px; border-bottom:1px solid #eef1f6; vertical-align:top; color:var(--ink-2);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:nth-child(even){background:#fbfcfe;}
+  tbody td:first-child{color:var(--ink); font-weight:600;}
+  .c{text-align:center;} .nw{white-space:nowrap;}
+  .tag{display:inline-block; padding:1px 8px; border-radius:99px; font-size:11.5px; font-weight:700;
+    white-space:nowrap; line-height:1.7;}
+  .t-hi{background:var(--rose-soft); color:var(--rose);}
+  .t-mid{background:var(--amber-soft); color:var(--amber);}
+  .t-low{background:var(--teal-soft); color:var(--teal);}
+  .t-blue{background:var(--blue-soft); color:var(--blue);}
+
+  .note{background:var(--card); border-left:3px solid var(--blue); border-radius:0 8px 8px 0;
+    padding:14px 18px; margin-top:14px; font-size:13.6px; color:var(--ink-2);}
+  .note b{color:var(--ink);}
+  .note.warn{border-left-color:var(--rose);}
+  .note.good{border-left-color:var(--teal);}
+
+  /* 例句拆解卡 */
+  .ex{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:0; overflow:hidden; margin-bottom:14px;}
+  .ex .src{padding:14px 18px; background:#f8fafd; border-bottom:1px dashed var(--line); font-size:14.5px; color:var(--ink); font-weight:600; line-height:1.9;}
+  .ex .body{padding:6px 18px 14px;}
+  .row{display:flex; gap:12px; padding:8px 0; border-bottom:1px solid #f0f3f8; font-size:13.5px;}
+  .row:last-child{border-bottom:none;}
+  .row .lab{flex:none; width:76px; color:var(--ink-3); font-size:12.5px; padding-top:2px;}
+  .row .txt{color:var(--ink-2); line-height:1.85;}
+  .row .txt em{font-style:normal; color:var(--rose); font-weight:700;}
+  .row .txt i{font-style:normal; color:var(--teal); font-weight:700;}
+  .en{font-family:"Georgia","Times New Roman",serif; letter-spacing:.01em;}
+  .cut{color:var(--blue); font-weight:700;}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .card h3{font-size:14px; margin:0 0 10px; color:var(--blue);}
+  .card ul{margin:0; padding-left:18px;}
+  .card li{font-size:13.4px; color:var(--ink-2); margin-bottom:7px; line-height:1.72;}
+  .card li b{color:var(--ink);}
+
+  ol.steps{margin:0; padding-left:0; list-style:none; counter-reset:s;}
+  ol.steps li{counter-increment:s; position:relative; padding-left:38px; margin-bottom:12px;
+    font-size:13.7px; color:var(--ink-2); line-height:1.8;}
+  ol.steps li::before{content:counter(s); position:absolute; left:0; top:1px; width:24px; height:24px;
+    border-radius:50%; background:var(--blue-soft); color:var(--blue); font-size:12.5px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;}
+  ol.steps li b{color:var(--ink);}
+
+  footer{margin-top:56px; padding-top:18px; border-top:1px solid var(--line); font-size:12.3px;
+    color:var(--ink-3); line-height:1.95;}
+
+  @media (max-width:820px){
+    .wrap{padding:28px 16px 60px;} h1{font-size:23px;}
+    .params{grid-template-columns:1fr 1fr;}
+    .grid2{grid-template-columns:1fr;}
+    table{font-size:12.7px;} thead th,tbody td{padding:9px 10px;}
+    .row .lab{width:62px;}
+  }
+  @media print{
+    body{background:#fff; font-size:11.5px;}
+    .wrap{max-width:none; padding:0;}
+    .tcard,.ex,.card{break-inside:avoid;}
+    section{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">个人备考方案 · 江苏高校联盟学士学位英语</div>
+  <h1>两个半月过线计划：从"看不懂句子"到阅读拿分</h1>
+  <div class="sub">
+    起点：初中水平、词汇语法基本遗忘、句子读不通、翻译不出来。目标：<b>卷面 60 分过线</b>，第一阶段先从阅读理解（20 分）和句子翻译能力切入。
+  </div>
+  <div class="params">
+    <div class="pm"><div class="k">可用周期</div><div class="v">约 10 周</div></div>
+    <div class="pm"><div class="k">每日投入</div><div class="v">100 分钟</div></div>
+    <div class="pm"><div class="k">总学时</div><div class="v">≈ 115 小时</div></div>
+    <div class="pm"><div class="k">目标分数</div><div class="v">60–65 分</div></div>
+  </div>
+</header>
+
+<!-- 1 -->
+<section>
+  <div class="sec-head"><div class="num">1</div><h2>先算清账：60 分从哪来</h2></div>
+  <p class="lead">你不需要变强，你只需要在 5 个题型里各自拿到"及格的那一份"。这是完全不同的目标，也决定了时间怎么分配。</p>
+  <div class="tcard">
+    <table>
+      <thead><tr><th>题型</th><th class="c">满分</th><th class="c">及格目标</th><th>拿分逻辑</th><th class="c">投入</th></tr></thead>
+      <tbody>
+        <tr><td>阅读理解</td><td class="c">20</td><td class="c">12–14</td><td>8 题里对 5–6 题。细节题占六成，靠"定位 + 同义替换"，不需要读懂全文</td><td class="c nw">★★★★★</td></tr>
+        <tr><td>词汇和语法（语法部分）</td><td class="c">15</td><td class="c">9–11</td><td>约 10 题，非谓语 / 从句 / 虚拟三类占大半，是"规则题"，学会就能对</td><td class="c nw">★★★★</td></tr>
+        <tr><td>完形填空</td><td class="c">20</td><td class="c">11–12</td><td>20 题对 11 题即可。逻辑衔接词 + 固定搭配是送分区</td><td class="c nw">★★★</td></tr>
+        <tr><td>短文写作</td><td class="c">15</td><td class="c">9–10</td><td>三段式模板 + 100 词，语法不出大错就能到 9 分以上</td><td class="c nw">★★★</td></tr>
+        <tr><td>汉译英</td><td class="c">15</td><td class="c">7–8</td><td>5 句，能译出主干、时态对、无重大语法错误，每句 1.5 分</td><td class="c nw">★★★</td></tr>
+        <tr><td>词汇和语法（词汇部分）</td><td class="c">15</td><td class="c">6–7</td><td>只打高频辨析与固定搭配，放弃生僻词</td><td class="c nw">★★</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note good">
+    <b>合计 ≈ 54–62 分。</b>注意一件事：<b>阅读 + 完形 = 40 分，全部建立在"能看懂句子"上</b>；翻译和写作也建立在同一能力上。所以你这 10 周真正只学<b>一件事</b>——把英文句子拆开、看懂、再用中文说出来。这就是我给你排的主线。
+  </div>
+</section>
+
+<!-- 2 -->
+<section>
+  <div class="sec-head"><div class="num">2</div><h2>先诊断：你为什么"翻译不出来"</h2></div>
+  <p class="lead">绝大多数人以为是自己单词量不够，其实是三个问题叠在一起。搞错病因，背一万词也没用。</p>
+  <div class="grid2">
+    <div class="card">
+      <h3>病因一：不会断句</h3>
+      <ul>
+        <li>看到一个 20 词的长句，眼睛从头扫到尾，<b>不知道哪儿是一个意思单元</b>，脑子里的译文就糊成一团。</li>
+        <li>典型表现：读到一半忘了前面在说什么。</li>
+        <li><b>对策：</b>先学"用斜线切意群"，每 3–6 词一刀。</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>病因二：找不到主干</h3>
+      <ul>
+        <li>句子里真正的主语、谓语被一堆修饰成分埋住了，你把修饰语当成了主句。</li>
+        <li>典型表现：每个词都认识，连起来不知道谁对谁做了什么。</li>
+        <li><b>对策：</b>每句只问三个问题——<b>谁？做什么？什么？</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>病因三：按英文顺序硬译</h3>
+      <ul>
+        <li>英文修饰语往后挂，中文修饰语往前放。逐词顺译出来的中文必然别扭、看不懂。</li>
+        <li>典型表现：译文自己读一遍都觉得不像人话。</li>
+        <li><b>对策：</b>按"意群"译，译完再按中文语序重排。</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>还有一个隐形病因：词是"半生"的</h3>
+      <ul>
+        <li>不是完全不认识，而是"眼熟但想不起意思"，卡 2 秒就放弃。</li>
+        <li>这种词最耗时间，也最容易击溃信心。</li>
+        <li><b>对策：</b>高频词练到"0.5 秒反应"，其余词练"猜词"。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section>
+  <div class="sec-head"><div class="num">3</div><h2>核心方法：切 → 抓 → 挂 <small>这 10 周你只需要练熟这一个动作</small></h2></div>
+  <p class="lead">三步固定顺序，每句都这么做，做 300 句就会变成条件反射。<b>切</b>＝按意群切开；<b>抓</b>＝抓出主干（谁 + 做什么 + 什么）；<b>挂</b>＝把修饰成分挂回主干，按中文语序重排。</p>
+
+  <div class="ex">
+    <div class="src en">The number of students <span class="cut">/</span> who study abroad <span class="cut">/</span> has increased rapidly <span class="cut">/</span> in recent years.</div>
+    <div class="body">
+      <div class="row"><div class="lab">抓主干</div><div class="txt en">The number … <em>has increased</em>（主语是 number，不是 students！）</div></div>
+      <div class="row"><div class="lab">挂修饰</div><div class="txt">who study abroad → 修饰 students；in recent years → 时间状语前置</div></div>
+      <div class="row"><div class="lab">译文</div><div class="txt">近年来，出国留学的学生人数<i>迅速增加</i>。</div></div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="src en">Although online learning is convenient, <span class="cut">/</span> many students find it difficult <span class="cut">/</span> to stay focused <span class="cut">/</span> without a teacher's supervision.</div>
+    <div class="body">
+      <div class="row"><div class="lab">抓主干</div><div class="txt en">many students <em>find</em> it difficult（it 是形式宾语，真正的宾语是后面的 to stay focused）</div></div>
+      <div class="row"><div class="lab">挂修饰</div><div class="txt">Although… → 让步状语，中文用"虽然……但是"；without… → 条件，提前说</div></div>
+      <div class="row"><div class="lab">译文</div><div class="txt"><i>虽然</i>线上学习很方便，但很多学生发现，<i>没有老师监督</i>就很难保持专注。</div></div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="src en">Children should be encouraged <span class="cut">/</span> to take part in outdoor activities <span class="cut">/</span> instead of spending hours on screens.</div>
+    <div class="body">
+      <div class="row"><div class="lab">抓主干</div><div class="txt en">Children <em>should be encouraged</em>（被动语态，中文常转成"应该鼓励……"的无主句）</div></div>
+      <div class="row"><div class="lab">挂修饰</div><div class="txt">to take part in… → 目的；instead of + doing → 并列对比</div></div>
+      <div class="row"><div class="lab">译文</div><div class="txt"><i>应该鼓励</i>孩子参加户外活动，而不是花好几个小时盯着屏幕。</div></div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="src en">What matters most <span class="cut">/</span> is not how much you know <span class="cut">/</span> but how well you can use it.</div>
+    <div class="body">
+      <div class="row"><div class="lab">抓主干</div><div class="txt en"><em>What matters most is</em> … （主语从句作主语，what = 的东西/的事情）</div></div>
+      <div class="row"><div class="lab">挂修饰</div><div class="txt">not… but… → "不是……而是……"，中文对称结构</div></div>
+      <div class="row"><div class="lab">译文</div><div class="txt"><i>最重要的</i>不是你知道多少，而是你能用得多好。</div></div>
+    </div>
+  </div>
+
+  <div class="note warn">
+    <b>这四句就是你的全部"技术含量"。</b>第 1 句解决"主语找错"，第 2 句解决"形式宾语 + 让步"，第 3 句解决"被动转中文"，第 4 句解决"主语从句"。看懂这四种，真题阅读里 70% 的句子结构你已经见过原型了——剩下的只是换了词。
+  </div>
+</section>
+
+<!-- 4 -->
+<section>
+  <div class="sec-head"><div class="num">4</div><h2>10 周作战地图</h2></div>
+  <div class="tcard">
+    <table>
+      <thead><tr><th class="c nw">周次</th><th>这一周只攻一个主题</th><th class="c nw">词汇累计</th><th class="c nw">精读/翻译量</th><th>周末验收（做不到就重来一周）</th></tr></thead>
+      <tbody>
+        <tr><td class="c">第 1 周</td><td>摸底 + 句子骨架：五大基本句型、词性、怎么查词</td><td class="c">300</td><td class="c">15 句</td><td>能独立画出 10 个简单句的主语和谓语</td></tr>
+        <tr><td class="c">第 2 周</td><td>简单句扩展：定语、状语在句中的位置</td><td class="c">450</td><td class="c">20 句</td><td>手写译文 10 句，对照后错因能说清</td></tr>
+        <tr><td class="c">第 3 周</td><td>并列句 + 时态回顾（现在 / 过去 / 完成）</td><td class="c">600</td><td class="c">20 句</td><td>时态填空 20 题，对 14 题以上</td></tr>
+        <tr><td class="c">第 4 周</td><td>定语从句（that / which / who / whose / where）</td><td class="c">750</td><td class="c">20 句</td><td>能把 10 个长句切分并译顺</td></tr>
+        <tr><td class="c">第 5 周</td><td>状语从句（时间 / 条件 / 让步 / 原因）</td><td class="c">900</td><td class="c">20 句</td><td>译出一整段含从句的原文（60 词）</td></tr>
+        <tr><td class="c">第 6 周</td><td>名词性从句 + it 句型（形式主语/宾语）</td><td class="c">1050</td><td class="c">20 句</td><td>做一篇阅读真题，8 题对 4–5 题</td></tr>
+        <tr><td class="c">第 7 周</td><td>非谓语（doing / done / to do 作定语、状语）</td><td class="c">1200</td><td class="c">15 句</td><td>阅读 8 题对 5 题</td></tr>
+        <tr><td class="c">第 8 周</td><td>阅读四大题型专练 + 完形逻辑衔接词</td><td class="c">1350</td><td class="c">真题 4 篇</td><td>阅读 8 题对 5–6 题，单篇限时 10 分钟</td></tr>
+        <tr><td class="c">第 9 周</td><td>汉译英高频句式 + 写作三段式（开始手写）</td><td class="c">1500</td><td class="c">翻译真题 10 句</td><td>不看范文写出 3 篇 100 词作文</td></tr>
+        <tr><td class="c">第 10 周</td><td>整套真题计时 2 次（90 分钟）+ 错题回炉</td><td class="c">只复习</td><td class="c">错题本</td><td>模考 ≥ 60 分，且时间够用</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>为什么要"一周只攻一个主题"？</b>基础弱的人最大的杀手是"每天换花样"——今天学从句，明天学虚拟，后天背单词，结果哪个都没进脑子。一周一个点，连续 7 天重复同一结构，第 8 天它才会变成本能。
+  </div>
+</section>
+
+<!-- 5 -->
+<section>
+  <div class="sec-head"><div class="num">5</div><h2>每天 100 分钟怎么用</h2></div>
+  <p class="lead">固定五个时间块，顺序不要换。复习永远在最前面，因为遗忘发生在你学完的当下，不是明天。</p>
+  <div class="tcard">
+    <table>
+      <thead><tr><th class="c nw">时间</th><th class="c nw">时长</th><th>做什么</th><th>具体要求</th></tr></thead>
+      <tbody>
+        <tr><td class="c">第 0–15 分</td><td class="c">15 分</td><td><b>回炉昨天的词块</b></td><td>盖住中文看英文，0.5 秒内反应不出来的挑出来，抄到"顽固词"一边</td></tr>
+        <tr><td class="c">第 15–35 分</td><td class="c">20 分</td><td><b>新词 20–25 个（按词块记）</b></td><td>只记"词 + 常见搭配 + 一个例句"，不抄词典释义，不纠结拼写</td></tr>
+        <tr><td class="c">第 35–55 分</td><td class="c">20 分</td><td><b>本周语法点微课 + 5 道小题</b></td><td>每周只学一个点，看完立刻做 5 题验证，做错就回看那一页</td></tr>
+        <tr><td class="c">第 55–90 分</td><td class="c">35 分</td><td><b>精读一段真题 + 手写 5 句译文</b></td><td>这是全天最重要的 35 分钟：切→抓→挂，手写，然后对照参考译文用红笔改</td></tr>
+        <tr><td class="c">第 90–100 分</td><td class="c">10 分</td><td><b>记"句子本"</b></td><td>每句写下：原句 / 切分 / 主干 / 我的译文 / 错误类型（词不认识·结构看错·中文不顺）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note good">
+    <b>每周节奏：</b>周一到周六按上表执行，<b>周日不学新内容</b>，只做两件事——重做本周所有错题 + 把本周句子本从头读一遍（约 40 分钟）。留白是计划能活到第 10 周的关键。
+  </div>
+</section>
+
+<!-- 6 -->
+<section>
+  <div class="sec-head"><div class="num">6</div><h2>词汇：只背 1500 个，而且要分层</h2></div>
+  <p class="lead">大纲要 4000 词，但 10 周背 4000 词意味着每天 60+ 新词，遗忘率会超过 80%，等于白背。<b>1500 个精准分层的词，能覆盖试卷约八成的出现词次</b>——够你及格了。</p>
+  <div class="tcard">
+    <table>
+      <thead><tr><th class="c nw">层</th><th class="c nw">数量</th><th>内容</th><th>掌握标准</th><th class="c">用在哪</th></tr></thead>
+      <tbody>
+        <tr><td class="c"><span class="tag t-hi">A</span></td><td class="c">150</td><td><b>功能骨架词</b>：be/do/have、介词（in/on/of/to/for/with/by）、连词（and/but/because/although/while）、代词、疑问词、情态动词</td><td>0.5 秒反应，条件反射级</td><td class="c">断句、判结构</td></tr>
+        <tr><td class="c"><span class="tag t-mid">B</span></td><td class="c">600</td><td><b>阅读主题词</b>：教育 / 科技 / 环境 / 健康 / 职场 / 社会 六大话题的高频名词与动词</td><td>见词知义即可，不要求拼写</td><td class="c">阅读、完形</td></tr>
+        <tr><td class="c"><span class="tag t-blue">C</span></td><td class="c">750</td><td><b>复用核心词</b>：高频动词 + 固定搭配（take measures to / play a role in / be aware of）</td><td>会拼、会搭、会造一句</td><td class="c">翻译、写作、词汇题</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid2" style="margin-top:14px;">
+    <div class="card">
+      <h3>三条执行规则</h3>
+      <ul>
+        <li><b>以词块为单位记</b>，不记孤立单词：记 <span class="en">take measures to do</span>，不记 <span class="en">measure</span>。</li>
+        <li><b>5-1-1 复习法</b>：当天睡前 5 分钟、次日早上、第 7 天各过一遍，比一次背 10 遍有效。</li>
+        <li><b>第 1–6 周只求"见词知义"</b>，第 7 周起才要求 C 层会拼写——前期纠结拼写会拖垮进度。</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>明确"不背"清单（省下的时间全是分）</h3>
+      <ul>
+        <li>不从字母 A 开始背单词书——永远停在 abandon。</li>
+        <li>不背专有名词、学科术语、生僻名词。</li>
+        <li>不背四级高阶词（江苏只要 4000 词，超纲的不考）。</li>
+        <li>不背"认识但十年没用过"的词——那种词考试也不会考。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section>
+  <div class="sec-head"><div class="num">7</div><h2>阅读拿分：不读懂全文也能对 5–6 题</h2></div>
+  <p class="lead">阅读 8 题 20 分，你的目标是 5–6 题。这意味着你<b>完全可以放弃一部分内容</b>，把时间压在细节题上。</p>
+  <div class="tcard">
+    <table>
+      <thead><tr><th>题型</th><th class="c nw">占比</th><th>问法特征</th><th>动作</th><th class="c nw">限时</th></tr></thead>
+      <tbody>
+        <tr><td>细节题</td><td class="c">≈60%</td><td>According to the passage, why / how / what…</td><td>圈题干里的大写词、数字、人名，回原文定位，答案通常是原文的<b>同义替换</b>（换词不换意）</td><td class="c">40 秒</td></tr>
+        <tr><td>词义句意题</td><td class="c">≈10%</td><td>The word "X" in Paragraph 2 probably means…</td><td>只看该词前后一句，找并列（and/or）、转折（but）、解释（that is）三类信号</td><td class="c">30 秒</td></tr>
+        <tr><td>推理题</td><td class="c">≈20%</td><td>It can be inferred / implied that…</td><td>定位到段落，只做<b>一步</b>推理；凡是要想两步的选项基本是错的</td><td class="c">60 秒</td></tr>
+        <tr><td>主旨题</td><td class="c">≈10%</td><td>The main idea / best title…</td><td>只读首段末句 + 各段首句，看重复出现的词</td><td class="c">40 秒</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note warn">
+    <b>四个干扰项特征，背下来能白捡 2 分：</b>①<b>偷换概念</b>——原文说 students，选项说 teachers；②<b>以偏概全</b>——原文说 some，选项说 all；③<b>过度推断</b>——选项比原文多走了一步；④<b>正反混淆</b>——把 support 说成 oppose。<br>
+    <b>另一个铁律：</b>选项里出现 <span class="en">always / never / all / only / must</span> 这类绝对词，九成是错的。
+  </div>
+</section>
+
+<!-- 8 -->
+<section>
+  <div class="sec-head"><div class="num">8</div><h2>精读五步法 <small>每天那 35 分钟就按这个流程走</small></h2></div>
+  <ol class="steps">
+    <li><b>裸读一遍，只标生词不查词。</b>目的是训练"带疑阅读"的耐受力——考场上你就是这么读的。</li>
+    <li><b>用斜线切意群。</b>每 3–6 个词一刀，切在介词、连词、从句引导词前面。<span class="en">the number of students / who study abroad / has increased</span>。</li>
+    <li><b>每句只写三样东西：谁 + 做什么 + 什么。</b>写不出来就说明主干没找到，回去重切——这一步错了，后面全错。</li>
+    <li><b>手写完整译文。</b>允许生词用"□"占位，允许译得难看，<b>但禁止看参考译文</b>。这一条违反了，整个计划失效。</li>
+    <li><b>红笔对照改，并给错误归类。</b>只归三类：词不认识 / 结构看错 / 中文不顺。第 10 周回看，你会发现"结构看错"永远集中在同样两三种句型上——那就是你的提分点。</li>
+  </ol>
+  <div class="note">
+    <b>素材从哪来：</b>只用<b>真题</b>的阅读原文和翻译句子。一篇阅读拆 3–5 句，一篇能拆三天。仿真题、模拟题一律不做——出题思路不对，会把你带偏。
+  </div>
+</section>
+
+<!-- 9 -->
+<section>
+  <div class="sec-head"><div class="num">9</div><h2>翻译：中英差异四条，记住就不会写成人话不通</h2></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>① 修饰语位置相反</h3>
+      <ul><li>英文修饰往后挂，中文修饰往前放。定语从句常译成"……的"。</li>
+      <li class="en">the man who lives next door → 住在隔壁的那个人</li></ul>
+    </div>
+    <div class="card">
+      <h3>② 英语必须有主语，中文常没有</h3>
+      <ul><li>中文无主句，英文要补 <span class="en">we / people / you</span>，或改成被动。</li>
+      <li class="en">应该鼓励孩子… → Children should be encouraged…</li></ul>
+    </div>
+    <div class="card">
+      <h3>③ 英语靠从句，中文靠短句</h3>
+      <ul><li>一个 30 词的英文长句，中文通常拆成 2–3 个短句，用逗号断开。</li>
+      <li>不要在中文里硬造"……的……的……的"套娃。</li></ul>
+    </div>
+    <div class="card">
+      <h3>④ 英语多名词，中文多动词</h3>
+      <ul><li><span class="en">the improvement of living standards</span> → 改善生活水平（名词转动词）。</li>
+      <li>看到 <span class="en">-tion / -ment / -ance</span> 结尾的词，先想它对应的动词。</li></ul>
+    </div>
+  </div>
+  <div class="note good">
+    <b>汉译英保命六句（第 9 周背，考试直接套）：</b><br>
+    <span class="en">With the development of… / It is said that… / Only in this way can we… / We should take effective measures to… / play an important role in… / be beneficial to…</span>
+  </div>
+</section>
+
+<!-- 10 -->
+<section>
+  <div class="sec-head"><div class="num">10</div><h2>里程碑自检表</h2></div>
+  <p class="lead">每个节点做不到，就<b>不要往下走</b>——把那一周重做一遍。基础弱的人赶进度，最后一定是全线崩。</p>
+  <div class="tcard">
+    <table>
+      <thead><tr><th class="c nw">节点</th><th>必须达到的状态</th><th>自检方式</th></tr></thead>
+      <tbody>
+        <tr><td class="c">第 2 周末</td><td>看到 15 词以内的句子，能在 1 分钟内切分并说出主干</td><td>随机抽 10 句，不看答案口述主干</td></tr>
+        <tr><td class="c">第 4 周末</td><td>定语从句能判断修饰谁，译文基本通顺</td><td>10 个长句手写译文，至少 7 句像人话</td></tr>
+        <tr><td class="c">第 6 周末</td><td>真题阅读 8 题对 4–5 题</td><td>限时 20 分钟做完整一篇（含 4 题）</td></tr>
+        <tr><td class="c">第 8 周末</td><td>阅读 8 题对 5–6 题；完形 20 题对 10 题以上</td><td>整套阅读 + 完形计时</td></tr>
+        <tr><td class="c">第 9 周末</td><td>作文能不看范文写出 100 词三段式</td><td>手写 3 篇，检查时态与人称一致</td></tr>
+        <tr><td class="c">第 10 周</td><td>整套卷 90 分钟内 ≥60 分</td><td>全真模考 2 次，取两次平均</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 11 -->
+<section>
+  <div class="sec-head"><div class="num">11</div><h2>六个最容易犯的坑</h2></div>
+  <div class="tcard">
+    <table>
+      <thead><tr><th class="c nw">坑</th><th>表现</th><th>为什么致命</th><th>正确做法</th></tr></thead>
+      <tbody>
+        <tr><td class="c">1</td><td>看译文觉得"我懂了"</td><td>懂的是中文，不是英文结构</td><td>必须<b>先手写</b>再对照</td></tr>
+        <tr><td class="c">2</td><td>从 A 开始背单词书</td><td>永远在 abandon 附近打转</td><td>按词频和话题分层背</td></tr>
+        <tr><td class="c">3</td><td>先啃一本语法大全</td><td>300 页看完前三章就放弃</td><td>只学五大句型 + 三大从句 + 非谓语</td></tr>
+        <tr><td class="c">4</td><td>用模拟题刷量</td><td>出题思路偏，练错方向</td><td>只做真题和官方教材课后练习</td></tr>
+        <tr><td class="c">5</td><td>泛读刷篇数</td><td>基础弱时泛读＝看热闹，零吸收</td><td><b>精读 1 段 &gt; 泛读 5 篇</b></td></tr>
+        <tr><td class="c">6</td><td>作文只背模板不动笔</td><td>考场上拼不出词，模板变废纸</td><td>第 9 周起每周手写 2 篇</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <b>材料清单：</b>①官方推荐教材《新视野大学英语 1》（外语教学与研究出版社）、《新继教大学英语》（中国出版集团）—— 后者是联盟专门为这考试编的，优先级更高；②联盟历年真题（向学校继续教育学院索取，或官网 jsxwyy.webtrn.cn「模拟环境练考」）；③自建三本：<b>词块本 / 句子本 / 错题本</b>，比任何 APP 都管用。<br>
+  <b>时间安排：</b>计划按 10 周（约 70 天）设计，每日 100 分钟。若某周中断，不用补进度，直接顺延一周——但里程碑必须真达到才往下走。<br>
+  <b>说明：</b>本方案依据江苏联盟卷的题型结构（阅读 2 篇 8 题 / 20 分、完形 20 题 / 20 分）与 60 分合格线设计，分数拆解为经验估算，实际以当年试卷难度与院校合格线为准。
+</footer>
+
+</div>
+</body>
+</html>
