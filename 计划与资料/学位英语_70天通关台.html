@@ -1362,10 +1362,30 @@ const TASKS=[
    课堂：知识点课文 + 练习题库（对应 10 周计划）
    ========================================================= */
 const LESSONS=[
+{id:'L0',wk:'先修课',t:'先看懂这些词：语法术语入门',sub:'名词动词形容词 / 主谓宾定状补 / 介词到底是什么 —— 后面所有课文都建立在这节上',
+ teach:[
+  ['为什么先上这节课','后面的课文里会不断出现「主语、谓语、宾语、介词、定语」这些词。如果你不懂它们，每句话都像天书。这节课用大白话把这些术语一次讲清，看完再回 L1，所有句子都看得懂了。<br>不用背，先混个脸熟，后面每课都会反复用到，用着用着就懂了。'],
+  ['一、先认识「词性」——每个英文单词都有自己的岗位','<b>名词</b> = 人、事物、地点的名字：teacher 老师、city 城市、book 书、water 水。<br><b>动词</b> = 表示「动作或状态」：run 跑、teach 教、love 爱。<b>是句子的发动机，每个句子必须有一个。</b><br><b>形容词</b> = 描述「什么样的」：beautiful 漂亮的、important 重要的、red 红色的。<br><b>副词</b> = 描述「怎么做的」：quickly 快地、very 非常、always 总是。多数副词长这样：形容词 + ly（quick → quickly）。<br><b>代词</b> = 代替名词避免重复：I 我、he 他、it 它、they 他们。<br>一张图记住分工：名词是「东西」，动词是「动作」，形容词给名词「贴标签」，副词给动词「贴标签」。'],
+  ['二、介词——你圈出来的这个词（重点讲透）','<b>介词 = 表示「关系」的小词，本身没有动作，只负责把前后的词连起来。</b><br>它像一个小挂钩，主要表达三种关系：<br>· <b>位置关系</b>：in the room 在房间里（in = 在…里面）、on the desk 在桌上（on = 在…上面）、under the tree 在树下<br>· <b>方向关系</b>：go <b>to</b> school 去学校（to = 朝向）、come <b>from</b> China 来自中国（from = 从）<br>· <b>时间关系</b>：at 9:00 在九点、on Monday 在周一、in 2026 在2026年<br>为什么叫「介」词？因为它「介于」名词和其他词之间，必须带着一个名词一起出现：<br><b>arrive at</b> the station —— at 后面必须挂一个名词（the station），这个「at + 名词」的整体叫<b>介词短语</b>，作用相当于一个形容词或副词，用来说明「在哪里 / 什么时候 / 怎么样」。<br>换个角度看：<b>中文里「在」「到」「从」「向」「对」这些字，就是介词的角色</b>。「到达车站」的「到」、「在桌上」的「在」——英文换成 at / on 而已。你早就在用介词，只是中文里它们长得不像一个「词类」。<br>考试怎么考：① 固定搭配记哪个介词（arrive <b>at</b>、listen <b>to</b>、good <b>at</b> 擅长）② 时间介词三选一（at 点 / on 天 / in 段）③ 它标记的短语在长句里是「修饰」，砍长句时整块砍掉。'],
+  ['三、句子成分——一句话里的六个岗位','拿一句中文对照：「昨天那个女孩在图书馆认真地读了一本书。」<br>· <b>主语</b> = 动作的发出者，回答「谁？」：那个女孩（the girl）<br>· <b>谓语</b> = 动词本身，回答「做什么」：读了（read）<br>· <b>宾语</b> = 动作的承受者，回答「动了什么」：一本书（a book）<br>· <b>定语</b> = 修饰<b>名词</b>的成分：「昨天那个」修饰女孩——定语回答「哪个？」<br>· <b>状语</b> = 修饰<b>动词</b>的成分：「在图书馆」「认真地」修饰读——状语回答「在哪 / 怎么做 / 何时」<br>· <b>表语</b> = be 动词后面的成分：「她是医生」的「医生」（She is a doctor）<br>记法：<b>主语干活，谓语是动作，宾语挨打，定语贴在名词前，状语围着动词转。</b><br>英文完全一样：The girl <b>carefully</b> read a book in the library.（carefully = 状语，in the library = 状语）'],
+  ['四、及物与不及物——为什么有的动词后面要加介词','<b>及物动词（vt）</b>：动作直接砸到对象上，后面直接跟宾语——I love <b>you</b>. 我爱你。<br><b>不及物动词（vi）</b>：动作自己就完整，后面<b>不能</b>直接跟对象——Birds fly. 鸟会飞（fly 后面什么都不用带）。<br>问题来了：不及物动词也想说「对谁做」怎么办？——<b>必须请介词当中间人</b>：<br>listen（听，不及物）→ listen <b>to</b> music 听音乐（to 是中间人）<br>arrive（到达，不及物）→ arrive <b>at</b> the station 到达车站<br>✗ arrive the station（中间人不能省）✓ arrive <b>at</b> the station<br>这就是 L1 说的「要接宾语必须加介词」的全部含义：<b>不及物动词 + 介词 + 名词</b>，介词是它的通行证。'],
+  ['五、三句话检验你是否过关','① I put the book <b>on</b> the desk. —— on 是<b>介词</b>（位置关系），the book 是<b>宾语</b>，on the desk 整体是<b>状语</b>（说明放哪儿）。<br>② She looks <b>beautiful</b>. —— beautiful 是<b>形容词</b>作表语（looks 是系动词）。<br>③ The man <b>in the car</b> is my boss. —— in the car 是介词短语作<b>定语</b>，修饰 the man（「车里那个男人」）。<br>能想明白这三句，就可以进 L1 了。想不明白就再读一遍第二、三节。'],
+  ['后续课文遇到术语怎么办','本工具所有课文都用这套术语，不会再引入新黑话。如果哪里又卡住了，直接回到本课对照；或者截图发我，我把那个术语也补进来。'],
+ ],
+ bank:[
+  {s:'Listen __ me carefully.',o:['to','at','for','in'],a:0,e:'listen 是不及物动词，接对象必须加介词 to：listen to me。at / for / in 都不是 listen 的固定搭配。'},
+  {s:'She is good __ math.',o:['at','in','to','for'],a:0,e:'be good at 是固定搭配「擅长」。介词搭配没有道理可讲，见一个记一个。'},
+  {s:'We arrived __ Beijing last night.',o:['in','to','at','on'],a:0,e:'arrive 后接介词：到达大地方用 in（arrive in Beijing），到达小地点用 at（arrive at the station）。北京是大地方，用 in。'},
+  {s:'In the sentence "He runs quickly", the word "quickly" is __.',o:['a 副词，修饰动词 runs','a 形容词，修饰 runs','a 介词','a 名词'],a:0,e:'quickly 描述「怎么跑的」，修饰动词的词是副词（多数以 ly 结尾）。'},
+  {s:'In "The girl in red is my sister", the phrase "in red" is __.',o:['定语，修饰 the girl','宾语','谓语','状语，修饰 is'],a:0,e:'in red 是介词短语，回答「哪个女孩？」→ 修饰名词的成分叫定语。'},
+  {s:'I will wait __ you come back.',o:['until','at','to','for when'],a:0,e:'until 是「直到」，引导时间：我会等到你回来。wait 后面直接跟从句时用 until（wait for 后面只能跟名词）。'},
+  {s:'In "Put it on the table", "on the table" tells us __.',o:['在哪里放 → 地点状语','动作的承受者 → 宾语','修饰 it → 定语','主语'],a:0,e:'介词短语说明动作发生的位置，修饰动词 put，是状语。宾语是 it（被放的东西）。'},
+  {s:'Which one is a preposition (介词)?',o:['under','quickly','beautiful','teacher'],a:0,e:'under（在…下面）是介词；quickly 是副词；beautiful 是形容词；teacher 是名词。'}
+ ]},
 {id:'L1',wk:'第 1 周',t:'句子骨架：五种基本句型',sub:'主谓 / 主谓宾 / 主系表 / 双宾 / 宾补 / there be / it',
  teach:[
   ['为什么先学骨架','中文和英文的语序思路不一样：中文把修饰放在前面（「穿红衣服的女孩」），英文把长修饰放在后面（The girl in red）。所以读英文长句的正确动作是：<b>先找骨架，再看修饰</b>。<br>每读一句先问三个问题：① 谁是主语？② 谓语动词是哪个？③ 其余部分在修饰谁？把这三个问题练成本能，阅读 70% 的困难就消失了。'],
-  ['① 主+谓（不及物动词）','<b>The man left.</b> 那个人走了。<br><b>Birds fly.</b> 鸟会飞。<br><b>What happened?</b> 发生了什么事？<br>「不及物」= 动作不需要承受者，后面<b>不能直接跟宾语</b>。常见不及物：come、go、happen、rise（上升）、die、arrive、listen。<br>要接对象必须加介词：<b>arrive at</b> the station 到达车站、<b>listen to</b> music 听音乐。<br>✗ arrive the station　✓ arrive <b>at</b> the station'],
+  ['① 主+谓（不及物动词）','<b>The man left.</b> 那个人走了。<br><b>Birds fly.</b> 鸟会飞。<br><b>What happened?</b> 发生了什么事？<br>「不及物」= 动作不需要承受者，后面<b>不能直接跟宾语</b>。常见不及物：come、go、happen、rise（上升）、die、arrive、listen。<br>要接对象必须加<b>介词</b>（介词 = 表示「到 / 在 / 从」这类关系的小词，详见先修课 L0 第三节）：<b>arrive at</b> the station 到达车站、<b>listen to</b> music 听音乐。<br>✗ arrive the station　✓ arrive <b>at</b> the station'],
   ['② 主+谓+宾','<b>She teaches English.</b> 她教英语。<br><b>I love this city.</b> 我爱这座城市。<br><b>He is reading a book.</b> 他正在读一本书。<br>「及物」= 动作有承受者，宾语就是动作的对象。找宾语的方法：谓语动词后问「什么？」——teach 什么？English。<br>阅读技巧：先抓「谁 + 做了什么」，句子意思就懂了一半，剩下的都是修饰。'],
   ['③ 主+系+表','这个句型的动词不表示「做动作」，而是「描述状态」。系动词分四类，全部要认识：<br>· <b>be</b>（是）：She <b>is</b> a doctor. 她是医生。<br>· 感官类：<b>look / sound / smell / taste / feel</b>（看起来/听起来/闻起来/尝起来/摸起来）：The music <b>sounds</b> beautiful. 音乐听起来很美。<br>· 变化类：<b>become / turn / get / go</b>（变得）：He <b>got</b> angry. 他生气了。<br>· 保持类：<b>keep / stay / remain</b>（保持）：Please <b>keep</b> quiet. 请保持安静。<br><b>铁律：系动词后面接形容词，不接副词。</b><br>✗ The soup tastes well.　✓ The soup tastes <b>good</b>. 汤尝起来很好喝。<br>（特例：well 作形容词只有「身体好」一个意思：I am well. 我身体很好。）'],
   ['④ 主+谓+双宾','动作同时涉及「人」和「物」两个对象：<br><b>He gave me a book.</b> 他给了我一本书。= He gave a book <b>to</b> me.<br><b>My mother bought me a bike.</b> 妈妈给我买了辆自行车。= She bought a bike <b>for</b> me.<br>近的宾语是「物」（直接宾语），远的宾语是「人」（间接宾语）。<br>用 <b>to</b> 的动词（动作朝向人）：give / send / show / tell / pass / lend / return<br>用 <b>for</b> 的动词（为某人做）：buy / make / cook / get / find<br>判断方法：把句子改成「物 + 介词 + 人」，介词选 to 还是 for 背动词即可，考试就考这一步。'],
