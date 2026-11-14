@@ -349,6 +349,7 @@
       <button data-v="vocab"><span class="ic">▤</span>背词</button>
       <button data-v="learn"><span class="ic">◈</span>课堂</button>
       <button data-v="book"><span class="ic">▥</span>句子本</button>
+      <button data-v="write"><span class="ic">✎</span>写作</button>
       <button data-v="prog"><span class="ic">◔</span>进度</button>
     </nav>
     <div class="side-foot" id="sidefoot"></div>
@@ -4164,11 +4165,11 @@ const WEEKS=[
   points:['to do 作目的、结果状语','doing 作主语、宾语、介词后','done 表被动、完成','doing vs done 作定语','having done 先于主句'],
   check:'阅读 8 题对 5 题'},
  {w:7,theme:'阅读四大题型 + 完形逻辑词',words:1364,
-  points:['细节题：定位 + 同义替换','干扰项四特征','逻辑衔接词六类','完形先通读再填空','穿插补课：L8 被动语态 + 虚拟语气；L9 倒装与强调'],
-  check:'阅读 8 题对 5–6 题，单篇限时 10 分钟'},
- {w:8,theme:'汉译英 + 作文定型 + 整卷模考',words:1364,
-  points:['中英差异四条 / 保命六句','现象解释型 / 对比选择型 / 问题解决型，不少于 100 词','90 分钟整卷：阅读→语法→完形→翻译→作文','错题本回看，作文手写计时 20 分钟','穿插补课：L10 比较结构 + 主谓一致'],
-  check:'模考 ≥ 60 分，且时间够用'}
+  points:['细节题：定位 + 同义替换','干扰项四特征','逻辑衔接词六类','完形先通读再填空','写作启动：第 1–2 篇（范文 → 填空骨架 → 独立写）','穿插补课：L8 被动语态 + 虚拟语气；L9 倒装与强调'],
+  check:'阅读 8 题对 5–6 题；前两篇作文不看范文能写出 100 词'},
+ {w:8,theme:'作文定型 + 整卷模考',words:1364,
+  points:['写作第 3–4 篇：撤掉骨架自己写，计时 20 分钟','自查清单 8 条：写完逐条过','中英差异四条 / 保命六句','90 分钟整卷：阅读→语法→完形→翻译→作文','穿插补课：L10 比较结构 + 主谓一致'],
+  check:'4 篇作文都 ≥100 词；模考 ≥ 60 分且时间够用'}
 ];
 
 const TASKS=[
@@ -4178,6 +4179,16 @@ const TASKS=[
  {k:'t4',n:'精读一段真题 + 手写 5 句',m:30},
  {k:'t5',n:'句子本：汉译英 8 句',m:35}
 ];
+/* 最后两周（第 43 天起）换配比：精读改成限时做题、句子本按考试 5 句走，多出一项写作 */
+const TASKS_END=[
+ {k:'t1',n:'回炉到期词块',m:25},
+ {k:'t2',n:'新词（按今天的目标数）',m:18},
+ {k:'t3',n:'课堂：高频补充课 + 错题回看',m:20},
+ {k:'t4',n:'限时一篇阅读或完形 + 对答案',m:30},
+ {k:'t5',n:'句子本：汉译英 5 句（考试题量）',m:25},
+ {k:'t6',n:'写作（第 N 篇）',m:30}
+];
+function tasksOf(wk){ wk=wk||weekNum(); return wk>=7?TASKS_END:TASKS; }
 
 
 /* =========================================================
@@ -4615,11 +4626,87 @@ const SQ=[
 ];
 const SQIDX={}; SQ.forEach(x=>{SQIDX[x[0]]=x;});
 
+/* 4 篇作文全部排在最后两周（第 43 天起）：每篇 3 天一个循环
+   ① 读范文 + 填骨架　② 不看范文独立写（计时 20 分钟）　③ 对照范文订正 + 过自查清单 */
 const WRITE=[
- {w:5,t:'On the Importance of Reading',zh:'阅读的重要性',type:'现象解释型',need:'第一段点出现象或观点；第二段给两条理由并各配一个例子；第三段收束。不少于 100 词。'},
- {w:6,t:'Living Alone or with Roommates?',zh:'独居还是合租',type:'对比选择型',need:'两方各写一条好处、一条麻烦，最后明确给出你的选择及理由。不少于 100 词。'},
- {w:7,t:'How to Deal with Stress',zh:'如何应对压力',type:'问题解决型',need:'三个具体办法，用 First / Second / Finally 串起来，每条说清"做什么 + 有什么用"。不少于 100 词。'},
- {w:8,t:'The Impact of Short Videos',zh:'短视频的影响',type:'现象解释型',need:'好处一条、问题一条，最后给出你的看法。不少于 100 词。'}
+{n:1,type:'现象解释型',t:'On the Importance of Reading',zh:'阅读的重要性',
+ need:'第一段点出现象或观点；第二段两条理由各配一例；第三段收束。不少于 100 词。',
+ fan:`Reading is very important for everyone, especially for students. With the development of technology, people spend much time on short videos, and reading seems to be forgotten. However, reading still plays an important role in our life.
+First, reading helps us get knowledge. For example, we can learn about history, science and other subjects from books without going out. Second, reading improves our language ability. The more we read, the better we can express our ideas.
+In a word, reading is beneficial to both our mind and our future life. We should take effective measures to keep the habit of reading every day.`,
+ fanZh:['阅读对每个人都很重要，尤其是学生。','随着科技发展，人们把大量时间花在短视频上，阅读似乎被遗忘了。','然而，阅读在我们的生活里仍然起重要作用。','首先，阅读帮我们获取知识。','例如，不出门我们就能从书里了解历史、科学和其他科目。','其次，阅读提高我们的语言能力。','读得越多，我们表达思想就越清楚。','总之，阅读对我们的头脑和未来生活都有益。','我们应该采取有效措施，保持每天阅读的习惯。'],
+ blocks:['With the development of…','play an important role in…','For example, we can…','The more…, the better…','be beneficial to…','take effective measures to…'],
+ skel:`第一段（现象 + 转折）
+Reading is very important for everyone. With the development of ______, people spend much time on ______, and reading seems to be ______. However, reading still plays an important role in ______.
+
+第二段（两条理由 + 例子）
+First, reading helps us ______. For example, we can ______ from books without going out. Second, reading improves ______. The more we read, the better ______.
+
+第三段（收束）
+In a word, reading is beneficial to ______. We should take effective measures to ______.`},
+
+{n:2,type:'对比选择型',t:'Living Alone or with Roommates?',zh:'独居还是合租',
+ need:'两方各写一条好处、一条麻烦，最后明确给出你的选择及理由。不少于 100 词。',
+ fan:`Nowadays, more and more young people have to choose between living alone and living with roommates. Both ways have advantages and disadvantages.
+Living alone gives us freedom. We can arrange our time as we like, and nobody disturbs us. However, it may make us feel lonely, especially at weekends. Living with roommates is cheaper, because we share the rent. Moreover, when we are ill, they can help us. But sometimes small problems, such as cleaning, may cause quarrels.
+In my opinion, living with roommates is a better choice for young people who have just started working. It saves money and teaches us how to get along with others.`,
+ fanZh:['如今，越来越多的年轻人不得不在独居和合租之间做选择。','两种方式各有优缺点。','独居给我们自由。','我们可以随意安排时间，没人打扰我们。','然而，它可能让我们感到孤独，尤其周末。','合租更便宜，因为我们分摊房租。','而且，我们生病时他们能帮忙。','但有时像打扫这样的小问题也可能引起争吵。','在我看来，对刚参加工作的年轻人，合租是更好的选择。','它省钱，也教我们怎么和别人相处。'],
+ blocks:['Nowadays, more and more…','Both ways have advantages and disadvantages.','However, it may…','Moreover, when…','on the one hand / on the other hand','In my opinion, … is a better choice for…'],
+ skel:`第一段（摆出选择 + 双面）
+Nowadays, more and more young people have to choose between ______ and ______. Both ways have ______.
+
+第二段（两方各一好一坏）
+Living alone gives us ______. We can ______, and nobody ______. However, it may make us ______.
+Living with roommates is ______, because we ______. Moreover, when ______, they can ______. But sometimes ______ may cause ______.
+
+第三段（明确选择 + 理由）
+In my opinion, ______ is a better choice for ______. It ______ and teaches us ______.`},
+
+{n:3,type:'问题解决型',t:'How to Deal with Stress',zh:'如何应对压力',
+ need:'三个具体办法，用 First / Second / Finally 串起来，每条说清"做什么 + 有什么用"。不少于 100 词。',
+ fan:`Stress is common in modern society. Many students and workers feel worried because of exams, work and money. If we do nothing about it, stress will be harmful to our health. Here are three ways to deal with it.
+First, take exercise. Running or swimming for thirty minutes a day can make us relaxed. Second, talk with others. When we share our problems with friends, we will find that we are not alone. Finally, keep a regular life. Enough sleep and a healthy diet make us stronger.
+In short, stress cannot be avoided, but it can be controlled. Only in this way can we study and work better.`,
+ fanZh:['压力在现代社会很常见。','许多学生和上班族因为考试、工作和钱而焦虑。','如果我们对它置之不理，压力会损害健康。','这里有三个应对办法。','第一，运动。','每天跑步或游泳三十分钟能让我们放松。','第二，和别人聊聊。','当我们把问题和朋友分享，会发现并不孤单。','最后，保持规律的生活。','充足的睡眠和健康的饮食让我们更强壮。','总之，压力无法避免，但可以被控制。','只有这样，我们才能学得更好、工作得更好。'],
+ blocks:['… is common in modern society.','If we do nothing about it, …','Here are three ways to deal with it.','First / Second / Finally','make us relaxed','Only in this way can we…'],
+ skel:`第一段（问题 + 危害 + 引出办法）
+Stress is common in ______. Many students and workers feel ______ because of ______. If we do nothing about it, stress will be ______. Here are ______ ways to deal with it.
+
+第二段（三个办法：First / Second / Finally）
+First, ______. ______ for thirty minutes a day can make us relaxed.
+Second, ______. When we ______, we will find that ______.
+Finally, ______. Enough sleep and ______ make us stronger.
+
+第三段（收束 + 倒装）
+In short, stress cannot be ______, but it can be ______. Only in this way can we ______.`},
+
+{n:4,type:'现象解释型',t:'The Impact of Short Videos',zh:'短视频的影响',
+ need:'好处一条、问题一条，最后给出你的看法。不少于 100 词。',
+ fan:`Short videos have become part of our daily life. Almost everyone watches them on the phone when they are free. They bring us both benefits and problems.
+On the one hand, short videos are convenient and interesting. We can learn cooking, English and even news in a few minutes. On the other hand, they take up too much time. Many people stay up late watching them, and their eyes and study suffer.
+As far as I am concerned, short videos are a good tool, but we should use them wisely. It is important for us to set a time limit every day.`,
+ fanZh:['短视频已经成为我们日常生活的一部分。','几乎每个人都有空就在手机上看。','它们既带来好处，也带来问题。','一方面，短视频方便又有趣。','几分钟我们就能学做饭、学英语，甚至看新闻。','另一方面，它们占用太多时间。','很多人熬夜看，眼睛和学业都受影响。','在我看来，短视频是好工具，但我们要明智地使用它。','对我们来说，每天设定一个时间上限很重要。'],
+ blocks:['… have become part of our daily life.','They bring us both benefits and problems.','On the one hand, … On the other hand, …','take up too much time','stay up late doing…','As far as I am concerned, …','It is important for us to…'],
+ skel:`第一段（现象 + 双面）
+Short videos have become ______. Almost everyone ______ when they are free. They bring us both ______ and ______.
+
+第二段（好处一条 + 问题一条）
+On the one hand, short videos are ______. We can ______ in a few minutes.
+On the other hand, they ______. Many people ______, and their eyes and study ______.
+
+第三段（我的看法 + 建议）
+As far as I am concerned, ______, but we should ______. It is important for us to ______.`}
+];
+/* 通用自查清单：写完对着打勾，8 条全过再交 */
+const WCHK=[
+ '三段齐了：第一段点题、第二段两条理由、第三段收束',
+ '每段第一句是主题句，不看后文也知道这段讲什么',
+ '每句都有主语，没有中文式的无主句',
+ '主谓一致：he / she / it 后动词加 s，There be 就近',
+ '时态统一：讲道理用一般现在时，别混过去时',
+ '连接词没重复：First / Second / Finally，However / Moreover',
+ '拿不准的拼写换成会写的词，别硬拼',
+ '字数 ≥100，提纲里的每一问都回答了'
 ];
 
 /* =========================================================
@@ -5092,10 +5179,11 @@ function dayNum(){
 }
 function weekNum(){return Math.min(WK,Math.max(1,Math.ceil(dayNum()/7)));}
 function dayRec(d){d=d||todayISO(); if(!S.days[d]) S.days[d]={}; return S.days[d];}
+function weekOf(d){ return Math.min(WK,Math.max(1,Math.ceil((diffDays(S.start,d)+1)/7))); }
 function dayDone(d){
   d=d||todayISO();
   const r=S.days[d]; if(!r) return 0;
-  return TASKS.filter(t=>r[t.k]).length;
+  return tasksOf(weekOf(d)).filter(t=>r[t.k]).length;
 }
 /* 每日新词量不再是固定值：先看今天欠了多少复习。
    欠账越多，新词越少；连续 3 天还不清，当天只还账不背新词。 */
@@ -5400,6 +5488,7 @@ function render(){
   else if(view==='vocab') m.innerHTML=viewVocab();
   else if(view==='learn') m.innerHTML=viewLearn();
   else if(view==='book') m.innerHTML=viewBook();
+  else if(view==='write') m.innerHTML=viewWrite();
   else if(view==='prog') m.innerHTML=viewProg();
   else m.innerHTML=viewRef();
 }
@@ -5407,16 +5496,18 @@ function render(){
 /* ---- 今日 ---- */
 function viewToday(){
   const d=dayNum(), wk=weekNum(), W=WEEKS[wk-1], rec=dayRec();
-  const done=dayDone(), pct=Math.round(done/TASKS.length*100);
+  const TDL=tasksOf(wk);
+  const done=dayDone(), pct=Math.round(done/TDL.length*100);
   const tgt=targetNew();
 
   let tasks='';
   const dq=dueCount();
-  TASKS.forEach(t=>{
+  TDL.forEach(t=>{
     const on=!!rec[t.k];
     const label=t.k==='t2'?(tgt>0?('新词（今天目标 '+tgt+' 个 · '+(newMix(tgt).groups.length)+' 组）'):
       (freshLeft()?'回炉顽固词（今天先还账，不背新词）':'新词已学完 · 今天只回炉旧词')):
-      (t.k==='t1'?(dq?t.n+'（到期 '+dq+' 张）':'回炉到期词块（今天没有到期）'):t.n);
+      (t.k==='t1'?(dq?t.n+'（到期 '+dq+' 张）':'回炉到期词块（今天没有到期）'):
+      (t.k==='t6'?('写作：第 '+(curPaper()+1)+' 篇 · '+STEPNAME[writeStep()]):t.n));
     tasks+='<div class="task '+(on?'done':'')+'" onclick="toggleTask(\''+t.k+'\')">'+
       '<div class="box">'+(on?'✓':'')+'</div>'+
       '<div class="tx">'+esc(label)+'</div>'+
@@ -5447,12 +5538,13 @@ function viewToday(){
       '<b>本周验收：</b>'+esc(W.check)+'　<span class="pill '+(d>TOTAL?'ok':'')+'">第 '+wk+' 周 / '+WK+'</span>'+
       '<span class="checkgo" onclick="'+(wk>=7?'go(\'prog\')':'openLesson(\''+(WL[wk]||['L1'])[0]+'\')')+'">去验收</span></div>'+
 
-    '<div class="stat" style="margin-bottom:14px;"><div class="k">今日完成</div><div class="v">'+done+'<em>/ 5 项</em></div>'+
+    '<div class="stat" style="margin-bottom:14px;"><div class="k">今日完成</div><div class="v">'+done+'<em>/ '+TDL.length+' 项</em></div>'+
       '<div class="bar" style="margin-top:8px;"><i style="width:'+pct+'%"></i></div></div>'+
 
-    '<div class="card"><h3>今日五件事</h3>'+tasks+'</div>'+
+    '<div class="card"><h3>今日'+(TDL.length>5?'六':'五')+'件事</h3>'+tasks+
+      (wk>=7?'<div style="margin-top:12px;"><button class="btn pri" style="padding:8px 16px;" onclick="go(\'write\')">进入写作：第 '+(curPaper()+1)+' 篇 · '+esc(STEPNAME[writeStep()])+'</button></div>':'')+'</div>'+
     reviewCard()+
-    (wk>=9?'<div class="card" style="padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">'+
+    (wk>=8?'<div class="card" style="padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">'+
       '<b style="font-size:13.5px;">考前速查</b>'+
       '<button class="btn pri" style="padding:6px 14px;" onclick="go(\'ref\')">打开</button></div>':'')+
     '<div class="card"><h3>'+cardTitle+'</h3><ul class="tight">'+points+'</ul>'+
@@ -6010,14 +6102,92 @@ function todayOut(){
   items.push({tag:'仿写 · '+im.pat,zh:im.zh,en:im.ref,pt:''});
   return {items:items,im:im};
 }
-function saveWrite(v){
-  S.writes=S.writes||{};
-  S.writes[weekNum()]=v; save();
+/* 写作：第 43 天（第 7 周）开始，3 天写完一篇，13 天写完 4 篇 */
+const WSTART=43, WDAYS=3;
+function writeIdx(){                       /* -1 = 还没到写作期；否则 0..3 */
+  const d=dayNum();
+  if(d<WSTART) return -1;
+  return Math.min(WRITE.length-1, Math.floor((d-WSTART)/WDAYS));
 }
-function writeTopic(){
-  const wk=weekNum();
-  if(wk<5) return null;
-  return WRITE[Math.min(WRITE.length-1,wk-5)];
+function writeStep(){                      /* 0 读范文+填骨架 / 1 独立写 / 2 订正+自查 */
+  const d=dayNum();
+  if(d<WSTART) return 0;
+  if(d>=WSTART+WRITE.length*WDAYS) return 2;   /* 第 55 天：回到订正，不再开新循环 */
+  return Math.min(2,(d-WSTART)%WDAYS);
+}
+const STEPNAME=['① 读范文 + 填骨架','② 不看范文独立写（计时 20 分钟）','③ 对照范文订正 + 过自查清单'];
+function wrec(n){
+  S.writes=S.writes||{};
+  const k='w'+n;
+  let v=S.writes[k];
+  if(!v||typeof v!=='object'){ v=S.writes[k]={fill:'',draft:'',chk:{}}; }
+  v.chk=v.chk||{}; return v;
+}
+function curPaper(){ const i=writeIdx(); return i<0?0:i; }
+function saveWF(v){ wrec(curPaper()+1).fill=v; save(); }
+function saveWD(v){ wrec(curPaper()+1).draft=v; save(); }
+function toggleChk(i){ const r=wrec(curPaper()+1); r.chk[i]=r.chk[i]?0:1; save(); render(); }
+function writeTopic(){ const i=writeIdx(); return i<0?null:WRITE[i]; }
+/* ---- 写作模块 ---- */
+function viewWrite(){
+  const i=writeIdx(), st=writeStep();
+  const tabs=WRITE.map((x,k)=>'<span class="chip'+(k===i?' on':'')+'" style="cursor:default;">'+(k+1)+' · '+esc(x.type)+'</span>').join('');
+  const head='<div class="vhead"><h1>写作 <span class="sub">4 篇 · 第 43 天起，3 天一篇</span></h1></div>';
+
+  if(i<0){
+    const list=WRITE.map(x=>'<details style="margin-bottom:8px;">'+
+      '<summary style="cursor:pointer;font-size:13px;font-weight:700;padding:6px 0;">第 '+x.n+' 篇 · '+esc(x.t)+
+      '　<span style="font-weight:400;color:var(--ink-4);">'+esc(x.zh)+'</span></summary>'+
+      '<div style="margin-top:6px;font-size:13.2px;line-height:1.9;color:var(--ink-2);">'+
+      x.fan.split('\n').map(pp=>'<p style="margin:0 0 8px;">'+esc(pp)+'</p>').join('')+'</div></details>').join('');
+    return head+'<div class="note"><b>写作从第 43 天（第 7 周）开始。</b>'+
+      '三段式要用到前 6 周的句型和 1000 多个词的底子，现在就写只会写出一堆错句，改起来更费时间。'+
+      '现在只做一件事：<b>读范文，混个眼熟，别动手写。</b></div>'+
+      '<div class="card"><h3>这 4 篇会考什么 <span class="sub">点标题展开范文</span></h3>'+list+'</div>';
+  }
+
+  const W=WRITE[i], r=wrec(i+1);
+  const fanP=W.fan.split('\n').map(pp=>'<p style="margin:0 0 9px;">'+esc(pp)+'</p>').join('');
+  const zhRows=W.fanZh.map((z,k)=>'<div style="display:flex;gap:10px;font-size:12.6px;line-height:1.85;padding:5px 0;border-bottom:1px dashed var(--line);">'+
+    '<span style="flex:none;width:18px;color:var(--ink-4);">'+(k+1)+'</span><span>'+esc(z)+'</span></div>').join('');
+  const chips=W.blocks.map(b=>'<span class="chip" style="cursor:default;">'+esc(b)+'</span>').join('');
+  const chk=WCHK.map((c,k)=>{
+    const on=!!r.chk[k];
+    return '<div class="task '+(on?'done':'')+'" onclick="toggleChk('+k+')">'+
+      '<div class="box">'+(on?'✓':'')+'</div><div class="tx">'+esc(c)+'</div></div>';
+  }).join('');
+  const tag=n=>(st===n?'<span class="pill warn">今天这一步</span>':'');
+
+  return head+
+    '<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;">'+tabs+'</div>'+
+
+    '<div class="note" style="margin-top:0;"><b>第 '+(i+1)+' 篇 · '+esc(W.type)+'　'+esc(STEPNAME[st])+'</b><br>'+
+      '<span style="font-size:12.8px;">三天一个循环：先用骨架填一遍 → 再不看范文独立写 → 最后对照范文订正。'+
+      '考试不给骨架，所以第 3、4 篇要把骨架合上。</span></div>'+
+
+    '<div class="card"><h3>题目 <span class="sub">≥100 词 · 15 分</span></h3>'+
+      '<div style="font-size:15px;font-weight:700;color:var(--ink);">'+esc(W.t)+'</div>'+
+      '<div style="font-size:12.4px;color:var(--ink-4);margin-top:3px;">'+esc(W.zh)+'</div>'+
+      '<div style="font-size:12.8px;line-height:1.8;margin-top:9px;color:var(--ink-2);">'+esc(W.need)+'</div>'+
+      '<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;">'+chips+'</div></div>'+
+
+    '<div class="card"><h3>① 范文 '+tag(0)+'</h3>'+
+      '<div style="font-size:13.4px;line-height:2;color:var(--ink-2);font-family:Georgia,serif;">'+fanP+'</div>'+
+      '<details style="margin-top:10px;"><summary style="cursor:pointer;font-size:12.4px;color:var(--blue);font-weight:700;">逐句中文对照（'+W.fanZh.length+' 句）</summary>'+
+      '<div style="margin-top:8px;">'+zhRows+'</div></details></div>'+
+
+    '<div class="card"><h3>② 填空骨架 '+tag(1)+'</h3>'+
+      '<div style="font-size:12.2px;color:var(--ink-4);margin-bottom:8px;">把横线换成你自己的内容，填完就是一篇合格作文。填完先别交，下面还有独立写。</div>'+
+      '<pre style="white-space:pre-wrap;font-family:inherit;font-size:12.6px;line-height:1.95;background:#f7f9fc;border:1px solid var(--line-2);border-radius:10px;padding:12px 14px;color:var(--ink-2);margin:0;">'+esc(W.skel)+'</pre>'+
+      '<div style="margin-top:10px;"><textarea rows="8" onblur="saveWF(this.value)" placeholder="在这里按骨架写成完整的三段（保留范文的句型，只换内容）">'+esc(r.fill||'')+'</textarea></div></div>'+
+
+    '<div class="card"><h3>③ 独立写 '+tag(2)+'</h3>'+
+      '<div style="font-size:12.2px;color:var(--ink-4);margin-bottom:8px;">不看范文、不看骨架，20 分钟内写完。想不起的词先用 □ 占位，写完再补。</div>'+
+      '<textarea rows="9" id="wdraft" oninput="document.getElementById(\'wnum\').textContent=wcOf(this.value)" onblur="saveWD(this.value)">'+esc(r.draft||'')+'</textarea>'+
+      '<div style="margin-top:7px;font-size:12px;color:var(--ink-4);">当前 <b id="wnum">'+wcOf(r.draft||'')+'</b> 词 / 需 100 词以上</div></div>'+
+
+    '<div class="card"><h3>④ 写完过一遍：8 条自查</h3>'+chk+
+      '<div style="margin-top:12px;font-size:12px;color:var(--ink-4);">全勾上了才算写完。想让 AI 逐句改、按 15 分制打分，把作文贴到对话里。</div></div>';
 }
 function outCard(){
   const o=todayOut(), r=outRec(), wt=writeTopic();
@@ -6036,14 +6206,10 @@ function outCard(){
   }).join('');
   let w='';
   if(wt){
-    const txt=((S.writes||{})[weekNum()])||'';
-    w='<div class="orow">'+
-      '<span class="opat">作文 · '+esc(wt.type)+'</span>'+
-      '<div class="ozh" style="margin-top:7px;"><b>'+esc(wt.t)+'</b>　'+esc(wt.zh)+'</div>'+
-      '<div style="font-size:12.2px;color:var(--ink-4);line-height:1.7;margin-bottom:7px;">'+esc(wt.need)+'</div>'+
-      '<textarea rows="7" oninput="document.getElementById(\'wc\').textContent=wcOf(this.value)" onblur="saveWrite(this.value)" placeholder="先用中文列三段的骨架，再逐句译成英文">'+esc(txt)+'</textarea>'+
-      '<div style="margin-top:7px;font-size:12px;color:var(--ink-4);">当前 <b id="wc">'+wcOf(txt)+'</b> 词 / 需 100 词以上</div>'+
-    '</div>';
+    w='<div class="orow" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">'+
+      '<div><span class="opat">作文 · 第 '+wt.n+' 篇 · '+esc(wt.type)+'</span>'+
+      '<div class="ozh" style="margin-top:6px;"><b>'+esc(wt.t)+'</b>　'+esc(wt.zh)+'</div></div>'+
+      '<button class="btn pri" onclick="go(\'write\')">去写作页写</button></div>';
   }
   const cnt={}; o.items.forEach(x=>{ const k=x.tag.split(' · ')[0]; cnt[k]=(cnt[k]||0)+1; });
   const sub=o.items.length+' 句 · '+Object.keys(cnt).map(k=>k+' '+cnt[k]).join(' · ');
@@ -6141,7 +6307,7 @@ function viewProg(){
     let cls='';
     if(n>=5) cls='d4'; else if(n>=3) cls='d3'; else if(n>=1) cls='d2';
     if(n===0&&S.days[dt]&&S.days[dt].sent) cls='d1';
-    cells+='<div class="'+cls+(i===Math.min(d,TOTAL)?' now':'')+'" title="'+dt+' · 完成 '+n+'/5">'+i+'</div>';
+    cells+='<div class="'+cls+(i===Math.min(d,TOTAL)?' now':'')+'" title="'+dt+' · 完成 '+n+'/'+tasksOf(weekOf(dt)).length+'">'+i+'</div>';
   }
   const ws=wordStats();
   let streak=0;
@@ -6229,7 +6395,8 @@ function planMap(){
   });
   return '<div class="card"><h3>'+WK+' 周地图 <span class="sub">第 '+weekNum()+' 周（共 '+TOTAL+' 天）</span></h3>'+
     '<table><thead><tr><th class="c">周</th><th>这一周只攻一个主题</th><th class="c">累计词量</th><th>周末验收</th></tr></thead><tbody>'+rows+'</tbody></table>'+
-    '<div style="margin-top:12px;font-size:12px;color:var(--ink-4);">每天 '+TASKS.reduce((a,t)=>a+t.m,0)+' 分钟：'+TASKS.map(t=>t.m+'′ '+t.n.replace(/（.*?）/g,'')).join('　')+'</div></div>';
+    '<div style="margin-top:12px;font-size:12px;color:var(--ink-4);">第 1–6 周每天 '+TASKS.reduce((a,t)=>a+t.m,0)+' 分钟：'+TASKS.map(t=>t.m+'′ '+t.n.replace(/（.*?）/g,'')).join('　')+'</div>'+
+    '<div style="margin-top:6px;font-size:12px;color:var(--ink-4);">第 7–8 周每天 '+TASKS_END.reduce((a,t)=>a+t.m,0)+' 分钟：'+TASKS_END.map(t=>t.m+'′ '+t.n.replace(/（.*?）/g,'')).join('　')+'</div></div>';
 }
 
 /* ---- 速查 ---- */
@@ -6299,6 +6466,7 @@ window.toggleTask=toggleTask; window.toggleErr=toggleErr;
 window.beginOwn=beginOwn; window.submitOwn=submitOwn; window.saveOwn=saveOwn; window.cancelOwn=cancelOwn;
 window.setFilter=setFilter; window.toggleMile=toggleMile; window.addExam=addExam; window.delExam=delExam;
 window.setStart=setStart; window.doImport=doImport; window.clearAll=clearAll;
+window.saveWF=saveWF; window.saveWD=saveWD; window.toggleChk=toggleChk;
 
 document.getElementById('nav').addEventListener('click',function(e){
   const b=e.target.closest('button');
