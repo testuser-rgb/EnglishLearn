@@ -2833,8 +2833,7 @@ function viewToday(){
   }
   const cardTitle=wk<=7?'本周只攻这一个语法点':'本周主线：题型训练 + 整卷（语法缺口用「高频补充」补齐）';
 
-  return '<div class="vhead"><h1>第 '+Math.min(d,70)+' 天 · '+esc(W.theme)+'</h1>'+
-    '<p>'+(d>70?'70 天计划已完成，进入真题二轮复习':'今天总共 100 分钟，顺序不要换：先复习，再学新，最后精读')+'</p></div>'+
+  return '<div class="vhead"><h1>第 '+Math.min(d,70)+' 天 · '+esc(W.theme)+'</h1></div>'+
 
     '<div class="note '+(d>70?'good':'')+'" style="margin-top:0;margin-bottom:14px;">'+
       '<b>本周验收：</b>'+esc(W.check)+'　<span class="pill '+(d>70?'ok':'')+'">第 '+wk+' 周 / 10</span></div>'+
@@ -2842,7 +2841,7 @@ function viewToday(){
     '<div class="stat" style="margin-bottom:14px;"><div class="k">今日完成</div><div class="v">'+done+'<em>/ 5 项</em></div>'+
       '<div class="bar" style="margin-top:8px;"><i style="width:'+pct+'%"></i></div></div>'+
 
-    '<div class="card"><h3>今日五件事 <span class="sub">按顺序做，做完打勾</span></h3>'+tasks+'</div>'+
+    '<div class="card"><h3>今日五件事</h3>'+tasks+'</div>'+
     reviewCard()+
     '<div class="card"><h3>'+cardTitle+'</h3><ul class="tight">'+points+'</ul>'+
       '<div style="margin-top:12px;display:flex;gap:9px;flex-wrap:wrap;">'+lessonBtns+'</div></div>'+
@@ -2852,8 +2851,7 @@ function reviewCard(){
   const due=dueLessons();
   if(!due.length) return '';
   const names=due.map(id=>LESSONS.find(L=>L.id===id).t).join('、');
-  return '<div class="note good" style="margin-bottom:14px;"><b>复习到期：</b>'+esc(names)+
-    ' 学过不等于记住，到期就混排重考一遍（约 6 分钟）。'+
+  return '<div class="note good" style="margin-bottom:14px;"><b>复习到期：</b>'+esc(names)+'　'+
     '<button class="btn pri" style="margin-left:10px;padding:6px 14px;" onclick="startReview()">开始混排复习</button></div>';
 }
 function toggleTask(k){
@@ -2990,9 +2988,9 @@ function learnList(){
   }).join('');
   const rev=due.length?
     '<div class="note good" style="margin-top:0;margin-bottom:14px;"><b>复习到期：</b>'+due.map(id=>esc(LESSONS.find(L=>L.id===id).t)).join('、')+
-    ' —— 记忆靠重复，现在混排 8 题（约 6 分钟）。<button class="btn pri" style="margin-left:10px;padding:6px 14px;" onclick="startReview()">开始混排复习</button></div>':
-    '<div class="note" style="margin-top:0;margin-bottom:14px;">学完的知识点会在第 1、3、7、14 天自动到期，到期会出现在这里。今天暂无到期复习。</div>';
-  return '<div class="vhead"><h1>课堂</h1><p>先学知识点，再做题（答完立刻看讲解），练完换新一批。题目分三级：<b>基础 → 进阶 → 冲刺</b>，练满 2 批且正确率 50% 解锁进阶，练满 4 批且正确率 60% 解锁冲刺——难度跟着你的水平走。</p></div>'+
+    '<button class="btn pri" style="margin-left:10px;padding:6px 14px;" onclick="startReview()">开始混排复习</button></div>':
+    '';
+  return '<div class="vhead"><h1>课堂</h1></div>'+
     rev+rows;
 }
 function learnTeach(L){
@@ -3023,7 +3021,7 @@ function learnQuiz(){
     return '<div class="vhead"><h1>'+(drill?'混排复习完成':'本批练习完成')+'</h1></div>'+
       '<div class="card"><div class="empty" style="padding:30px 16px;">'+
       '<div style="font-size:34px;font-weight:700;color:'+(pct>=70?'var(--green,#2e7d43)':'var(--amber)')+';">'+r+' / '+total+'</div>'+
-      '<div style="margin-top:6px;color:var(--ink-3);">'+(pct>=70?'过关。正确率 70% 以上，这个知识点进入复习循环。':'还没过关。下面的错题看一遍讲解，再练一批——错题才是你的提分点。')+'</div>'+
+      '<div style="margin-top:6px;color:var(--ink-3);">'+(pct>=70?'过关':'还没过关，看错题讲解，再练一批')+'</div>'+
       '<div style="margin-top:10px;font-size:12px;color:var(--ink-3);">分层成绩：'+tierLine+'</div></div>'+
       (LV.wrongs.length?'<h3 style="margin:16px 0 6px;">错题讲解</h3>'+wrongRows:'')+
       '<div style="margin-top:16px;display:flex;gap:9px;flex-wrap:wrap;">'+
@@ -3047,8 +3045,7 @@ function learnQuiz(){
     feedback='<div class="exp '+(ok?'eok':'ebad')+'"><b>'+(ok?'✓ 答对了':'✗ 答错了，正确答案是 '+q.opts[q.a2])+'</b><br>'+esc(q.e)+'</div>'+
       '<button class="btn pri" style="width:100%;margin-top:10px;" onclick="quizNext()">'+(LV.qi+1>=LV.items.length?'看结果':'下一题')+'</button>';
   }
-  return '<div class="vhead"><h1>'+(drill?'混排复习':'练习：'+esc(LESSONS.find(x=>x.id===LV.lid).t))+'</h1>'+
-    '<p>'+(drill?'旧知识点混在一起考——对抗遗忘最有效的方式':(LV.items.some(q=>q.reuse)?'这批包含重排的旧题（选项顺序已打乱）':'先别猜，想一下考点再选'))+'</p></div>'+
+  return '<div class="vhead"><h1>'+(drill?'混排复习':'练习：'+esc(LESSONS.find(x=>x.id===LV.lid).t))+'</h1></div>'+
     '<div class="card"><div style="display:flex;justify-content:space-between;font-size:11.8px;color:var(--ink-4);margin-bottom:8px;">'+
     '<span>第 '+(LV.qi+1)+' / '+LV.items.length+' 题'+(drill&&q.src?'　来自 '+esc(q.src):'')+'　<b>［'+tierName(q.d)+'题］</b></span>'+
     '<span>本批对 '+LV.right+' 错 '+LV.wrongs.length+'</span></div>'+
@@ -3060,9 +3057,7 @@ function learnQuiz(){
 /* ---- 背词 ---- */
 function viewVocab(){
   const ws=wordStats();
-  let head='<div class="vhead"><h1>背词</h1><p>按「读懂一篇阅读需要什么词」来背：<b>R 阅读核心</b>词优先（题干词、抽象名词、评价形容词、高频动词）→ C 复用词（会拼会搭换词汇题分）→ B 主题词 → A 连接词。</p></div>'+
-    '<div class="mnote"><b>为什么这些词能直接提阅读分：</b>江苏卷阅读 2 篇 8 题 20 分，卡住你的从来不是生僻词，而是 <b>infer / imply / factor / decline / severe</b> 这类高频实词，以及 <b>however / therefore</b> 这类逻辑词。'+
-    '每张卡片都是一次摊开的：<b>单词 → 释义 → 一句话故事 → 词根技巧 → 搭配 → 阅读例句</b>，不用点、不用翻。你背词的同时就在读句子，这比背单词表更接近考试真正要你做的事。</div>';
+  let head='<div class="vhead"><h1>背词</h1></div>';
 
   const rd=readingStats();
   const bar='<div class="row3" style="margin-bottom:14px;">'+
@@ -3075,7 +3070,6 @@ function viewVocab(){
       '<b style="color:var(--ink-1);">阅读解锁</b>'+
       '<span>已掌握 <b style="color:#2f7d4f;">'+rd.done+'</b> / '+rd.total+' 个阅读核心词'+(rd.seen?'　学过 '+rd.seen+' 个':'')+'</span></div>'+
     '<div class="bar"><i style="width:'+Math.round(rd.done/Math.max(1,rd.total)*100)+'%;background:#4f9d6b;"></i></div>'+
-    '<div style="font-size:11.5px;color:var(--ink-4);margin-top:8px;line-height:1.7;"> 「已掌握」指隔了 7 天还能认出的词，不是刚背完就算。这一层学完，阅读里的题干词、抽象名词、评价形容词、高频动词基本就认全了，剩下的生词靠上下文猜。</div>'+
   '</div>';
 
   if(!ses.active || !ses.queue.length){
@@ -3102,16 +3096,7 @@ function viewVocab(){
   const word=w[0];
   const mp=MORPH[word];
   const rows=[];
-  let tip;
-  if(mp){ tip=esc(mp.p); }
-  else{
-    const fb=layer==='R'?'阅读核心词：别背中文标签，读下面那句【阅读】例句，把它记在句子里'
-      :(layer==='A'?'连接词不拆：只记它的逻辑方向（转折 / 因果 / 递进 / 让步）'
-      :(layer==='B'?'主题词不硬拆：归到话题里记，同类词一起记'
-        :'复用词记搭配，不记孤词——把整个搭配当一个单位记'));
-    tip='<em class="tipnone">'+esc(fb)+'</em>';
-  }
-  rows.push('<div class="bkrow"><span class="btag t-tip">技巧</span><span class="bval">'+tip+'</span></div>');
+  if(mp&&mp.p) rows.push('<div class="bkrow"><span class="btag t-tip">技巧</span><span class="bval">'+esc(mp.p)+'</span></div>');
   if(w[2]) rows.push('<div class="bkrow"><span class="btag t-use">搭配</span><span class="bval">'+esc(w[2])+'</span></div>');
   if(RSENT[word]) rows.push('<div class="bkrow"><span class="btag t-read">阅读</span><span class="bval readsen"><i>'+esc(RSENT[word][0])+'</i><b>'+esc(RSENT[word][1])+'</b></span></div>');
   if(CONF[word]) rows.push('<div class="bkrow"><span class="btag t-cmp">辨析</span><span class="bval">'+esc(CONF[word])+'</span></div>');
@@ -3129,7 +3114,7 @@ function viewVocab(){
   const st=STORY[word];
   const story=st
     ? '<div class="story"><span class="stag">这样记</span><span class="q">”</span><p>'+hlStory(st,word)+'</p></div>'
-    : '<div class="story none"><span class="stag">这样记</span><p>这个词暂时没有故事钩子——把它下面的【搭配】和【阅读】例句整句读两遍，句子就是它的故事。</p></div>';
+    : '<div class="story none"><span class="stag">这样记</span><p>（暂无故事，看搭配和例句记）</p></div>';
 
   const card='<div class="flash wcard">'+
       '<div class="wtop">'+lb+'<span class="widx">第 '+(ses.idx+1)+' / '+ses.queue.length+' 张</span></div>'+
@@ -3137,8 +3122,8 @@ function viewVocab(){
         '<button class="saybtn" onclick="say(curWord())">🔊 听读音</button></div>'+
       '<div class="zh">'+esc(w[1])+'</div>'+
       story+rows.join('')+
-      '<div class="bkadd" onclick="addMemo()">'+(mine?'✎ 改我的记忆':'＋ 记我的')+'<span class="bkadd-s">谐音 / 联想 / 笑话都行，自己编的最记得住</span></div>'+
-      '<div class="poslegend">词性：n.=名词　v.=动词　adj.=形容词　adv.=副词　prep.=介词　conj.=连词　pron.=代词　art.=冠词　·　故事只做记忆钩子，词义以释义为准</div>'+
+      '<div class="bkadd" onclick="addMemo()">'+(mine?'✎ 改我的记忆':'＋ 记我的')+'</div>'+
+      '<div class="poslegend">词性：n.=名词　v.=动词　adj.=形容词　adv.=副词　prep.=介词　conj.=连词　pron.=代词　art.=冠词</div>'+
     '</div>';
 
   const gb='<div class="gradebar">'+
@@ -3152,7 +3137,7 @@ function viewVocab(){
   return head+bar+
     '<div class="card" style="padding:14px 16px 18px;">'+
       '<div style="display:flex;justify-content:space-between;font-size:11.8px;color:var(--ink-4);margin-bottom:9px;">'+
-        '<span>自评一下：<b style="color:var(--ink-3);">读完释义和故事，你是哪种感觉</b>'+(ses.plan?'　本批：阅读'+(ses.plan.R||0)+'·复用'+(ses.plan.C||0)+'·主题'+(ses.plan.B||0)+'·连接'+(ses.plan.A||0):'')+'</span>'+
+        '<span>'+(ses.plan?'本批：阅读'+(ses.plan.R||0)+'·复用'+(ses.plan.C||0)+'·主题'+(ses.plan.B||0)+'·连接'+(ses.plan.A||0):'')+'</span>'+
         '<span>一眼就懂 '+ses.stat.know+' · 模糊 '+ses.stat.fuzzy+' · 不熟 '+ses.stat.no+'</span></div>'+
       '<div class="bar" style="margin-bottom:14px;"><i style="width:'+prog+'%"></i></div>'+
       card+gb+
@@ -3243,7 +3228,7 @@ function clearAll(){
 /* ---- 拆句 ---- */
 function viewTrain(){
   if(!tr.en) newSentence();
-  const head='<div class="vhead"><h1>拆句训练</h1><p>切 → 抓 → 挂。三步走完才算一句，别跳步。</p></div>';
+  const head='<div class="vhead"><h1>拆句训练</h1></div>';
 
   if(tr.step==='input'){
     return head+
@@ -3252,13 +3237,13 @@ function viewTrain(){
           (tr.mode==='bank'?'来自内置句库':'你自己粘贴的句子')+'</div>'+
         '<div class="sent">'+esc(tr.en)+'</div>'+
 
-        '<div class="lab"><b>① 切意群</b><span class="tip">用 / 把句子切成 3–6 词的小块，切在介词、连词、从句引导词前面</span></div>'+
+        '<div class="lab"><b>① 切意群</b></div>'+
         '<textarea id="in-cut" rows="2" placeholder="The number of students / who study abroad / has increased rapidly / in recent years.">'+esc(tr.cut)+'</textarea>'+
 
-        '<div class="lab"><b>② 抓主干</b><span class="tip">只写三样：谁 + 做什么 + 什么。不要抄整句</span></div>'+
+        '<div class="lab"><b>② 抓主干</b></div>'+
         '<textarea id="in-trunk" rows="2" placeholder="The number … has increased. （主语是 number，不是 students）">'+esc(tr.trunk)+'</textarea>'+
 
-        '<div class="lab"><b>③ 写译文</b><span class="tip">生词用 □ 占位，允许译得难看，但不许留空</span></div>'+
+        '<div class="lab"><b>③ 写译文</b></div>'+
         '<textarea id="in-zh" rows="3" placeholder="近年来，出国留学的学生人数迅速增加。">'+esc(tr.zh)+'</textarea>'+
 
         '<div style="margin-top:16px;display:flex;gap:9px;flex-wrap:wrap;">'+
@@ -3266,8 +3251,7 @@ function viewTrain(){
           '<button class="btn" onclick="newSentence()">换一句</button>'+
           '<button class="btn ghost" onclick="ownSentence()">粘贴一句自己的</button>'+
         '</div>'+
-      '</div>'+
-      '<div class="note">这一步的价值全在「先写完再看答案」。跳过手写，等于没练。</div>';
+      '</div>';
   }
 
   const ref=tr.ref;
@@ -3287,7 +3271,7 @@ function viewTrain(){
       '</div>'+
       '<div class="note good"><b>这句的考点：</b>'+esc(ref.pt)+'</div>';
   }else{
-    cmp='<div class="note"><b>自建句：</b>你没有参考答案，请对照真题的配套译文自己核对。你的译文已记录在句子本里。</div>'+
+    cmp='<div class="note"><b>自建句：</b>没有参考答案，请对照真题译文自己核对。</div>'+
       '<div class="cmp"><div class="b mine"><div class="t">你的译文</div>'+esc(tr.zh)+'</div>'+
       '<div class="b ref"><div class="t">你的切分 / 主干</div>'+esc(tr.cut||'—')+'<br>'+esc(tr.trunk||'—')+'</div></div>';
   }
@@ -3297,7 +3281,7 @@ function viewTrain(){
   return head+
     '<div class="card">'+
       '<div class="sent">'+esc(tr.en)+'</div>'+cmp+
-      '<div class="lab"><b>给这一句的错误归类</b><span class="tip">只归三类，第 10 周回看时会发现你的错永远集中在同一种</span></div>'+
+      '<div class="lab"><b>给这一句的错误归类</b></div>'+
       '<div class="chips">'+chips+'</div>'+
       '<div style="margin-top:18px;display:flex;gap:9px;flex-wrap:wrap;">'+
         '<button class="btn pri" onclick="saveSentence()">存进句子本，下一句</button>'+
@@ -3309,7 +3293,7 @@ function viewTrain(){
 /* ---- 句子本 ---- */
 let bookFilter='all';
 function viewBook(){
-  const head='<div class="vhead"><h1>句子本</h1><p>这里是你 70 天里真正练过的句子。考前回看这一页，比看任何资料都值。</p></div>';
+  const head='<div class="vhead"><h1>句子本</h1></div>';
   const list=S.sentences.slice().reverse();
   const cnt={'词不认识':0,'结构看错':0,'中文不顺':0};
   S.sentences.forEach(s=>(s.errs||[]).forEach(e=>{if(cnt[e]!=null) cnt[e]++;}));
@@ -3385,7 +3369,7 @@ function viewProg(){
       '<div class="tx">第 '+w.w+' 周末：'+esc(w.check)+'</div></div>';
   });
 
-  return '<div class="vhead"><h1>进度</h1><p>只统计你真实做过的，不打折扣。</p></div>'+
+  return '<div class="vhead"><h1>进度</h1></div>'+
     '<div class="row3" style="margin-bottom:14px;">'+
       '<div class="stat"><div class="k">连续打卡</div><div class="v">'+streak+'<em>天</em></div></div>'+
       '<div class="stat"><div class="k">累计学习</div><div class="v">'+totalDone+'<em>天</em></div></div>'+
@@ -3399,16 +3383,16 @@ function viewProg(){
       '<div class="stat" style="border:0;padding:0;"><div class="k">已掌握</div><div class="v" style="font-size:17px;">'+ws.mastered+'</div></div>'+
       '</div>'+
       '<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);">'+
-      '<div style="font-size:12px;color:var(--ink-3);margin-bottom:8px;"><b>词库维护</b>　想加教材词表就在下面粘贴；清空会抹掉全部学习记录，想清楚再点。</div>'+
+      '<div style="font-size:12px;color:var(--ink-3);margin-bottom:8px;"><b>词库维护</b></div>'+
       importBox()+'</div></div>'+
-    '<div class="card"><h3>里程碑自检 <span class="sub">做不到就别往下走，把那一周重做一遍</span></h3>'+miles+'</div>'+
+    '<div class="card"><h3>里程碑自检</h3>'+miles+'</div>'+
     '<div class="card"><h3>模考记录</h3>'+
       '<div style="display:flex;gap:9px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">'+
         '<input type="text" id="exdate" placeholder="日期，如 2027-03-01" style="width:170px;">'+
         '<input type="text" id="exscore" placeholder="分数" style="width:90px;">'+
         '<button class="btn sm pri" onclick="addExam()">记一笔</button></div>'+
       (S.exams.length?'<table><thead><tr><th>日期</th><th class="c">分数</th><th class="c">结果</th><th class="c"></th></tr></thead><tbody>'+exams+'</tbody></table>'
-        :'<div style="font-size:12.8px;color:var(--ink-4);">还没有模考记录。第 8 周起每周整卷计时一次。</div>')+
+        :'<div style="font-size:12.8px;color:var(--ink-4);">还没有模考记录</div>')+
     '</div>'+
     '<div class="card"><h3>计划起始日</h3>'+
       '<div style="display:flex;gap:9px;align-items:center;">'+
@@ -3443,28 +3427,18 @@ function viewPlan(){
   });
   const flow=TASKS.map(t=>'<tr><td class="nw">'+t.m+' 分钟</td><td>'+(t.k==='t2'?'新词 '+targetNew()+' 个（按词块记）':esc(t.n))+'</td></tr>').join('');
 
-  return '<div class="vhead"><h1>计划</h1><p>70 天，每天 100 分钟。每周只攻一个点，验收不过就重来一周。</p></div>'+
+  return '<div class="vhead"><h1>计划</h1></div>'+
     '<div class="card"><h3>10 周作战地图</h3>'+
       '<table><thead><tr><th class="c">周次</th><th>这一周只攻一个主题</th><th class="c">累计目标</th><th>周末验收</th></tr></thead><tbody>'+rows+'</tbody></table>'+
     '</div>'+
     '<div class="card"><h3>每天的 100 分钟</h3>'+
       '<table><thead><tr><th class="nw">时间块</th><th>做什么</th></tr></thead><tbody>'+flow+'</tbody></table>'+
-      '<div class="note">顺序不要换。复习永远在最前面，因为遗忘发生在你学完的当下，不是明天。<br>'+
-      '<b>词量说明：</b>每天 25 个（阅读核心 11 · 复用词 8 · 主题词 4 · 连接词 2）× 每周 6 天 ≈ 150 词/周，9 周约 1350 词；表里的「累计目标」到 1500。'+
-      '阅读核心词是优先级最高的那一层——它决定你能不能把文章读懂，而不只是认识几个单词。</div>'+
-      '差额不靠背 more 单词补，靠「搭配 + 辨析」补——江苏卷的词汇题考的是固定搭配和近义词辨析，不是单词量的堆叠。</div>'+
-    '</div>'+
-    '<div class="card"><h3>三条铁律</h3><ul class="tight">'+
-      '<li><b>先手写，再对照。</b>看译文觉得"懂了"，懂的是中文，不是英文结构。</li>'+
-      '<li><b>只做真题。</b>模拟题出题思路偏，会把你带偏。</li>'+
-      '<li><b>精读 1 段 &gt; 泛读 5 篇。</b>基础弱时泛读等于看热闹。</li>'+
-    '</ul></div>'+
-    '<div class="note good"><b>分数账：</b>阅读 12–14 + 语法 9–11 + 完形 11–12 + 写作 9–10 + 翻译 7–8 + 词汇 6–7 = 54–62 分。你不需要变强，只需要每块拿到及格的那一份。</div>';
+    '</div>';
 }
 
 /* ---- 速查 ---- */
 function viewRef(){
-  return '<div class="vhead"><h1>速查</h1><p>考场上真正用得上的东西，考前一周每天扫一遍。</p></div>'+
+  return '<div class="vhead"><h1>速查</h1></div>'+
 
   '<div class="card"><h3>阅读四题型：动作与限时</h3>'+
     '<table><thead><tr><th>题型</th><th class="c">占比</th><th>动作</th><th class="c">限时</th></tr></thead><tbody>'+
