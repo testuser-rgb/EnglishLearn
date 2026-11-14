@@ -167,6 +167,15 @@
   /* 直读词卡：一次摊开，不再翻面 */
   .flash.wcard{cursor:default; min-height:0; padding:18px 22px 20px; align-items:stretch; justify-content:flex-start; text-align:left;}
   .flash.wcard:hover{border-color:var(--line);}
+  .gband{display:inline-block; font-size:11.4px; font-weight:700; color:#2b5c8a; background:#eaf1fa; border-radius:99px; padding:2px 10px; margin-bottom:9px;}
+  .gcard h3{font-size:15.5px; margin:0 0 6px;}
+  .gnote{font-size:12.6px; color:var(--ink-3); line-height:1.75; margin:0 0 12px;}
+  .glist{display:grid; grid-template-columns:1fr 1fr; gap:0 16px;}
+  .grow{display:flex; gap:8px; align-items:baseline; padding:6px 0; border-bottom:1px solid var(--line-2); font-size:12.6px; min-width:0;}
+  .grow b{font-family:Georgia,"Times New Roman",serif; font-size:14.4px; font-weight:600; flex:0 0 auto;}
+  .grow span{color:var(--ink-3); font-size:12px; overflow:hidden; text-overflow:ellipsis;}
+  .gbar{margin-top:14px; text-align:right;}
+  .gend{margin-top:14px; font-size:12.2px; color:var(--ink-3); line-height:1.8;}
   .wcard .wtop{display:flex; align-items:center; gap:8px; margin-bottom:10px;}
   .wcard .layerbadge{position:static;}
   .wcard .widx{font-size:11.4px; color:var(--ink-4); margin-left:auto;}
@@ -3315,6 +3324,267 @@ const STORY={
   "nature":"nat（生，同 native）+ ure——天生那样",
   "essence":"ess（是，同 is）+ ence——真正是的那部分"
 };
+/* =========================================================
+   记忆技巧簇：同一组词用同一种记法，整组一起学
+   辨＝长得像，必须对比着记；块＝同一个动词带出来的短语；
+   根＝共用一个词根/词缀；域＝同一个场景/话题
+   结构：[类型, 组名, 一句记法, [成员词]]
+   ========================================================= */
+const CLU=[["辨","affect / effect","affect 只能当动词「影响」：Smoking affects health. ",["affect","effect"]],
+["辨","adapt / adopt","adapt = 适应、改编（adapt to 适应）",["adapt","adopt"]],
+["辨","considerate / considerable","considerate = 体贴的（替别人着想）",["considerate","considerable"]],
+["辨","economical / economic","economical = 节约的、省钱的（an economical car）",["economical","economic"]],
+["辨","sensible / sensitive","sensible = 明智的、有道理的 ",["sensible","sensitive"]],
+["辨","principal / principle","principal = 主要的 / 校长 ",["principal","principle"]],
+["辨","raise / rise","raise 及物，后面必须跟宾语：raise prices 提价 ",["raise","rise"]],
+["辨","lay / lie","lay 及物＝放置，过去式 laid ",["lay","lie"]],
+["辨","acquire / require","acquire = 靠努力获得（acquire knowledge / skills）",["acquire","require"]],
+["辨","devote / contribute","devote = 把时间精力奉献给（devote oneself to）",["devote","contribute"]],
+["辨","preserve / reserve","preserve = 保存、保护（维持原状：preserve tradition）",["preserve","reserve"]],
+["辨","assume / consume","assume = 假定；承担（assume responsibility）",["assume","consume"]],
+["辨","expand / extend","expand = 扩张（体积、规模变大）",["expand","extend"]],
+["辨","historic / historical","historic = 有历史意义的（a historic moment）",["historic","historical"]],
+["辨","intensive / extensive","intensive = 密集的、强化的（intensive training）",["intensive","extensive"]],
+["辨","continual / continuous","continual = 反复不断的（中间有间隔：continual interruptions）",["continual","continuous"]],
+["辨","confident / confidential","confident = 自信的（be confident of）",["confident","confidential"]],
+["辨","beside / besides","beside = 在……旁边（sit beside me）",["beside","besides"]],
+["块","take 家族（1/2）","take 是「拿」：拿措施=take measures，拿一份=take part，拿住优势=take advantage，拿进考虑=take into account",["take measures to","take part in","take advantage of","take into account","take effect","take place","take up","take over"]],
+["块","take 家族（2/2）","take 是「拿」：拿措施=take measures，拿一份=take part，拿住优势=take advantage，拿进考虑=take into account",["take off","take for granted"]],
+["块","make 家族","make 是「做出来」：做出道理=make sense，做出差别=make a difference，补做回来=make up for",["make a difference","make sense","make up for","make full use of","make sense of"]],
+["块","put 家族","put 是「放」：放后面=put off 推迟，放上去忍着=put up with，放前面=put forward 提出",["put off","put up with","put forward","put out","put emphasis on"]],
+["块","come 家族","come 是「来」：想到=come up with，遇到=come across，实现=come true",["come up with","come across","come down to","come true"]],
+["块","look 家族","look 是「看」：往前看=look forward to，往里看=look into，往上看=look up to",["look forward to","look into","look up to","look after","look for"]],
+["块","turn 家族","turn 是「转」：转出来=turn out 结果是，转下去=turn down 拒绝，转成=turn into",["turn out","turn down","turn to","turn into"]],
+["块","give 家族","give 是「给」：给光=give up 放弃，给让步=give in 屈服，给出去=give away 赠送",["give up","give in","give off","give away","give rise to"]],
+["块","get 家族","get 是「得到」：摆脱=get rid of，相处=get along with，习惯=get used to",["get rid of","get along with","get over","get used to"]],
+["块","set 家族","set 是「设」：设起来=set up 建立，设出发=set off 出发，设一边=set aside 留出",["set up","set off","set aside"]],
+["块","be + 形容词 + 介词（1/3）","be + 形容词 + 介词：be aware of、be capable of、be responsible for——形容词配哪个介词是死搭配，只能整块背",["be aware of","be capable of","be responsible for","be used to doing","be subject to","be beneficial to","be harmful to","be short of"]],
+["块","be + 形容词 + 介词（2/3）","be + 形容词 + 介词：be aware of、be capable of、be responsible for——形容词配哪个介词是死搭配，只能整块背",["be based on","be known as","be worth doing","be rich in","be accustomed to","be committed to","be exposed to","be opposed to"]],
+["块","be + 形容词 + 介词（3/3）","be + 形容词 + 介词：be aware of、be capable of、be responsible for——形容词配哪个介词是死搭配，只能整块背",["be attributed to","be engaged in","be involved in","be likely to","be bound to","be supposed to","be prone to"]],
+["块","in 家族（1/3）","in + 名词 + of 的架子：in terms of、in charge of、in favor of、in spite of——同一个架子换个零件，意思就换个方向",["in addition to","in terms of","in charge of","in favor of","in spite of","in case of","in the long run","in general"]],
+["块","in 家族（2/3）","in + 名词 + of 的架子：in terms of、in charge of、in favor of、in spite of——同一个架子换个零件，意思就换个方向",["in particular","in other words","in contrast to","in response to","in advance","in vain","in detail","in the face of"]],
+["块","in 家族（3/3）","in + 名词 + of 的架子：in terms of、in charge of、in favor of、in spite of——同一个架子换个零件，意思就换个方向",["in light of","in accordance with"]],
+["块","on 家族","on + the + 名词：on the contrary 相反、on behalf of 代表、on average 平均",["on the contrary","on behalf of","on average","on the whole","on purpose","on the basis of"]],
+["块","to 结尾的搭配（1/2）","尾巴都是 to：介词定死，前面的动词换不掉",["pay attention to","due to","owing to","thanks to","according to","attach importance to","have access to"]],
+["块","of 结尾的搭配（1/2）","尾巴都是 of：介词定死，前面的动词换不掉",["run out of","as a result of","regardless of","raise awareness of","meet the needs of"]],
+["块","with 结尾的搭配（3 个）","尾巴都是 with：介词定死，前面的动词换不掉",["along with","keep pace with","catch up with"]],
+["块","其他固定搭配 1","动词+介词的死搭配，看到一个记一个",["play a role in","break down","break out","bring about","bring up","carry out"]],
+["块","其他固定搭配 2","动词+介词的死搭配，看到一个记一个",["carry on","run into","at present","rather than","apart from","as well as"]],
+["块","其他固定搭配 3","动词+介词的死搭配，看到一个记一个",["so far","by contrast","for instance","to sum up","what is more","depend on"]],
+["块","其他固定搭配 4","动词+介词的死搭配，看到一个记一个",["under no circumstances","result in","account for","keep in mind","draw a conclusion"]],
+["根","re- 回 · 第1组","re- = 回：看到 re- 先想到「回」，再看后面那半截是什么，方向就定住了",["research","resource","result","reflect","replace","represent","respond","remind"]],
+["根","re- 回 · 第2组","re- = 回：看到 re- 先想到「回」，再看后面那半截是什么，方向就定住了",["recycle","renewable","recommend","register","reference","resign","retire","revenue"]],
+["根","re- 回 · 第3组","re- = 回：看到 re- 先想到「回」，再看后面那半截是什么，方向就定住了",["refund","release","restrict","recover","relax","respect"]],
+["根","pro- 向前 · 第1组","pro- = 向前：看到 pro- 先想到「向前」，再看后面那半截是什么，方向就定住了",["provide","promote","professional","protect","professor","project"]],
+["根","pro- 向前 · 第2组","pro- = 向前：看到 pro- 先想到「向前」，再看后面那半截是什么，方向就定住了",["progress","promotion","profit","production","protest"]],
+["根","ex- / e- 出 · 第1组","ex- = 出：看到 ex- 先想到「出」，再看后面那半截是什么，方向就定住了",["exceed","exclude","exhibit","exploit","experiment","export"]],
+["根","ex- / e- 出 · 第2组","ex- = 出：看到 ex- 先想到「出」，再看后面那半截是什么，方向就定住了",["expense","exaggerate","extinct","expensive","exact"]],
+["根","re- 再 · 第1组","re- = 再：看到 re- 先想到「再」，再看后面那半截是什么，方向就定住了",["review","revise","recite","recruit","reproduce","reuse"]],
+["根","re- 再 · 第2组","re- = 再：看到 re- 先想到「再」，再看后面那半截是什么，方向就定住了",["remedy","refresh","recipe","religion","reform"]],
+["根","e- 出","e- = 出：看到 e- 先想到「出」，再看后面那半截是什么，方向就定住了",["eliminate","emerge","erosion","evolve","emergency","emotion","elect","enormous"]],
+["根","con- / com- 一起","con- = 一起：看到 con- 先想到「一起」，再看后面那半截是什么，方向就定住了",["context","contract","congest","contaminate","conflict","consistent","condition"]],
+["根","in- / im- 向内；也表示否定","in- = 向内；也表示否定：看到 in- 先想到「向内；也表示否定」，再看后面那半截是什么，方向就定住了",["include","involve","increase","indicate","invest","individual"]],
+["根","dis- / dif- 分开","dis- = 分开：看到 dis- 先想到「分开」，再看后面那半截是什么，方向就定住了",["discard","distribute","distract","dismiss","dispose","discriminate"]],
+["根","-duc- / -duct- 引导","duc- = 引导：看到 duc- 先想到「引导」，再看后面那半截是什么，方向就定住了",["introduce","produce","reduce","productive","education"]],
+["根","ad- / ac- / af- / ap- 朝向","ad- = 朝向：看到 ad- 先想到「朝向」，再看后面那半截是什么，方向就定住了",["adjust","admission","advertise","addiction","adolescent"]],
+["根","inter- 之间","inter- = 之间：看到 inter- 先想到「之间」，再看后面那半截是什么，方向就定住了",["interpret","interrupt","interface","intersection","international"]],
+["根","in- / im- 不","in- = 不：看到 in- 先想到「不」，再看后面那半截是什么，方向就定住了",["injury","injure","insomnia","inequality","innocent"]],
+["根","-fer- 带","fer- = 带：看到 fer- 先想到「带」，再看后面那半截是什么，方向就定住了",["refer","prefer","suffer","different"]],
+["根","di- 分开","di- = 分开：看到 di- 先想到「分开」，再看后面那半截是什么，方向就定住了",["distinguish","digest","diversity","divorce"]],
+["根","pre- 前","pre- = 前：看到 pre- 先想到「前」，再看后面那半截是什么，方向就定住了",["presentation","prescribe","prejudice","prestige"]],
+["根","-form- 形状","form- = 形状：看到 form- 先想到「形状」，再看后面那半截是什么，方向就定住了",["inform","information","platform"]],
+["根","-man- 手","man- = 手：看到 man- 先想到「手」，再看后面那半截是什么，方向就定住了",["manage","management","manager"]],
+["根","-val- / -vail- 价值","val- = 价值：看到 val- 先想到「价值」，再看后面那半截是什么，方向就定住了",["value","valuable","evaluate"]],
+["根","auto- 自己","auto- = 自己：看到 auto- 先想到「自己」，再看后面那半截是什么，方向就定住了",["automatic","automate","automobile"]],
+["根","pre- 在前","pre- = 在前：看到 pre- 先想到「在前」，再看后面那半截是什么，方向就定住了",["predict","prepare","present"]],
+["根","de- 向下","de- = 向下：看到 de- 先想到「向下」，再看后面那半截是什么，方向就定住了",["decay","depression","descendant"]],
+["根","de- 彻底","de- = 彻底：看到 de- 先想到「彻底」，再看后面那半截是什么，方向就定住了",["define","decision","detail"]],
+["根","de- 去掉","de- = 去掉：看到 de- 先想到「去掉」，再看后面那半截是什么，方向就定住了",["deprive","detect","deforestation"]],
+["根","en- 使","en- = 使：看到 en- 先想到「使」，再看后面那半截是什么，方向就定住了",["endure","enforce","endangered"]],
+["根","im- 进","im- = 进：看到 im- 先想到「进」，再看后面那半截是什么，方向就定住了",["impose","import","immigrant"]],
+["根","trans- 跨","trans- = 跨：看到 trans- 先想到「跨」，再看后面那半截是什么，方向就定住了",["translate","transmit","transport"]],
+["根","in- / im- 进","in- = 进：看到 in- 先想到「进」，再看后面那半截是什么，方向就定住了",["income","infect","ingredient"]],
+["根","com- 一起","com- = 一起：看到 com- 先想到「一起」，再看后面那半截是什么，方向就定住了",["competition","comment","comfort"]],
+["根","head- 头","head- = 头：看到 head- 先想到「头」，再看后面那半截是什么，方向就定住了",["headquarters","headline","headache"]],
+["域","教育场景（1/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["student","teacher","school","university","course","degree"]],
+["域","教育场景（2/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["knowledge","skill","learn","study","teach","train","exam"]],
+["域","教育场景（3/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["graduate","academic","lecture","campus","scholarship"]],
+["域","科技场景（1/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["technology","digital","internet","online","device","smartphone","data"]],
+["域","科技场景（2/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["software","intelligence","robot","network","screen","application"]],
+["域","科技场景（3/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["innovation","virtual"]],
+["域","环境场景（1/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["environment","pollution","climate","energy","waste"]],
+["域","环境场景（2/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["sustainable","emission","carbon","ecosystem","damage","natural"]],
+["域","环境场景（3/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["temperature","species","conservation"]],
+["域","健康场景（1/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["health","disease","medicine","treatment","patient","hospital","exercise"]],
+["域","健康场景（2/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["diet","mental","stress","sleep","obesity","virus","immune"]],
+["域","健康场景（3/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["therapy","symptom","nutrition","physical"]],
+["域","职场场景（1/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["job","career","employee","employer","company","industry","business"]],
+["域","职场场景（2/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["market","salary","interview","resume"]],
+["域","职场场景（3/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["teamwork","leadership","workplace"]],
+["域","社会场景（1/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["society","culture","community","population","generation","family","government"]],
+["域","社会场景（2/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["policy","citizen","public","urban","rural","poverty","equality"]],
+["域","社会场景（3/3）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["tradition","behavior"]],
+["域","变化动词（1/2）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["decrease","develop","create","consider","explain","compare"]],
+["域","变化动词（2/2）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["suggest","allow","encourage"]],
+["域","评价形容词（1/4）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["important","necessary","possible","difficult","similar","common"]],
+["域","评价形容词（2/4）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["serious","effective","available","various","certain","likely"]],
+["域","评价形容词（3/4）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["major","recent","rapid","significant","essential","complex","potential"]],
+["域","评价形容词（4/4）","同一个话题的词串在一起背：写作文、读同题材文章时它们会一起冒出来",["appropriate","comprehensive","familiar"]],
+["域","连接词与过渡词（1/3）","转折、因果、递进、总结——完形和写作都靠这一组衔接，语气方向别弄反",["while","however","therefore","moreover","otherwise","whereas"]],
+["域","连接词与过渡词（2/3）","转折、因果、递进、总结——完形和写作都靠这一组衔接，语气方向别弄反",["thus","meanwhile","instead","this","these","those","one"]],
+["域","连接词与过渡词（3/3）","转折、因果、递进、总结——完形和写作都靠这一组衔接，语气方向别弄反",["ones","could","may","might","must","should","would"]],
+["域","变化与趋势（1/4）","同一个意思场：变化与趋势——先把这一片的意思占住，细节在卡片里分",["improve","cause","enhance","facilitate","influence","consequence"]],
+["域","变化与趋势（2/4）","同一个意思场：变化与趋势——先把这一片的意思占住，细节在卡片里分",["impact","growth","decline","steady","alter","boost"]],
+["域","变化与趋势（3/4）","同一个意思场：变化与趋势——先把这一片的意思占住，细节在卡片里分",["deteriorate","diminish","fluctuate","shift","upgrade","update"]],
+["域","变化与趋势（4/4）","同一个意思场：变化与趋势——先把这一片的意思占住，细节在卡片里分",["stable","reason"]],
+["域","动作与行为（1/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["avoid","prevent","achieve","support","depend","benefit"]],
+["域","动作与行为（2/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["survive","implement","negotiate","ensure","pursue","refuse"]],
+["域","动作与行为（3/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["accept","insist","propose","rely","focus","relate"]],
+["域","动作与行为（4/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["react","impress","expose","explore","examine","identify"]],
+["域","动作与行为（5/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["ignore","limit","measure","observe","occur","participate"]],
+["域","动作与行为（6/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["perform","permit","solve","tend","threaten","expect"]],
+["域","动作与行为（7/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["failure","attempt","compete","concern","seem","remove"]],
+["域","动作与行为（8/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["address","matter","appreciate","absorb","abuse","accelerate"]],
+["域","动作与行为（9/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["accompany","accuse","admire","advocate","anticipate","appeal"]],
+["域","动作与行为（10/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["appoint","assist","associate","assure","collapse","compensate"]],
+["域","动作与行为（11/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["conceal","confront","constitute","consult","convince","deceive"]],
+["域","动作与行为（12/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["dedicate","devise","disturb","dominate","donate","embrace"]],
+["域","动作与行为（13/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["engage","entitle","fascinate","formulate","fulfill","generate"]],
+["域","动作与行为（14/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["guarantee","hesitate","inherit","inspire","install","integrate"]],
+["域","动作与行为（15/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["investigate","enroll","reward","punishment","survey","contrast"]],
+["域","动作与行为（16/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["practice","fail","cheat","plagiarize","motivate","succeed"]],
+["域","动作与行为（17/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["handle","processor","communicate","mislead","crash","launch"]],
+["域","动作与行为（18/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["search","harvest","migrate","purify","ban","monitor"]],
+["域","动作与行为（19/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["balance","tolerate","forgive","vote","legislate","punish"]],
+["域","动作与行为（20/20）","同一个意思场：动作与行为——先把这一片的意思占住，细节在卡片里分",["arrest","sue","success","solution"]],
+["域","言语与沟通（1/5）","同一个意思场：言语与沟通——先把这一片的意思占住，细节在卡片里分",["describe","maintain","admit","deny","account","express"]],
+["域","言语与沟通（2/5）","同一个意思场：言语与沟通——先把这一片的意思占住，细节在卡片里分",["mention","persuade","recognize","discuss","argue","announce"]],
+["域","言语与沟通（3/5）","同一个意思场：言语与沟通——先把这一片的意思占住，细节在卡片里分",["cite","clarify","commit","complain","condemn","contend"]],
+["域","言语与沟通（4/5）","同一个意思场：言语与沟通——先把这一片的意思占住，细节在卡片里分",["criticize","declare","emphasize","illustrate","summarize","opinion"]],
+["域","言语与沟通（5/5）","同一个意思场：言语与沟通——先把这一片的意思占住，细节在卡片里分",["rumor","persuasive","insult","quarrel","argument","apologize"]],
+["域","思维与判断（1/8）","同一个意思场：思维与判断——先把这一片的意思占住，细节在卡片里分",["analyze","approach","imagine","judge","justify","prove"]],
+["域","思维与判断（2/8）","同一个意思场：思维与判断——先把这一片的意思占住，细节在卡片里分",["respectable","imaginative","factor","tendency","phenomenon","evidence"]],
+["域","思维与判断（3/8）","同一个意思场：思维与判断——先把这一片的意思占住，细节在卡片里分",["risk","challenge","trend","pattern","standard","process"]],
+["域","思维与判断（4/8）","同一个意思场：思维与判断——先把这一片的意思占住，细节在卡片里分",["confirm","assess","attribute","classify","demonstrate","derive"]],
+["域","思维与判断（5/8）","同一个意思场：思维与判断——先把这一片的意思占住，细节在卡片里分",["deserve","estimate","grasp","assessment","criteria","theory"]],
+["域","思维与判断（6/8）","同一个意思场：思维与判断——先把这一片的意思占住，细节在卡片里分",["hypothesis","conclusion","method","framework","concept","definition"]],
+["域","思维与判断（7/8）","同一个意思场：思维与判断——先把这一片的意思占住，细节在卡片里分",["logic","imagination","aware","awareness","choice","element"]],
+["域","思维与判断（8/8）","同一个意思场：思维与判断——先把这一片的意思占住，细节在卡片里分",["aspect","basis","background","intention","structure","essence"]],
+["域","工作与职场（1/8）","同一个意思场：工作与职场——先把这一片的意思占住，细节在卡片里分",["cooperate","employ","accomplish","qualify","task","fire"]],
+["域","工作与职场（2/8）","同一个意思场：工作与职场——先把这一片的意思占住，细节在卡片里分",["colleague","staff","workforce","labor","qualification","vacancy"]],
+["域","工作与职场（3/8）","同一个意思场：工作与职场——先把这一片的意思占住，细节在卡片里分",["applicant","candidate","wage","bonus","allowance","pension"]],
+["域","工作与职场（4/8）","同一个意思场：工作与职场——先把这一片的意思占住，细节在卡片里分",["insurance","overtime","workload","efficiency","productivity","cooperation"]],
+["域","工作与职场（5/8）","同一个意思场：工作与职场——先把这一片的意思占住，细节在卡片里分",["duty","authority","supervise","agreement","client","deliver"]],
+["域","工作与职场（6/8）","同一个意思场：工作与职场——先把这一片的意思占住，细节在卡片里分",["factory","sector","enterprise","corporation","firm","venture"]],
+["域","工作与职场（7/8）","同一个意思场：工作与职场——先把这一片的意思占住，细节在卡片里分",["meeting","agenda","strategy","branch","office","commercial"]],
+["域","工作与职场（8/8）","同一个意思场：工作与职场——先把这一片的意思占住，细节在卡片里分",["regulation","retirement"]],
+["域","建立与破坏（1/2）","同一个意思场：建立与破坏——先把这一片的意思占住，细节在卡片里分",["establish","consist","connect","assemble","comprise","creativity"]],
+["域","建立与破坏（2/2）","同一个意思场：建立与破坏——先把这一片的意思占住，细节在卡片里分",["manufacture","merger","link"]],
+["域","拥有与缺失（1/2）","同一个意思场：拥有与缺失——先把这一片的意思占住，细节在卡片里分",["obtain","demand","supply","offer","abandon","assign"]],
+["域","拥有与缺失（2/2）","同一个意思场：拥有与缺失——先把这一片的意思占住，细节在卡片里分",["attain","storage"]],
+["域","状态与存在","同一个意思场：状态与存在——先把这一片的意思占住，细节在卡片里分",["belong","locate","appear","contain","remain","situation"]],
+["域","科技与信息（1/3）","同一个意思场：科技与信息——先把这一片的意思占住，细节在卡片里分",["apply","figure","statistics","hardware","program","algorithm"]],
+["域","科技与信息（2/3）","同一个意思场：科技与信息——先把这一片的意思占住，细节在卡片里分",["database","server","system","hacker","password","signal"]],
+["域","科技与信息（3/3）","同一个意思场：科技与信息——先把这一片的意思占住，细节在卡片里分",["cable","satellite","sensor","chip","invention"]],
+["域","教育与学习（1/8）","同一个意思场：教育与学习——先把这一片的意思占住，细节在卡片里分",["industrious","infer","imply","purpose","mainly","cultivate"]],
+["域","教育与学习（2/8）","同一个意思场：教育与学习——先把这一片的意思占住，细节在卡片里分",["discipline","foster","semester","curriculum","tuition","diploma"]],
+["域","教育与学习（3/8）","同一个意思场：教育与学习——先把这一片的意思占住，细节在卡片里分",["certificate","literacy","assignment","essay","thesis","seminar"]],
+["域","教育与学习（4/8）","同一个意思场：教育与学习——先把这一片的意思占住，细节在卡片里分",["tutor","faculty","alumni","scholar","intellectual","bachelor"]],
+["域","教育与学习（5/8）","同一个意思场：教育与学习——先把这一片的意思占住，细节在卡片里分",["undergraduate","postgraduate","requirement","compulsory","attendance","feedback"]],
+["域","教育与学习（6/8）","同一个意思场：教育与学习——先把这一片的意思占住，细节在卡片里分",["questionnaire","finding","talent","outline","memorize","score"]],
+["域","教育与学习（7/8）","同一个意思场：教育与学习——先把这一片的意思占住，细节在卡片里分",["grade","deadline","schedule","chapter","vocabulary","grammar"]],
+["域","教育与学习（8/8）","同一个意思场：教育与学习——先把这一片的意思占住，细节在卡片里分",["pronunciation","expertise","memory"]],
+["域","情感与心理（1/3）","同一个意思场：情感与心理——先把这一片的意思占住，细节在卡片里分",["attitude","curious","anxiety","appetite","affection","sympathy"]],
+["域","情感与心理（2/3）","同一个意思场：情感与心理——先把这一片的意思占住，细节在卡片里分",["loneliness","reluctant","eager","anxious","proud","ashamed"]],
+["域","情感与心理（3/3）","同一个意思场：情感与心理——先把这一片的意思占住，细节在卡片里分",["guilty","generous","selfish","motive","character"]],
+["域","抽象与概念（1/6）","同一个意思场：抽象与概念——先把这一片的意思占住，细节在卡片里分",["tone","statement","paragraph","drawback","opportunity","shortage"]],
+["域","抽象与概念（2/6）","同一个意思场：抽象与概念——先把这一片的意思占住，细节在卡片里分",["achievement","experience","ability","subject","content","error"]],
+["域","抽象与概念（3/6）","同一个意思场：抽象与概念——先把这一片的意思占住，细节在卡片里分",["effort","objective","goal","target","privacy","freedom"]],
+["域","抽象与概念（4/6）","同一个意思场：抽象与概念——先把这一片的意思占住，细节在卡片里分",["version","feature","function","status","chance","aim"]],
+["域","抽象与概念（5/6）","同一个意思场：抽象与概念——先把这一片的意思占住，细节在卡片里分",["rule","service","trouble","role","identity","quality"]],
+["域","健康与医疗（1/11）","同一个意思场：健康与医疗——先把这一片的意思占住，细节在卡片里分",["pressure","operate","illness","sickness","ailment","wound"]],
+["域","健康与医疗（2/11）","同一个意思场：健康与医疗——先把这一片的意思占住，细节在卡片里分",["cure","heal","diagnosis","diagnose","prescription","dose"]],
+["域","健康与医疗（3/11）","同一个意思场：健康与医疗——先把这一片的意思占住，细节在卡片里分",["pill","drug","vaccine","antibiotic","surgery","operation"]],
+["域","健康与医疗（4/11）","同一个意思场：健康与医疗——先把这一片的意思占住，细节在卡片里分",["surgeon","physician","nurse","clinic","ward","ambulance"]],
+["域","健康与医疗（5/11）","同一个意思场：健康与医疗——先把这一片的意思占住，细节在卡片里分",["infection","bacteria","germ","hygiene","epidemic","pandemic"]],
+["域","健康与医疗（6/11）","同一个意思场：健康与医疗——先把这一片的意思占住，细节在卡片里分",["outbreak","quarantine","allergy","chronic","fever","cough"]],
+["域","健康与医疗（7/11）","同一个意思场：健康与医疗——先把这一片的意思占住，细节在卡片里分",["pain","ache","sore","swell","bleed","bruise"]],
+["域","健康与医疗（8/11）","同一个意思场：健康与医疗——先把这一片的意思占住，细节在卡片里分",["scar","disability","cancer","diabetes","lung","liver"]],
+["域","健康与医疗（9/11）","同一个意思场：健康与医疗——先把这一片的意思占住，细节在卡片里分",["kidney","muscle","bone","blood","cell","organ"]],
+["域","健康与医疗（10/11）","同一个意思场：健康与医疗——先把这一片的意思占住，细节在卡片里分",["tissue","nerve","breathe","digestion","metabolism","fit"]],
+["域","健康与医疗（11/11）","同一个意思场：健康与医疗——先把这一片的意思占住，细节在卡片里分",["fatigue","mood","addict","nervous","harm"]],
+["域","性质与评价（1/14）","同一个意思场：性质与评价——先把这一片的意思占住，细节在卡片里分",["severe","obvious","specific","typical","efficient","positive"]],
+["域","性质与评价（2/14）","同一个意思场：性质与评价——先把这一片的意思占住，细节在卡片里分",["negative","reasonable","suitable","independent","unique","minor"]],
+["域","性质与评价（3/14）","同一个意思场：性质与评价——先把这一片的意思占住，细节在卡片里分",["basic","cope","intelligent","diligent","fluent","accurate"]],
+["域","性质与评价（4/14）","同一个意思场：性质与评价——先把这一片的意思占住，细节在卡片里分",["bankrupt","flexible","security","portable","wireless","artificial"]],
+["域","性质与评价（5/14）","同一个意思场：性质与评价——先把这一片的意思占住，细节在卡片里分",["authentic","reliable","subjective","patent","toxic","harmful"]],
+["域","性质与评价（6/14）","同一个意思场：性质与评价——先把这一片的意思占住，细节在卡片里分",["fertile","organic","solar","global","tropical","polar"]],
+["域","性质与评价（7/14）","同一个意思场：性质与评价——先把这一片的意思占住，细节在卡片里分",["plain","acute","overweight","energetic","homeless","elderly"]],
+["域","性质与评价（8/14）","同一个意思场：性质与评价——先把这一片的意思占住，细节在卡片里分",["loyal","faithful","sincere","grateful","narrow","dangerous"]],
+["域","性质与评价（9/14）","同一个意思场：性质与评价——先把这一片的意思占住，细节在卡片里分",["comfortable","noisy","foreign","local","national","private"]],
+["域","性质与评价（10/14）","同一个意思场：性质与评价——先把这一片的意思占住，细节在卡片里分",["human","medical","financial","illegal","main","extra"]],
+["域","性质与评价（11/14）","同一个意思场：性质与评价——先把这一片的意思占住，细节在卡片里分",["opposite","rare","unusual","normal","strange","capable"]],
+["域","性质与评价（12/14）","同一个意思场：性质与评价——先把这一片的意思占住，细节在卡片里分",["able","unable","willing","strict","gentle","rude"]],
+["域","性质与评价（13/14）","同一个意思场：性质与评价——先把这一片的意思占住，细节在卡片里分",["friendly","hostile","aggressive","violent","peaceful","constant"]],
+["域","性质与评价（14/14）","同一个意思场：性质与评价——先把这一片的意思占住，细节在卡片里分",["danger","safety"]],
+["域","数量与程度（1/2）","同一个意思场：数量与程度——先把这一片的意思占住，细节在卡片里分",["slight","quantity","scarcity","abundant","sufficient","mild"]],
+["域","数量与程度（2/2）","同一个意思场：数量与程度——先把这一片的意思占住，细节在卡片里分",["minority","majority","massive","tiny","average"]],
+["域","时间与顺序（1/2）","同一个意思场：时间与顺序——先把这一片的意思占住，细节在卡片里分",["gradual","fade","routine","modern","ancient","frequent"]],
+["域","时间与顺序（2/2）","同一个意思场：时间与顺序——先把这一片的意思占住，细节在卡片里分",["occasional","temporary","permanent","instant","order"]],
+["域","社会与文化（1/9）","同一个意思场：社会与文化——先把这一片的意思占住，细节在卡片里分",["equal","convert","welfare","responsibility","neighborhood","custom"]],
+["域","社会与文化（2/9）","同一个意思场：社会与文化——先把这一片的意思占住，细节在卡片里分",["ritual","festival","ceremony","heritage","ancestor","migration"]],
+["域","社会与文化（3/9）","同一个意思场：社会与文化——先把这一片的意思占住，细节在卡片里分",["ethnic","race","gender","belief","faith","moral"]],
+["域","社会与文化（4/9）","同一个意思场：社会与文化——先把这一片的意思占住，细节在卡片里分",["ethic","etiquette","offend","stereotype","justice","privilege"]],
+["域","社会与文化（5/9）","同一个意思场：社会与文化——先把这一片的意思占住，细节在卡片里分",["obligation","charity","volunteer","refugee","rank","hierarchy"]],
+["域","社会与文化（6/9）","同一个意思场：社会与文化——先把这一片的意思占住，细节在卡片里分",["census","aging","household","offspring","relative","youth"]],
+["域","社会与文化（7/9）","同一个意思场：社会与文化——先把这一片的意思占住，细节在卡片里分",["marriage","spouse","bond","empathy","burden","misunderstanding"]],
+["域","社会与文化（8/9）","同一个意思场：社会与文化——先把这一片的意思占住，细节在卡片里分",["witness","civilization","urbanization","democracy","neighbor","affordable"]],
+["域","社会与文化（9/9）","同一个意思场：社会与文化——先把这一片的意思占住，细节在卡片里分",["personal","traditional","cultural","legal","law"]],
+["域","移动与传递","同一个意思场：移动与传递——先把这一片的意思占住，细节在卡片里分",["cease","convey"]],
+["域","环境与自然（1/9）","同一个意思场：环境与自然——先把这一片的意思占住，细节在卡片里分",["conserve","battery","ecology","environmental","pollute","pollutant"]],
+["域","环境与自然（2/9）","同一个意思场：环境与自然——先把这一片的意思占住，细节在卡片里分",["greenhouse","warming","drought","flood","hurricane","earthquake"]],
+["域","环境与自然（3/9）","同一个意思场：环境与自然——先把这一片的意思占住，细节在卡片里分",["disaster","catastrophe","desert","soil","habitat","wildlife"]],
+["域","环境与自然（4/9）","同一个意思场：环境与自然——先把这一片的意思占住，细节在卡片里分",["extinction","biodiversity","evolution","predator","prey","forest"]],
+["域","环境与自然（5/9）","同一个意思场：环境与自然——先把这一片的意思占住，细节在卡片里分",["jungle","grassland","wetland","ocean","marine","coast"]],
+["域","环境与自然（6/9）","同一个意思场：环境与自然——先把这一片的意思占住，细节在卡片里分",["shore","island","valley","landscape","scenery","mineral"]],
+["域","环境与自然（7/9）","同一个意思场：环境与自然——先把这一片的意思占住，细节在卡片里分",["fossil","fuel","coal","consumption","landfill","garbage"]],
+["域","环境与自然（8/9）","同一个意思场：环境与自然——先把这一片的意思占住，细节在卡片里分",["trash","litter","sewage","filter","altitude","atmosphere"]],
+["域","环境与自然（9/9）","同一个意思场：环境与自然——先把这一片的意思占住，细节在卡片里分",["ozone","radiation","circumstance","nature"]],
+["域","媒体与传播（1/5）","同一个意思场：媒体与传播——先把这一片的意思占住，细节在卡片里分",["publish","journal","download","upload","broadcast","media"]],
+["域","媒体与传播（2/5）","同一个意思场：媒体与传播——先把这一片的意思占住，细节在卡片里分",["journalist","reporter","editor","coverage","audience","viewer"]],
+["域","媒体与传播（3/5）","同一个意思场：媒体与传播——先把这一片的意思占住，细节在卡片里分",["subscriber","channel","viral","celebrity","fame","reputation"]],
+["域","媒体与传播（4/5）","同一个意思场：媒体与传播——先把这一片的意思占住，细节在卡片里分",["image","bias","censor","browse","website","blog"]],
+["域","空间与方位（1/2）","同一个意思场：空间与方位——先把这一片的意思占住，细节在卡片里分",["passage","position","suburb","downtown","resident","facility"]],
+["域","空间与方位（2/2）","同一个意思场：空间与方位——先把这一片的意思占住，细节在卡片里分",["infrastructure","construction","region","crowded"]],
+["域","经济与金钱（1/5）","同一个意思场：经济与金钱——先把这一片的意思占住，细节在卡片里分",["trade","economy","finance","budget","cost","loss"]],
+["域","经济与金钱（2/5）","同一个意思场：经济与金钱——先把这一片的意思占住，细节在卡片里分",["tax","investment","capital","fund","loan","debt"]],
+["域","经济与金钱（3/5）","同一个意思场：经济与金钱——先把这一片的意思占住，细节在卡片里分",["credit","purchase","consumer","customer","competitor","monopoly"]],
+["域","经济与金钱（4/5）","同一个意思场：经济与金钱——先把这一片的意思占住，细节在卡片里分",["brand","discount","warranty","package","shipment","wealth"]],
+["域","交通与出行（1/3）","同一个意思场：交通与出行——先把这一片的意思占住，细节在卡片里分",["traffic","vehicle","pedestrian","passenger","route","destination"]],
+["域","交通与出行（2/3）","同一个意思场：交通与出行——先把这一片的意思占住，细节在卡片里分",["journey","commute","subway","railway","highway","parking"]],
+["域","交通与出行（3/3）","同一个意思场：交通与出行——先把这一片的意思占住，细节在卡片里分",["accident","speed"]],
+["域","农林与食物（1/4）","同一个意思场：农林与食物——先把这一片的意思占住，细节在卡片里分",["crop","agriculture","farming","livestock","pesticide","fertilizer"]],
+["域","农林与食物（2/4）","同一个意思场：农林与食物——先把这一片的意思占住，细节在卡片里分",["genetic","gene","calorie","protein","vitamin","fat"]],
+["域","农林与食物（3/4）","同一个意思场：农林与食物——先把这一片的意思占住，细节在卡片里分",["sugar","salt","fiber","alcohol","tobacco","caffeine"]],
+["域","农林与食物（4/4）","同一个意思场：农林与食物——先把这一片的意思占住，细节在卡片里分",["vegetarian","snack","flavor","taste","hunger","starvation"]],
+["域","生活与习俗","同一个意思场：生活与习俗——先把这一片的意思占住，细节在卡片里分",["habit","lifestyle","norm","manner","polite"]],
+["域","n. 综合 1","这组没有共同词根，靠释义和搭配串起来记",["personnel","issue","sample","source","article","author"]],
+["域","n. 综合 2","这组没有共同词根，靠释义和搭配串起来记",["topic","bargain","partner","code","user","gadget"]],
+["域","n. 综合 3","这组没有共同词根，靠释义和搭配串起来记",["crowd","access","cattle","campaign","tolerance","sibling"]],
+["域","adj. 综合 1","这组没有共同词根，靠释义和搭配串起来记",["illiterate","optional","fake","nuclear","blind","deaf"]],
+["域","adj. 综合 2","这组没有共同词根，靠释义和搭配串起来记",["shallow","total"]],
+["域","adj./adv. 综合 1","这组没有共同词根，靠释义和搭配串起来记",["offline","worldwide"]],
+["域","零星词 1","这几个词没有共同词根，也没有同类场景，靠自己的故事钩子记",["property","stream","foundation","sentence","hire"]],
+["块","of 结尾的搭配（2/2）","尾巴都是 of：介词定死，前面的动词换不掉",["at the expense of","by means of","for the sake of","fall short of"]],
+["块","to 结尾的搭配（2/2）","尾巴都是 to：介词定死，前面的动词换不掉",["lead to","adapt to","object to","prior to","with regard to","contribute to","live up to"]]];
+const WOF={}; WORDS.forEach(function(w){ WOF[w[0]]=w; });
+const CLUAT={}, CLUOF={};
+CLU.forEach(function(c,i){
+  CLUAT[i]=c;
+  c[3].forEach(function(n){ if(CLUOF[n]==null) CLUOF[n]=i; });
+});
+function cluIdx(n){ const i=CLUOF[n]; return i==null?-1:i; }
+
 const MEMO={
 "in":"in 是『装进去』：in red 穿红衣——人穿衣服就像把自己装进袋子里",
 "on":"on 是『贴在表面』：on the wall 贴墙上；on Monday 就是『贴』在周一这天",
@@ -4699,6 +4969,7 @@ let ses={queue:[],idx:0,flip:false,stat:{know:0,fuzzy:0,no:0},active:false};
 
 let LASTPLAN=null;
 let LASTDUE=0;
+let LASTGROUPS=[], LASTGMETA={};
 function freshPool(){
   const fr={R:[],A:[],B:[],C:[],D:[]};
   WORDS.forEach(w=>{
@@ -4715,23 +4986,56 @@ const MIXW={R:0.20,D:0.44,C:0.20,B:0.13,A:0.03};
 const LAYERS=['R','D','C','B','A'];
 function newMix(tgt){
   const fr=freshPool();
+  const layOf={};
+  LAYERS.forEach(function(k){ fr[k].forEach(function(w){ layOf[w[0]]=w[3]||k; }); });
+  /* 候选：还有没学的词的组。part>0 说明这组上次学了一半，今天先收尾 */
+  const cands=[];
+  CLU.forEach(function(c,ci){
+    const mem=[], lay={R:0,D:0,C:0,B:0,A:0};
+    c[3].forEach(function(n){
+      if(layOf[n]==null) return;
+      const w=WOF[n]; if(!w) return;
+      mem.push(w); lay[layOf[n]]++;
+    });
+    if(!mem.length) return;
+    cands.push({ci:ci,c:c,mem:mem,lay:lay,part:c[3].length-mem.length});
+  });
   const want={};
   let sum=0;
-  LAYERS.forEach(k=>{ want[k]=Math.round(tgt*MIXW[k]); sum+=want[k]; });
+  LAYERS.forEach(function(k){ want[k]=Math.round(tgt*MIXW[k]); sum+=want[k]; });
   want.R+=tgt-sum;
-  const pick=[], plan={R:0,D:0,C:0,B:0,A:0};
-  LAYERS.forEach(k=>{
-    const take=Math.min(Math.max(0,want[k]),fr[k].length);
-    plan[k]=take;
-    pick.push.apply(pick,fr[k].slice(0,take));
-  });
-  if(pick.length<tgt){
-    const used=new Set(pick.map(w=>w[0]));
-    const rest=fr.R.concat(fr.D,fr.C,fr.B,fr.A).filter(w=>!used.has(w[0]));
-    pick.push.apply(pick,rest.slice(0,tgt-pick.length));
+  const got={R:0,D:0,C:0,B:0,A:0};
+  const pick=[], plan={R:0,D:0,C:0,B:0,A:0}, groups=[], usedCi={}, usedBase={};
+  let total=0;
+  while(total<tgt){
+    let best=null, bs=-1e9;
+    cands.forEach(function(o){
+      if(usedCi[o.ci]) return;
+      let s=0;
+      if(tgt-total<3 && o.mem.length>4){ return; }   /* 快满额了就别再拉大组进来 */
+      const base=o.c[1].replace(/ · 第\d+组$/,'').replace(/（\d+\/\d+）$/,'');
+      if(usedBase[base]) s-=40;            /* 同一天不堆两组同名家族，re- 一次只学一组 */
+      if(o.part>0) s+=80;                 /* 半截组优先收尾，不把一个组劈到两天 */
+      if(o.c[0]==='辨') s+=26;
+      else if(o.c[0]==='根') s+=20;
+      else if(o.c[0]==='块') s+=16;
+      else s+=8;
+      LAYERS.forEach(function(k){
+        const need=want[k]-got[k];
+        if(o.lay[k]>0) s += (need>0 ? Math.min(need,o.lay[k])*7 : -o.lay[k]*4);
+      });
+      s+=o.mem.length;                    /* 同分时优先大组，少切一个边界 */
+      s += (o.mem.length<=tgt-total) ? 8 : -12;   /* 快满额时，别为了塞满硬拉一个 8 词组 */
+      if(s>bs){ bs=s; best=o; }
+    });
+    if(!best) break;
+    usedCi[best.ci]=1;
+    usedBase[best.c[1].replace(/ · 第\d+组$/,'').replace(/（\d+\/\d+）$/,'')]=1;
+    best.mem.forEach(function(w){ pick.push(w); got[layOf[w[0]]]++; total++; });
+    groups.push(best.ci);
   }
-  shuffle(pick);
-  return {pick:pick,plan:plan};
+  pick.forEach(function(w){ plan[layOf[w[0]]]++; });
+  return {pick:pick,plan:plan,groups:groups};
 }
 function freshLeft(){
   const fr=freshPool();
@@ -4762,12 +5066,27 @@ function buildQueue(){
   const mix=newMix(tgt);
   LASTPLAN=mix.plan;
   LASTDUE=take.length;
-  return take.concat(mix.pick);
+  /* 新词整组连着出现，组尾插一张「本组回看」 */
+  const seq=[], gmeta={}, order=[];
+  mix.groups.forEach(function(ci){
+    const mem=mix.pick.filter(function(w){ return cluIdx(w[0])===ci; });
+    if(!mem.length) return;
+    mem.forEach(function(w,ix){
+      gmeta[w[0]]={ci:ci,pos:ix+1,tot:mem.length};
+      seq.push(w);
+    });
+    seq.push({g:ci});
+    order.push(ci);
+  });
+  mix.pick.forEach(function(w){ if(!gmeta[w[0]]) seq.push(w); });
+  LASTGROUPS=order; LASTGMETA=gmeta;
+  return take.concat(seq);
 }
 function startSession(){
   const q=buildQueue();
+  const nn=q.filter(function(x){ return x&&x[0]; }).length-LASTDUE;
   ses={queue:q,idx:0,flip:false,stat:{know:0,fuzzy:0,no:0},active:true,plan:LASTPLAN,
-       due:LASTDUE,newN:q.length-LASTDUE};
+       due:LASTDUE,newN:nn,groups:LASTGROUPS,gmeta:LASTGMETA};
   ses.tomorrow=dueOn(addDays(todayISO(),1));
 }
 /* 某一天会到期的旧词有多少张（含过期没还的） */
@@ -4878,7 +5197,7 @@ function viewToday(){
   const dq=dueCount();
   TASKS.forEach(t=>{
     const on=!!rec[t.k];
-    const label=t.k==='t2'?(tgt>0?('新词（今天目标 '+tgt+' 个）'):
+    const label=t.k==='t2'?(tgt>0?('新词（今天目标 '+tgt+' 个 · '+(newMix(tgt).groups.length)+' 组）'):
       (freshLeft()?'回炉顽固词（今天先还账，不背新词）':'新词已学完 · 今天只回炉旧词')):
       (t.k==='t1'?(dq?t.n+'（到期 '+dq+' 张）':'回炉到期词块（今天没有到期）'):t.n);
     tasks+='<div class="task '+(on?'done':'')+'" onclick="toggleTask(\''+t.k+'\')">'+
@@ -5179,12 +5498,25 @@ function viewVocab(){
       '<div style="font-size:26px;margin-bottom:10px;">本轮结束</div>'+
       '答对 '+st.know+'　答错 '+st.no+(st.know+st.no?'　正确率 '+Math.round(st.know/Math.max(1,st.know+st.no)*100)+'%':'')+
       '<div style="font-size:12.5px;color:var(--ink-3);margin-top:12px;">'+nxt+'</div>'+
+      (function(){
+        const gs=(ses.groups||[]).map(function(ci){ return CLUAT[ci]?esc(CLUAT[ci][1]):''; }).filter(Boolean);
+        return gs.length?'<div class="gend">今天学了 '+gs.length+' 组：'+gs.join(' ／ ')+'</div>':'';
+      })()+
       '<div style="margin-top:18px;display:flex;gap:9px;justify-content:center;">'+
       '<button class="btn pri" onclick="again()">再来一轮</button></div></div></div>'+
       todayRead();
   }
 
   const w=ses.queue[ses.idx];
+  if(w && w.g!=null){
+    const prog0=Math.round(ses.idx/Math.max(1,ses.queue.length)*100);
+    return head+bar+
+      '<div style="display:flex;justify-content:space-between;font-size:11.8px;color:var(--ink-4);margin-bottom:9px;">'+
+        '<span>这一组学完了</span>'+
+        '<span>答对 '+ses.stat.know+' · 答错 '+ses.stat.no+'</span></div>'+
+      '<div class="bar" style="margin-bottom:14px;"><i style="width:'+prog0+'%"></i></div>'+
+      groupCard(w.g);
+  }
   const layer=w[3]||'C';
   const LBM={R:'<span class="layerbadge lr">R 阅读核心</span>',D:'<span class="layerbadge ld">D 认得就行</span>',A:'<span class="layerbadge la">A 连接词</span>',B:'<span class="layerbadge lb">B 主题词</span>',C:'<span class="layerbadge lc">C 复用词</span>'};
   const lb=LBM[layer]||LBM.C;
@@ -5245,6 +5577,8 @@ function viewVocab(){
   }
 
   const prog=Math.round(ses.idx/Math.max(1,ses.queue.length)*100);
+  const gm=(ses.gmeta||{})[word];
+  const band=gm?'<div class="gband">本组 '+gm.pos+' / '+gm.tot+' · '+esc(CLUAT[gm.ci][1].replace(/ · 第\d+组$/,''))+'</div>':'';
 
   return head+bar+
     '<div class="card" style="padding:14px 16px 18px;">'+
@@ -5252,9 +5586,28 @@ function viewVocab(){
         '<span>复习 '+ses.due+' 张 · 新词 '+ses.newN+' 个</span>'+
         '<span>答对 '+ses.stat.know+' · 答错 '+ses.stat.no+(ses.stat.fuzzy?' · 模糊 '+ses.stat.fuzzy:'')+'</span></div>'+
       '<div class="bar" style="margin-bottom:14px;"><i style="width:'+prog+'%"></i></div>'+
-      card+gb+
+      band+card+gb+
     '</div>';
 }
+/* 组尾回看：把刚学的这一组摊开扫一遍（对应「讲完一组带学生过一遍」） */
+const KINDN={'辨':'易混对比','块':'同源短语','根':'词根词缀','域':'同一场景'};
+function groupCard(ci){
+  const c=CLUAT[ci];
+  if(!c) return '';
+  const rows=c[3].map(function(n){
+    const w=WOF[n]||[n,''];
+    return '<div class="grow"><b>'+esc(n)+'</b><span>'+esc(w[1]||'')+'</span></div>';
+  }).join('');
+  return '<div class="card gcard">'+
+    '<div class="gband">本组回看 · '+esc(KINDN[c[0]]||'')+'</div>'+
+    '<h3>'+esc(c[1])+'</h3>'+
+    '<p class="gnote">'+esc(c[2])+'</p>'+
+    '<div class="glist">'+rows+'</div>'+
+    '<div class="gbar"><button class="btn pri" onclick="nextCard()">这组过了</button></div>'+
+    '</div>';
+}
+function nextCard(){ if(ses.idx<ses.queue.length) ses.idx++; render(); }
+
 /* 复习检验：给 4 个中文选项，1 对 3 错。干扰项取同层其他词，中文不重复。 */
 function pickOpts(word){
   const zh=word[1], lay=word[3]||'C', used=[zh], opts=[];
