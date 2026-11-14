@@ -361,6 +361,7 @@
     <nav class="nav" id="nav">
       <button data-v="today" class="on"><span class="ic">◎</span>今日</button>
       <button data-v="read"><span class="ic">▦</span>每日一读</button>
+      <button data-v="drill"><span class="ic">✎</span>快练</button>
       <button data-v="vocab"><span class="ic">▤</span>背词</button>
       <button data-v="learn"><span class="ic">◈</span>课堂</button>
       <button data-v="book"><span class="ic">▥</span>句子本</button>
@@ -5526,6 +5527,7 @@ function render(){
   else if(view==='write') m.innerHTML=viewWrite();
   else if(view==='read') m.innerHTML=viewRead();
   else if(view==='readlist') m.innerHTML=viewReadList();
+  else if(view==='drill') m.innerHTML=viewDrill();
   else if(view==='prog') m.innerHTML=viewProg();
   else m.innerHTML=viewRef();
 }
@@ -6230,6 +6232,104 @@ function writeTopic(){ const i=writeIdx(); return i<0?null:WRITE[i]; }
    d=第几天  w=本篇要复现的目标词  q=题（a=正确项下标）
    ========================================================= */
 const RDG=[
+{d:1,k:'d1-3',t:'The River Study',
+ zh:'十二个学生去河边做水质调查。老师给每组一件小资源（瓶子、绳子、地图），并提醒一条规矩：不要接受第一个答案。水看着干净，地图却显示上游有座大厂，河岸的草被冲走、水土流失把泥带进河里。学生回去重查，用一串数字把这条河表示出来，选了一个人代表小组去说话。一周后镇里回信：厂址要清理。小小的研究，真实的结果。',
+ p:`A class of twelve students went to the river to do research on water. The teacher gave each group one small resource: a bottle, a rope and a map. Before they left, she reminded them of one rule — do not accept the first answer.
+
+The first result was a surprise. The water looked clean, but the map showed an enormous old factory upstream. The bank behind it had lost its grass, and erosion had carried the soil into the river.
+
+'Go back and check,' the teacher said. One student began to reflect on the colour of the stones. Another tried to replace a broken bottle with a clean one. By noon the class could represent the river as a line of numbers: clean here, dirty there.
+
+They elected one boy to speak for the group. The town office did not respond at once, but a week later the class received a letter: the site would be cleaned.
+
+Small research, a real result.`,
+ w:['research','resource','result','remind','accept','enormous','erosion','reflect','replace','represent','elect','respond','receive'],
+ q:[
+  {s:"What did the teacher remind the students to do?",o:["Not to accept the first answer","To bring their own bottles","To stay near the road","To write a long report"],a:0,e:"she reminded them of one rule — do not accept the first answer——先别相信第一个答案。"},
+  {s:"What did the map show?",o:["An old factory upstream","A new school","A dry river","A large bridge"],a:0,e:"the map showed an enormous old factory upstream——上游有个大厂。"},
+  {s:"What was the final result of the class's work?",o:["The town agreed to clean the site","The factory was closed the same day","The students stopped their research","The river was found to be clean everywhere"],a:0,e:"a week later the class received a letter: the site would be cleaned——镇里回信说要清理厂址。"}
+ ]},
+{d:1,k:'d1-4',t:'Beside the School Gate',
+ zh:'米娅在校门口等哥哥，他又迟到了。她不接受他的解释，情绪太高。哥哥没有回应，只从口袋里掏出一张纸条：妈妈写的，公交车坏了，司机得换一个轮子——不算紧急，却让他晚了。米娅开始反思自己的话，试着把怒气从声音里去掉，说了抱歉。哥哥笑着说：何况我还给你带了本书。一个提醒就够了，一个小习惯也能慢慢变好。',
+ p:`Mia stood beside the school gate and waited for her brother. He was late again. When he finally came, she did not accept his excuse; her emotion was too high. 'You always forget,' she said.
+
+He did not respond. He took a small note from his pocket and gave it to her. It was from their mother: the bus had broken down, and the driver had to replace a wheel. It was not an emergency, but it had made him late.
+
+Mia began to reflect on her own words. She tried to eliminate the anger from her voice. 'I am sorry,' she said. 'I should not have shouted.'
+
+Her brother smiled. 'Besides, I brought you a book.'
+
+Two people, one small note, and an evening that changed from anger to quiet. Sometimes a reminder is enough, and a small habit can evolve into something better.`,
+ w:['beside','accept','emotion','respond','replace','emergency','reflect','eliminate','besides','remind','evolve'],
+ q:[
+  {s:"Why did Mia speak angrily to her brother?",o:["He was late again and she did not accept his excuse","He had lost her book","He forgot her birthday","He refused to walk with her"],a:0,e:"He was late again … she did not accept his excuse; her emotion was too high——迟到，加上她不肯接受解释。"},
+  {s:"Why was the brother late?",o:["The bus broke down and a wheel had to be replaced","He was playing football","He had to buy a book","He forgot the time"],a:0,e:"the bus had broken down, and the driver had to replace a wheel——公交车坏了，得换轮子。"},
+  {s:"What did Mia do after reading the note?",o:["She reflected on her own words and said sorry","She blamed the driver","She walked home alone","She asked her brother for a book"],a:0,e:"Mia began to reflect on her own words… 'I am sorry,' she said——她反思自己的话并道歉。"}
+ ]},
+{d:2,k:'d2-3',t:'A Clean Contract',
+ zh:'一家小公司签了合同投资可再生能源，经理要从三个方案里推荐一个。太阳能、风场购电、或者“少用”：新机器、新灯、新习惯——最便宜的方案和最干净的方案真的冲突。会计说：别假定便宜的就好，也不能假设油价一直低。他们选了第三个，附带一个条件：每个小组每月上报用电。一年后用电少了三分之一，数字表明这不是偶然，结果与计划一致。经理留着第一份报告做参考：最干净的能源，是你从来没用的能源。',
+ p:`A small company signed a contract to invest in renewable power. The manager had to recommend one plan from three, and each plan had a cost.
+
+The first plan used solar panels on the roof. The second bought power from a wind farm. The third was to consume less: new machines, new lights, new habits. There was a real conflict between the cheapest plan and the cleanest one.
+
+'Do not presume the cheapest is the best,' the accountant said. 'We cannot assume the price of oil will stay low. Under these conditions, the third plan is safer.'
+
+They chose the third and signed the contract. The plan included one condition: every individual team had to report its use of power each month. A year later the company used a third less power, and the numbers indicate that the fall was not an accident. The result was consistent with the plan.
+
+The manager keeps the first report as a reference. It reminds him that the cleanest energy is the energy you never use.`,
+ w:['contract','invest','renewable','recommend','consume','conflict','presume','assume','condition','include','individual','indicate','consistent','reference','remind'],
+ q:[
+  {s:"What was the third plan?",o:["To use less power","To build a wind farm","To buy more solar panels","To raise the price of oil"],a:0,e:"The third was to consume less: new machines, new lights, new habits——第三个方案是“少用”。"},
+  {s:"Why did the accountant prefer the third plan?",o:["He could not assume the price of oil would stay low","It was the cheapest of the three","The other two were illegal","The manager had already chosen it"],a:0,e:"Do not presume the cheapest is the best… We cannot assume the price of oil will stay low——不能假定油价一直低。"},
+  {s:"What did the numbers show after a year?",o:["Power use fell by a third","Profit doubled","The contract was cancelled","Staff numbers fell"],a:0,e:"A year later the company used a third less power… the fall was not an accident——用电少了三分之一，不是偶然。"}
+ ]},
+{d:2,k:'d2-4',t:'The Bottle Bank',
+ zh:'小镇哈洛有两个问题：街上塞满汽车，河里被小厂的废水污染，预算又有限。一群学生提了个简单实验：在广场放十个大箱子，请大家回收瓶子和纸。第一个月失败了——箱子里全是垃圾；第二个月加了块牌子、在本地报纸上写了封短信，情况才好起来。到冬天收了四十吨玻璃，卖废品的收入买了两辆新公交，市中心的汽车少了，小厂被要求净化排水，鱼回来了。教训不在钱：在这个语境里，是习惯——箱子近、规矩清楚，人就愿意分类。',
+ p:`In 2019 the town of Harlow had a problem. Its streets were congested with cars, and its river was contaminated by waste from a small factory. The council had a limited budget and no clear answer.
+
+A student group offered a simple experiment. They put ten large boxes in the main square and asked people to recycle bottles and paper. The first month was a failure: the boxes were full of rubbish. The second month was better: the plan included a sign and a short letter in the local paper, and the number of boxes increased from ten to twenty. By winter the work involved two hundred families.
+
+By winter the town had collected forty tonnes of glass. The revenue from selling it paid for two new buses, which reduced the number of cars in the centre. The factory had to register every litre of water it released, and the fish came back. The result was consistent with the group's report: less waste, fewer cars, cleaner water.
+
+The lesson was not about money. In this context, it was about a habit: people recycle when the box is close and the rule is clear.`,
+ w:['congest','contaminate','recycle','revenue','context','increase','include','involve','register','consistent','result'],
+ q:[
+  {s:"What two problems did Harlow have?",o:["Congested streets and a contaminated river","Too many schools and too few teachers","High taxes and empty shops","A dry river and no buses"],a:0,e:"Its streets were congested with cars, and its river was contaminated by waste——街上塞车、河里被污染。"},
+  {s:"Why did the first month fail?",o:["The boxes were full of rubbish","People refused to take part","The boxes were stolen","The council stopped the plan"],a:0,e:"The first month was a failure: the boxes were full of rubbish——箱子里全是垃圾。"},
+  {s:"What did the town do with the money from the glass?",o:["It paid for two new buses","It built a new factory","It lowered the price of water","It bought more boxes"],a:0,e:"The revenue from selling it paid for two new buses——卖玻璃的收入买了两辆公交。"}
+ ]},
+{d:3,k:'d3-3',t:'Learning a Skill',
+ zh:'没人天生会游泳。学游泳和学语言一样：开始很差，然后没那么差，最后不用想就会。书上的知识有用，但技能住在身体里，身体需要练。好老师做三件事：注意学生已经做得好的地方（信心也是课的一部分）、一次只训练一个小环节（呼吸、手臂、转身）、给一个说真话的测试而不是让人舒服的测试。期末考不是目的——因为考试压力，很多学生学一周、一个月就忘；而训练过的游泳者一辈子都会。重视练习，别重视那张纸。',
+ p:`Nobody is born knowing how to swim. You learn it the way you learn a language: badly at first, then less badly, and finally without thinking. The knowledge in a book can help, but the skill lives in the body, and the body needs practice.
+
+A good teacher does three things. First, she pays attention to what the student already does well, because confidence is part of the lesson. Second, she trains one small part at a time: the breath, then the arm, then the turn. Third, she gives a test that shows the truth, not a test that makes the student feel good.
+
+The exam at the end is not the point. Due to the pressure of exams, many students study for a week and forget in a month, and the fear can affect the result. A trained swimmer, by contrast, keeps the skill for life.
+
+Attach importance to the practice, not to the paper. That is the whole method.`,
+ w:['learn','knowledge','skill','teach','train','pay attention to','exam','due to','study','affect'],
+ q:[
+  {s:"According to the writer, where does a skill live?",o:["In the body, which needs practice","In a good book","In the exam paper","In the teacher's notes"],a:0,e:"the skill lives in the body, and the body needs practice——技能住在身体里，身体需要练。"},
+  {s:"What is the second thing a good teacher does?",o:["She trains one small part at a time","She gives a long exam every week","She teaches the whole skill in one day","She compares students with each other"],a:0,e:"she trains one small part at a time: the breath, then the arm, then the turn——一次只练一个小环节。"},
+  {s:"What happens to many students because of exam pressure?",o:["They study for a week and forget in a month","They swim better than trained people","They stop reading books","They teach themselves"],a:0,e:"Due to the pressure of exams, many students study for a week and forget in a month——为考试学一周，一个月就忘。"}
+ ]},
+{d:3,k:'d3-4',t:'The Refund',
+ zh:'老市场里的小店卖家用小机器。去年春天它推出新款咖啡机，在本地报纸上做广告，价格不低但不算离谱，还承诺一年内坏了可以退款。半年后一位顾客回来了：机器停了，修一次的价钱超过买新的。店主没有把这种情况排除在外，开箱、看日期、退钱。朋友问为什么，他说：被尊重的顾客会回来，被骗的顾客会告诉十个人。店里只限制一件事：不外销到别的国家，因为那里的零件很难回收——这条印在盒子上。尊重小规矩，大规矩自然有人管。',
+ p:`A shop in the old market sells small machines for the home. Last spring it released a new coffee maker and advertised it in the local paper. The price was high but not unreasonable, and the shop offered a refund if the machine broke within a year.
+
+Six months later a customer came back. The machine had stopped, and the repair would exceed the price of a new one. The shop did not exclude this case: the manager opened the box, checked the date and gave the money back.
+
+'Why?' asked a friend. 'Because a customer who is respected will return, and a customer who is cheated will tell ten people.'
+
+The shop also restricts one thing: it will not export the machine to another country, because the parts are hard to recover there. That rule is printed on the box, and the manager can relax about it.
+
+Respect the small rules, and the big ones take care of themselves.`,
+ w:['release','refund','exceed','exclude','respect','restrict','export','recover','relax'],
+ q:[
+  {s:"What did the shop promise when it sold the coffee maker?",o:["A refund if the machine broke within a year","Free coffee for a month","A repair every six months","A lower price next spring"],a:0,e:"the shop offered a refund if the machine broke within a year——一年内坏了可退款。"},
+  {s:"Why did the shop give the money back?",o:["The repair would cost more than a new machine","The customer was a friend","The machine was never used","The law forced the shop to do it"],a:0,e:"the repair would exceed the price of a new one… The shop did not exclude this case——修比买贵，而且店里没把这种情况排除在外。"},
+  {s:"What is the one thing the shop restricts?",o:["It will not export the machine to another country","It will not sell to local people","It will not repair old machines","It will not advertise in the paper"],a:0,e:"it will not export the machine to another country, because the parts are hard to recover there——不外销，因为零件难回收。"}
+ ]},
 {d:48,k:'d48-1',t:'The Debt Students Never Repay',
  zh:'学生把睡眠当成可以借的债：周二熬夜写论文，指望周末还上，却不知道利息算在记忆上。实验证明睡过的那组第二天多记住约五分之一；补觉只能补情绪和反应，补不回学习当晚的记忆归档；咖啡只是遮住疲劳。真正有效的方法很枯燥：固定作息、睡前少看屏幕、房间凉而暗。睡眠不是懒，是学习的一部分。',
  p:`Most students treat sleep as a loan. They borrow two hours on Tuesday to finish an essay, plan to pay it back at the weekend, and forget that the interest is charged to their memory. A week of five-hour nights does not simply make a student tired; it affects what the brain is able to keep.
@@ -7215,6 +7315,165 @@ function viewReadList(){
   });
   return html+'<div style="margin-bottom:20px;"><button class="btn" onclick="go(\'read\')">← 回到阅读</button></div>';
 }
+
+/* ================= 快练：题量没有上限 =================
+   三个题型轮流出，全部用"你已经学过的词"现算生成：
+   1) 句中选词——从你解锁的文章里取真实句子，挖掉一个已学词
+   2) 词→义   3) 义→词
+   不落库、不占配额，一轮接一轮，想练多久练多久。 */
+let DR=null;
+function drillPool(){
+  const out=[];
+  WORDS.forEach(function(w){ const st=S.words[w[0]]; if(st&&st.seen&&WDEF[w[0]]) out.push(w); });
+  return out;
+}
+function shuffleArr(a){
+  const r=a.slice();
+  for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=r[i]; r[i]=r[j]; r[j]=t; }
+  return r;
+}
+function posOf(w){ return String(WDEF[w]||'').split(/[.\s]/)[0]||''; }
+function drillDistract(pool, exceptKey, k){
+  const pos=posOf(exceptKey), same=[], any=[];
+  pool.forEach(function(w){
+    if(w[0]===exceptKey||!w[1]||!WDEF[w[0]]) return;
+    if(WDEF[w[0]]===WDEF[exceptKey]) return;   /* 释义和正确答案一样，不能当干扰项 */
+    (posOf(w[0])===pos?same:any).push(w);
+  });
+  const out=[], seen={};
+  shuffleArr(same).concat(shuffleArr(any)).forEach(function(w){
+    if(out.length>=k||seen[WDEF[w[0]]]) return;
+    seen[WDEF[w[0]]]=1; out.push(w);
+  });
+  return out;
+}
+/* 从已解锁文章里取"含 1-2 个已学词"的句子 */
+function drillSents(pool){
+  const d=dayNum(), arr=[];
+  RDG.forEach(function(R){
+    if(R.d>d) return;
+    (String(R.p).match(/[^.!?]+[.!?]+/g)||[]).forEach(function(raw){
+      const s=raw.trim();
+      if(s.split(/\s+/).length<9) return;
+      const hits=pool.filter(function(w){ const re=mkRe([w[0]],'i'); return re&&re.test(s); });
+      if(hits.length===1||hits.length===2) arr.push({s:s,hits:hits,R:R});
+    });
+  });
+  return arr;
+}
+function mkItem(pool, w, type, sent){
+  let opts, q, a;
+  if(type==='w2m'){
+    opts=shuffleArr([w].concat(drillDistract(pool,w[0],3)));
+    q=w[0]+(w[1]?'  ('+String(w[1]).split(/[.\s]/)[0]+')':'');
+    opts=opts.map(function(x){ return WDEF[x[0]]; });
+    a=opts.indexOf(WDEF[w[0]]);
+  }else{
+    opts=shuffleArr([w].concat(drillDistract(pool,w[0],3)));
+    opts=opts.map(function(x){ return x[0]; });
+    a=opts.indexOf(w[0]);
+    q=(type==='gap'?(sent&&sent.s):WDEF[w[0]]);
+  }
+  if(a<0||opts.length<4) return null;
+  return {t:type,q:q,opts:opts,a:a,w:w[0],def:WDEF[w[0]],src:sent&&type==='gap'?('第 '+sent.R.d+' 天《'+sent.R.t+'》'):''};
+}
+function makeDrill(n){
+  const pool=drillPool();
+  if(pool.length<10) return null;
+  const sents=shuffleArr(drillSents(pool)), words=shuffleArr(pool);
+  const used={}, items=[];
+  let si=0, wi=0;
+  for(let k=0;k<n;k++){
+    const type=['gap','w2m','m2w'][k%3];
+    let it=null;
+    if(type==='gap'){
+      while(si<sents.length){
+        const o=sents[si++];
+        const cand=o.hits.filter(function(w){ return !used[w[0]]&&WDEF[w[0]]; });
+        if(!cand.length) continue;
+        const w=cand[0], m=mkRe([w[0]],'i').exec(o.s);
+        if(!m) continue;
+        const blank=o.s.slice(0,m.index)+' ______ '+o.s.slice(m.index+m[0].length);
+        it=mkItem(pool,w,'gap',{s:blank,R:o.R});
+        if(it){ used[w[0]]=1; break; }
+      }
+    }
+    if(!it){
+      let w=null;
+      while(wi<words.length){ const c=words[wi++]; if(!used[c[0]]){ w=c; break; } }
+      if(!w) break;
+      used[w[0]]=1;
+      it=mkItem(pool,w,type==='m2w'?'m2w':'w2m',null);
+    }
+    if(it) items.push(it);
+  }
+  if(!items.length) return null;
+  return {items:items, ans:{}, i:0};
+}
+function drillAns(oi){
+  if(!DR||DR.ans[DR.i]!=null) return;
+  DR.ans[DR.i]=oi;
+  const it=DR.items[DR.i];
+  S.drill=S.drill||{n:0,ok:0};
+  S.drill.n++; if(oi===it.a) S.drill.ok++;
+  save(); render();
+}
+function drillNext(){ if(DR&&DR.i<DR.items.length-1){ DR.i++; render(); window.scrollTo(0,0); } }
+function drillNew(n){ DR=makeDrill(n||10); render(); window.scrollTo(0,0); }
+function viewDrill(){
+  const pool=drillPool(), st=S.drill||{n:0,ok:0};
+  const head='<div class="vhead"><h1>快练 <span class="sub">题量没有上限 · 全部用你学过的 '+pool.length+' 个词现算</span></h1></div>';
+  if(!DR) DR=makeDrill(10);
+  if(!DR){
+    return head+'<div class="note warn" style="margin-top:0;"><b>还不够 10 个词。</b>'+
+      '先去「背词」学一轮（今天的新词背完就有了），回来这里就能一轮接一轮地练，不用等第二天，也不用等新文章。</div>'+
+      '<div style="margin-bottom:20px;"><button class="btn pri" onclick="go(\'vocab\')">去背词</button></div>';
+  }
+  const items=DR.items, total=items.length;
+  const done=Object.keys(DR.ans).length;
+  const right=Object.keys(DR.ans).filter(function(k){ return DR.ans[k]===items[+k].a; }).length;
+  const bar='<div class="stat" style="margin-bottom:14px;"><div class="k">本轮</div>'+
+    '<div class="v">'+done+'<em>/ '+total+' 题</em></div>'+
+    (done?'<div style="font-size:12.4px;color:var(--ink-3);margin-top:4px;">对 '+right+' 题'+(done?(' · 正确率 '+Math.round(right/done*100)+'%'):'')+'</div>':'')+
+    '<div class="bar" style="margin-top:8px;"><i style="width:'+Math.round(done/total*100)+'%"></i></div>'+
+    '<div style="font-size:11.8px;color:var(--ink-4);margin-top:7px;">累计练过 '+st.n+' 题，对 '+st.ok+' 题'+(st.n?'（'+Math.round(st.ok/st.n*100)+'%）':'')+'</div></div>';
+
+  if(done>=total){
+    const wrong=items.filter(function(it,k){ const a=DR.ans[k]; return a!=null&&a!==it.a; });
+    const wl=wrong.length?('</b><div style="margin-top:8px;">'+wrong.map(function(it){
+      return '<div style="display:flex;gap:9px;padding:5px 0;border-bottom:1px dashed var(--line);font-size:12.8px;">'+
+        '<b style="flex:none;min-width:92px;">'+esc(it.w)+'</b><span style="color:var(--ink-3);">'+esc(it.def)+'</span></div>';
+    }).join('')+'</div>'):'，全对。';
+    return head+bar+
+      '<div class="card"><h3>这一轮结束 <span class="sub">对 '+right+' / '+total+'</span></h3>'+
+        '<div class="note '+(right===total?'good':'warn')+'" style="margin:0;"><b>'+(right===total?'全对。':('错的 '+wrong.length+' 个词：'))+'</b>'+wl+'</div>'+
+        '<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">'+
+          '<button class="btn pri" style="padding:9px 18px;" onclick="drillNew(10)">↻ 再来一轮 10 题</button>'+
+          '<button class="btn" style="padding:9px 16px;" onclick="drillNew(20)">来 20 题</button>'+
+          '<button class="btn" style="padding:9px 16px;" onclick="go(\'read\')">去读文章</button></div></div>';
+  }
+
+  const it=items[DR.i], pick=DR.ans[DR.i];
+  const tag={gap:'句中选词',w2m:'词 → 义',m2w:'义 → 词'}[it.t];
+  const qHtml=(it.t==='gap'?esc(it.q).replace(/______/g,'<b style="color:var(--blue);border-bottom:2px solid var(--blue);padding:0 26px;">&nbsp;</b>'):esc(it.q));
+  const opts=it.opts.map(function(o,oi){
+    let cls='ropt';
+    if(pick!=null){ if(oi===it.a) cls+=' ok'; else if(oi===pick) cls+=' no'; }
+    return '<button class="'+cls+'" onclick="drillAns('+oi+')"'+(pick!=null?' disabled':'')+'>'+'ABCD'[oi]+'. '+esc(o)+'</button>';
+  }).join('');
+  const exp=pick!=null?('<div class="rexp">'+(pick===it.a?'✓ 对　':'✗ 错　')+esc(it.w)+'：'+esc(it.def)+(it.src?'　<span style="color:var(--ink-4);">出自'+esc(it.src)+'</span>':'')+'</div>'):'';
+  return head+bar+
+    '<div class="card"><h3>第 '+(DR.i+1)+' / '+total+' 题 <span class="sub">'+tag+(it.src?' · '+esc(it.src):'')+'</span></h3>'+
+      '<div class="rdgq" style="border-top:none;padding-top:0;"><div class="qs" style="font-size:14px;">'+qHtml+'</div>'+opts+exp+'</div>'+
+      (pick!=null?'<div style="margin-top:12px;"><button class="btn pri" style="padding:9px 18px;" onclick="drillNext()">'+
+        (DR.i+1>=total?'看结果':'下一题 →')+'</button>'+
+        '<button class="btn" style="margin-left:8px;padding:9px 16px;" onclick="drillNew(10)">换一轮</button></div>':'')+
+      '<div style="margin-top:12px;font-size:11.8px;color:var(--ink-4);line-height:1.8;">'+
+      '题型三种轮着来：句中选词（从你解锁的文章里取真实句子）、词→义、义→词。'+
+      '答错不要紧，词会再出现在后面的轮次里。</div></div>';
+}
+
+
 
 /* ---- 写作模块 ---- */
 function viewWrite(){
