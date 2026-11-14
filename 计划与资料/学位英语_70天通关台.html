@@ -262,7 +262,6 @@
       <button data-v="today" class="on"><span class="ic">◎</span>今日</button>
       <button data-v="vocab"><span class="ic">▤</span>背词</button>
       <button data-v="learn"><span class="ic">◈</span>课堂</button>
-      <button data-v="roots"><span class="ic">⌘</span>词根</button>
       <button data-v="train"><span class="ic">✂</span>拆句</button>
       <button data-v="book"><span class="ic">▥</span>句子本</button>
       <button data-v="prog"><span class="ic">◔</span>进度</button>
@@ -1964,7 +1963,6 @@ function render(){
   if(view==='today') m.innerHTML=viewToday();
   else if(view==='vocab') m.innerHTML=viewVocab();
   else if(view==='learn') m.innerHTML=viewLearn();
-  else if(view==='roots') m.innerHTML=viewRoots();
   else if(view==='train') m.innerHTML=viewTrain();
   else if(view==='book') m.innerHTML=viewBook();
   else if(view==='prog') m.innerHTML=viewProg();
@@ -2245,7 +2243,7 @@ function learnQuiz(){
 /* ---- 背词 ---- */
 function viewVocab(){
   const ws=wordStats();
-  let head='<div class="vhead"><h1>背词</h1><p>三层记忆：能不能拆（词根词缀）→ 有没有同族 → 落到搭配和例句。</p></div>'+
+  let head='<div class="vhead"><h1>背词</h1><p>三层记忆：能不能拆（词根词缀）→ 有没有同族 → 落到搭配和例句。拆解直接写在词卡背面，翻面就能看到。</p></div>'+
     '<div class="mnote"><b>什么时候该用词根法：</b>拉丁、希腊来源的学术词与复用词（B / C 层）通常能拆，拆一个等于记一串；'+
     '功能词（in / on / of）和整体词（perform / improve / develop）不能硬拆，硬拆会把结构记错——这类词的卡片会直接写「整体记」。</div>';
 
@@ -2400,62 +2398,6 @@ function clearAll(){
   if(!confirm('这会清空所有学习记录（词卡进度、句子本、打卡），确定吗？')) return;
   localStorage.removeItem(KEY);
   initState(); ses.active=false; render();
-}
-
-/* ---- 词根地图 ---- */
-let openRoot=null;
-function toggleRoot(k){openRoot=(openRoot===k?null:k); render();}
-function viewRoots(){
-  const groups={};
-  WORDS.forEach(w=>{
-    const m=MORPH[w[0]];
-    if(m&&m.r&&ROOTS[m.r]){ (groups[m.r]=groups[m.r]||[]).push(w); }
-  });
-  const keys=Object.keys(groups).sort((a,b)=>groups[b].length-groups[a].length);
-  let total=0; keys.forEach(k=>{total+=groups[k].length;});
-
-  let html='<div class="vhead"><h1>词根地图</h1>'+
-    '<p>'+keys.length+' 个词根与高频前缀，串起词库里 '+total+' 个词。记一个词根，等于同时握住一串词。</p></div>';
-
-  html+='<div class="mnote"><b>先记住一件事：</b>同一词根的不同写法是正常现象——-duc- / -duct-、-cept- / -cip- 都是同一个词根在不同位置的形式，不是两个词根。'+
-    '拆解依据待核实（取自常见词源教材与构形规则），词义与搭配仍以实际用法为准。</div>';
-
-  keys.forEach(k=>{
-    const R=ROOTS[k], list=groups[k], open=(openRoot===k);
-    let mastered=0;
-    list.forEach(w=>{const st=S.words[w[0]]; if(st&&st.box>=4) mastered++;});
-    html+='<div class="rcard2"><div class="rhead" onclick="toggleRoot(\''+k+'\')">'+
-      '<div class="rt">'+esc(R.t)+'</div>'+
-      '<div class="rc">'+esc(R.c)+'</div>'+
-      '<div class="rn">'+list.length+' 词 · 掌握 '+mastered+'　'+(open?'▾':'▸')+'</div></div>';
-    if(open){
-      html+='<div class="rbody"><table><thead><tr><th>单词</th><th>释义</th><th>拆解</th></tr></thead><tbody>';
-      list.forEach(w=>{
-        html+='<tr><td>'+esc(w[0])+'</td><td>'+esc(w[1])+'</td><td>'+esc(MORPH[w[0]].p)+'</td></tr>';
-      });
-      html+='</tbody></table>';
-      const extra=[];
-      list.forEach(w=>{
-        (MORPH[w[0]].f||[]).forEach(x=>{
-          if(!WORDS.some(y=>y[0]===x[0])&&!extra.some(e=>e[0]===x[0])) extra.push(x);
-        });
-      });
-      if(extra.length){
-        html+='<div class="rq">延伸同族（词库外，看到认得出即可）：'+
-          extra.slice(0,8).map(x=>esc(x[0])+' '+esc(x[1])).join('；')+'</div>';
-      }
-      html+='</div>';
-    }
-    html+='</div>';
-  });
-
-  const noneList=WORDS.filter(w=>{const m=MORPH[w[0]]; return m&&(!m.r||m.r==='none');});
-  if(noneList.length){
-    html+='<div class="mnote" style="border-left-color:var(--amber);"><b>另外 '+noneList.length+' 个词没有可靠切分：</b>'+
-      noneList.slice(0,18).map(w=>esc(w[0])).join('、')+' 等。这些按搭配和例句整体记——硬拆会把结构记错，反而更难。'+
-      '像 perform 与 form、improve 与 prove、temperature 与 tempus，看着像同源，其实毫无关系。</div>';
-  }
-  return html;
 }
 
 /* ---- 拆句 ---- */
@@ -2727,7 +2669,7 @@ function go(v){view=v; if(v==='vocab'&&!ses.active) startSession(); if(v==='trai
 function go_(v){go(v);}
 window.go=go; window.flip=flip; window.grade=grade; window.again=again; window.addMemo=addMemo; window.delMemo=delMemo;
 window.openLesson=openLesson; window.startQuiz=startQuiz; window.startReview=startReview; window.quizPick=quizPick; window.quizNext=quizNext; window.exitLesson=exitLesson;
-window.toggleRoot=toggleRoot; window.studyFam=studyFam;
+window.studyFam=studyFam;
 window.toggleTask=toggleTask; window.submitSentence=submitSentence; window.toggleErr=toggleErr;
 window.saveSentence=saveSentence; window.newSentence=newSentence; window.ownSentence=ownSentence;
 window.setFilter=setFilter; window.toggleMile=toggleMile; window.addExam=addExam; window.delExam=delExam;
