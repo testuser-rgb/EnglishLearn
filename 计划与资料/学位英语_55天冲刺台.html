@@ -20,6 +20,7 @@
 .czopt.ok{border-color:var(--ok);background:var(--ok-2);color:var(--ok);font-weight:700;}
 .czopt.no{border-color:var(--rose);background:var(--rose-2);color:var(--rose);text-decoration:line-through;}
 .czexp{flex-basis:100%;font-size:12.2px;color:var(--ink-3);line-height:1.8;padding-left:34px;}
+.czgl{font-size:10.8px;color:var(--ink-4);margin-left:5px;font-weight:400;}
 
 .rdgp p{margin:0 0 11px;}
 .rdgq{margin-bottom:14px;}
@@ -7054,7 +7055,7 @@ RDG.forEach(function(R){ if(!R.k) R.k='d'+R.d+'-1'; });   /* 同一天可能有�
 
 /* ---- 完形填空：正文里 {{n}} 表示第 n 空，g[n-1] 是它的选项 ---- */
 const CLOZE=[
-{d:1,k:'c1',t:'The Lost Wallet',zh:'一名学生在公交车上捡到钱包，里面有给儿子买药的钱。他等到失主、拒收谢礼。有人说他傻，失主回信说钱包里装的不只是钱。',p:`On a cold morning, a student found a wallet on the bus. Inside were a card, some money and a photo of a small child. He could have kept the money, {{1}} he did not. He called the number on the card and waited an hour. When the owner arrived, she began to cry: the money was for her son's medicine, and she had {{2}} it from her mother that morning.
+{d:1,k:'c1',t:'The Lost Wallet',zh:'一名学生在公交车上捡到钱包，里面有给儿子买药的钱。他等到失主、拒收谢礼。有人说他傻，失主回信说钱包里装的不只是钱。',w:['research','resource','result','reflect','replace','represent','respond','remind','eliminate','emerge','evolve','elect','beside','besides','receive','accept'],p:`On a cold morning, a student found a wallet on the bus. Inside were a card, some money and a photo of a small child. He could have kept the money, {{1}} he did not. He called the number on the card and waited an hour. When the owner arrived, she began to cry: the money was for her son's medicine, and she had {{2}} it from her mother that morning.
 
 The student asked for no reward. He said only that a stranger had once helped him in the {{3}} way. A small act of honesty does not {{4}} the world, he said, but it keeps a little trust alive. Trust, he added, is a {{5}} that a city cannot buy.
 
@@ -7073,7 +7074,7 @@ At the end of the week the bus company gave him a book. He {{8}} it with a smile
 {o:['emerge','evolve','elect','eliminate'],a:0,e:'句意：随后几周里一种模式开始"显现"。emerge 指从隐到显，正合语意。evolve 指逐渐演化（强调变化过程），elect 是"选举"，eliminate 是"消除"。'}
 ]},
 
-{d:6,k:'c2',t:'A Letter to the Editor',zh:'一位居民投书报社：街道撤掉了唯一的护学岗，孩子独自穿四车道。信刊登后有家长自愿轮值，城市承诺下学期恢复。作者说，指出问题并给出办法的抱怨，最难被无视。',p:`Dear Editor,
+{d:6,k:'c2',t:'A Letter to the Editor',zh:'一位居民投书报社：街道撤掉了唯一的护学岗，孩子独自穿四车道。信刊登后有家长自愿轮值，城市承诺下学期恢复。作者说，指出问题并给出办法的抱怨，最难被无视。',w:['research','resource','result','replace','represent','remind','beside','besides','receive','learn','protest','school'],p:`Dear Editor,
 
 Last month our street lost its only crossing guard. The school says it has no money to {{1}} him, and the city says the road belongs to the province. For two weeks, children crossed four lanes of traffic alone. Nobody was hurt, but that was luck: the city had taken no {{2}} at all.
 
@@ -7094,7 +7095,7 @@ The city has now promised a guard by next term. It has not {{7}} to me, and I di
 {o:['complains','argues','apologizes','protests'],a:1,e:'句意：……比只会"发牢骚"的抱怨难无视得多。complain 指只表达不满而不给办法，与前半句"指出问题并给出办法"形成对照。argue 是"论证"，本身中性甚至正面，不能构成对照。'}
 ]},
 
-{d:11,k:'c3',t:'Why We Forget',zh:'记忆不是箱子，遗忘是机制的一部分。只读过一遍约等于白读，因为没和已知的东西连上；睡眠会整理白天的经验。方法不是更用功，而是换方式：自测、分散、睡觉。',p:`Most students believe that memory is a box: you put something in and it stays there. Research on the brain tells a different story. Forgetting is not a failure of the box; it is part of the {{1}}. A memory that is never used begins to {{2}}, like a path through grass that closes when nobody walks it.
+{d:11,k:'c3',t:'Why We Forget',zh:'记忆不是箱子，遗忘是机制的一部分。只读过一遍约等于白读，因为没和已知的东西连上；睡眠会整理白天的经验。方法不是更用功，而是换方式：自测、分散、睡觉。',w:['research','result','reflect','replace','remind','eliminate','study','exam','review','reduce','decline','student','matter','experience','process','argument'],p:`Most students believe that memory is a box: you put something in and it stays there. Research on the brain tells a different story. Forgetting is not a failure of the box; it is part of the {{1}}. A memory that is never used begins to {{2}}, like a path through grass that closes when nobody walks it.
 
 This is why reading a chapter once is close to {{3}}. The words pass through, but nothing {{4}} them to anything you already know. The mind keeps what it can connect and drops what stands alone. {{5}}, a fact tied to a story, a picture or an argument is far easier to {{6}} a month later.
 
@@ -7113,7 +7114,7 @@ So the advice is not to try harder but to study differently: test yourself inste
 {o:['Unless','If','Because','Although'],a:0,e:'句意："除非"你顺着它的规律来，否则你会把同一个小时丢两次。Unless = if not，正好表达"不这样做就会……"。If 会使句意相反，Because、Although 逻辑不通。'}
 ]},
 
-{d:16,k:'c4',t:'The Price of Fast Delivery',zh:'次日达背后是货车、仓库和赶时间的司机。免费配送让人多买，退货又要多跑几趟。有城市限时段进城，商家说生意没掉。作者主张让真实成本可见，而不是让购物变贵。',p:`Online shops now promise next-day delivery as a normal service, not a special one. Behind that promise is a {{1}} most customers never see: vans, warehouses, and thousands of drivers working against a clock.
+{d:16,k:'c4',t:'The Price of Fast Delivery',zh:'次日达背后是货车、仓库和赶时间的司机。免费配送让人多买，退货又要多跑几趟。有城市限时段进城，商家说生意没掉。作者主张让真实成本可见，而不是让购物变贵。',w:['result','beside','besides','receive','accept','exam','expense','expensive','depend','injury','injure','conceal','confront','deserve','screen','damage','online'],p:`Online shops now promise next-day delivery as a normal service, not a special one. Behind that promise is a {{1}} most customers never see: vans, warehouses, and thousands of drivers working against a clock.
 
 The cost is not only in the price on the screen. A van that carries fifty parcels still burns fuel at every stop, and a street that receives twenty vans a day has cleaner air than one that receives two hundred. When delivery is free, we order more than we need. {{2}}, a shirt bought in three sizes and returned in two still travels three times.
 
@@ -7133,7 +7134,7 @@ What customers can do is smaller but real. Order once a week instead of four tim
 {o:['difficult','useless','harmful','expensive'],a:0,e:'句意：这些举动没有一个是"难"的——只要一周订一次、选慢一点的配送日、买了就留下。difficult 与"smaller but real"呼应：事小，但不难。useless 会否定整段建议，harmful 与主旨相反，expensive 与"不花钱"矛盾。'},
 {o:['round','way','time','hand'],a:0,e:'the other way round 是固定说法，"反过来（也一样）"。句意：要么买家得便宜、街道付代价，要么反过来。'}
 ]},
-{d:21,k:'c5',t:'The Nurse Who Listens',zh:'诊所护士 Ruth 每周留两小时只做一件事：听。不记笔记、不开药方，记住细节，下周再问。有人怀疑这不值，她说"他肯来第二次，就是结果"。',p:`Every Thursday afternoon, the small clinic on Bridge Street closes its doors to new patients. For two hours, one nurse does nothing but talk. Anyone may walk in — a mother with a sleeping baby, an old man who has not spoken to anyone for days, a student who says there is {{1}} wrong but stays anyway.
+{d:21,k:'c5',t:'The Nurse Who Listens',zh:'诊所护士 Ruth 每周留两小时只做一件事：听。不记笔记、不开药方，记住细节，下周再问。有人怀疑这不值，她说"他肯来第二次，就是结果"。',w:['result','beside','besides','condition','learn','study','train','student','school','interview','manage','manager','survey','medicine','treatment','patient','sleep','search','job','decision','detail','situation','refuse','office','suffer'],p:`Every Thursday afternoon, the small clinic on Bridge Street closes its doors to new patients. For two hours, one nurse does nothing but talk. Anyone may walk in — a mother with a sleeping baby, an old man who has not spoken to anyone for days, a student who says there is {{1}} wrong but stays anyway.
 
 The nurse, Ruth, does not carry a notebook. She says paper gets in the way: when you write while someone speaks, you stop {{2}}. So she listens, and she remembers. A week later she will ask how the job interview went, or whether the cough is better. Patients say this is the part they {{3}} most — not the medicine, which is usually simple, but the fact that someone kept the details.
 
@@ -7154,7 +7155,7 @@ The two hours are now the busiest part of her week. Young doctors come to watch,
 {o:['found','looked','searched','waited'],a:0,e:'find a cure 是固定搭配"找到疗法"。look 和 search 表"寻找"须接 for；waited a cure 不通。注意：句中否定的是"找到"，不是"寻找"。'}
 ]},
 
-{d:26,k:'c6',t:'A Job That Disappears',zh:'看了一辈子火车的 Idris 被摄像头取代。机器不累、不出错、便宜，事故率也没升。但他知道摄像头不知道的事。女儿说他描述的是感受不是计划。两个都对，所以没有简单结局。',p:`For thirty years, Idris counted the trains. Twice a day he stood on the platform with a board in his hand, and every driver who passed gave him a flash of lights. The board told him the weather, the delay, the mood of the line. Last month a {{1}} replaced the board, and nobody gives him lights anymore.
+{d:26,k:'c6',t:'A Job That Disappears',zh:'看了一辈子火车的 Idris 被摄像头取代。机器不累、不出错、便宜，事故率也没升。但他知道摄像头不知道的事。女儿说他描述的是感受不是计划。两个都对，所以没有简单结局。',w:['result','replace','respect','learn','train','rise','progress','course','platform','manage','manager','robot','screen','data','fail','job','company','decision','system','signal','sensor','different','offer','argue','failure','describe'],p:`For thirty years, Idris counted the trains. Twice a day he stood on the platform with a board in his hand, and every driver who passed gave him a flash of lights. The board told him the weather, the delay, the mood of the line. Last month a {{1}} replaced the board, and nobody gives him lights anymore.
 
 The company calls it progress, and in a way it is. The {{2}} never gets tired, never reads a number wrong, and costs less in a year than Idris earned in a month. Three other lines made the same {{3}} two years ago, and the accident rate did not rise at all. It is hard to argue with that.
 
@@ -7177,7 +7178,7 @@ Both of them are right, which is why this story has no easy ending.`,g:[
 {o:['Until','Unless','Once','While'],a:0,e:'Until he learns...，someone younger will：在他学会新系统"之前"，更年轻的人就会顶上。Until 表"到……为止"。Once 表"一旦"则句意相反，Unless 缺"否则"的呼应，While 表对照。'}
 ]},
 
-{d:32,k:'c7',t:'The Quiet Classroom',zh:'Okafor 老师发现自己总是几秒内就替学生答题，于是改成提问后沉默等待。起初难受，后来从不举手的学生举了手。"你没有损失时间，只是把重复浪费换成一次性花掉。"',p:`The loudest thing in Room 12 is the clock. Thirty children are reading, and nobody is checking a phone, passing notes, or staring out of the window. Three years ago this room was like any other: the teacher talked, half the class listened, and the other half waited for the bell.
+{d:32,k:'c7',t:'The Quiet Classroom',zh:'Okafor 老师发现自己总是几秒内就替学生答题，于是改成提问后沉默等待。起初难受，后来从不举手的学生举了手。"你没有损失时间，只是把重复浪费换成一次性花掉。"',w:['result','experiment','learn','study','teach','train','exam','review','student','teacher','school','complain','energy','waste','method','fail','staff','rather than','belong','create','mention','failure','prove','schedule','rarely','instead','this','one','rule','would'],p:`The loudest thing in Room 12 is the clock. Thirty children are reading, and nobody is checking a phone, passing notes, or staring out of the window. Three years ago this room was like any other: the teacher talked, half the class listened, and the other half waited for the bell.
 
 The change did not come from a new rule or a new book. It came from something the teacher, Ms. Okafor, {{1}} one Tuesday: she was answering every question within seconds, and the student who answered was always the same handful. The rest had learned a trick — stay quiet long enough and someone else will do the work. So she tried an experiment: she would ask a question and then say nothing.
 
@@ -7200,7 +7201,7 @@ The experiment spread to two other schools in the district. Results there are mi
 {o:['result','report','review','reason'],a:0,e:'the real result of waiting：等待带来的真正"结果"——不是更安静的孩子，而是更好的思考。report（报告）、review（回顾）不合；reason 是"理由"，不表示产生的效果。'}
 ]},
 
-{d:38,k:'c8',t:'Why We Sleep Badly',zh:'睡眠像银行：工作日透支、周末偿还，身体却记着更严的账。卧室里全是小偷——手机每一次亮起都偷走一点注意力。多数人不是决定几点睡，而是决定几点停工，而后一个决定一直在往后滑。',p:`We treat sleep like a bank we can rob: stay up on workdays, repay at the weekend, repeat. The body keeps a stricter account. One short night slows reaction time; a week of them slows it {{1}} than one glass of wine would, and the person never notices, because the feeling of being used to it is part of the damage.
+{d:38,k:'c8',t:'Why We Sleep Badly',zh:'睡眠像银行：工作日透支、周末偿还，身体却记着更严的账。卧室里全是小偷——手机每一次亮起都偷走一点注意力。多数人不是决定几点睡，而是决定几点停工，而后一个决定一直在往后滑。',w:['relax','learn','study','cause','student','refresh','interrupt','matter','appoint','screen','damage','sleep','decay','decision','public','account','react','tired','prescription','this','these','one','trouble','modern','would','reaction','accident','feeling','alone','private','spend','usual','main'],p:`We treat sleep like a bank we can rob: stay up on workdays, repay at the weekend, repeat. The body keeps a stricter account. One short night slows reaction time; a week of them slows it {{1}} than one glass of wine would, and the person never notices, because the feeling of being used to it is part of the damage.
 
 The modern bedroom is full of small {{2}}. The phone glows, the screen refreshes, and each time it does, a small amount of attention {{3}} away. None of these interruptions matters alone. Together they cost the deep sleep that the brain uses to file the day — which is why people can spend eight hours in bed and still wake up {{4}}.
 
@@ -7221,7 +7222,7 @@ It is not. It is a debt, and the body charges interest. The good news is that un
 {o:['paid','spent','taken','given'],a:0,e:'还债用 pay：this debt can be paid，"这笔债可以还清"。主语是债（debt），与 pay 搭配。spend 的主语是人，take / given 与债务不搭配。'}
 ]},
 
-{d:42,k:'c9',t:'The Bridge and the Glass Box',zh:'石桥塌了一角，小城的修复申请不符合官方规则。退休泥瓦匠带着两个人修了条木头便桥，收一块钱过桥费，钱投进镇政府大厅的玻璃箱。两年后新桥通了，木桥留在了旁边。',p:`The old stone bridge had carried carts, buses and schoolchildren for ninety years, and nobody thought about it until a chunk of stone fell into the river. The {{1}} closed the bridge within an hour, and the town woke up to a question it had never asked: what do we do when the thing that holds us together stops {{2}} that?
+{d:42,k:'c9',t:'The Bridge and the Glass Box',zh:'石桥塌了一角，小城的修复申请不符合官方规则。退休泥瓦匠带着两个人修了条木头便桥，收一块钱过桥费，钱投进镇政府大厅的玻璃箱。两年后新桥通了，木桥留在了旁边。',w:['beside','accept','retire','learn','review','exact','school','support','application','data','survey','hospital','sleep','company','community','family','government','office','different','serious','argue','allow','goal','this','those','one','rule','service','modern','would','exactly','narrow','dangerous','spend','strange','cost','fund','danger','traffic'],p:`The old stone bridge had carried carts, buses and schoolchildren for ninety years, and nobody thought about it until a chunk of stone fell into the river. The {{1}} closed the bridge within an hour, and the town woke up to a question it had never asked: what do we do when the thing that holds us together stops {{2}} that?
 
 A new bridge would {{3}} about two million, and the government had a fund for exactly this. But the rules were written for cities: applications had to be {{4}} by an engineer and supported by five years of traffic data. The town had {{5}}. Its last survey was older than its buses.
 
@@ -7258,7 +7259,7 @@ Not every town can build its own bridge. The walkway worked because the river is
 {o:['small','strange','silly','slow'],a:0,e:'句意：哪怕做的是"小事"，也会改变一个共同体认为自己被允许做什么。small 与 even（即便）呼应，点出全文主旨。strange / silly / slow 都带贬义或无关，破坏主旨。'}
 ]},
 
-{d:46,k:'c10',t:'Fast Clothes, Slow Damage',zh:'一件T恤比午餐便宜，因为有人在别处付差额。做一件棉衬衫的水够一个人喝两年半，三成网购衣服被退回后直接销毁。作者主张：少买一半、多穿一倍，河会更干净。',p:`A T-shirt costs less than lunch. That single fact explains both the success of fast fashion and the trouble it leaves behind. Clothes are cheap {{1}} someone, somewhere, is paying the difference — in wages, in water, in air.
+{d:46,k:'c10',t:'Fast Clothes, Slow Damage',zh:'一件T恤比午餐便宜，因为有人在别处付差额。做一件棉衬衫的水够一个人喝两年半，三成网购衣服被退回后直接销毁。作者主张：少买一半、多穿一倍，河会更干净。',w:['recycle','individual','study','teach','student','process','associate','quarrel','waste','generate','online','health','rather than','wage','company','industry','ban','generation','explain','proud','account','imagine','heal','thus','this','those','one','rule','trouble','quality','ward','quantity','may','should','custom','success','solution','spend','somewhere','trade','cost','image','tax','customer','traffic','brand','package','fuel','habit','healthy','bargain','grow'],p:`A T-shirt costs less than lunch. That single fact explains both the success of fast fashion and the trouble it leaves behind. Clothes are cheap {{1}} someone, somewhere, is paying the difference — in wages, in water, in air.
 
 The numbers are hard to imagine. Making one cotton shirt takes enough water to keep one person {{2}} for two and a half years. A garment that is worn seven times and thrown away has {{3}} all of that water in seven uses. The maths is simple and nobody does it at the till.
 
@@ -7294,7 +7295,7 @@ The deeper change is in how we see a shirt. For most of history, clothes were {{
 {o:['later','earlier','longer','louder'],a:0,e:'whether it is you now, or everyone later：是你现在付，还是"以后"所有人付。later 与 now 直接对举。earlier 意思相反，longer / louder 不进入这个对照。'},
 {o:['If','Unless','Until','Although'],a:0,e:'If you buy less..., someone will drink cleaner water：条件与结果的直接因果。Unless 意思相反（除非不买才干净），Until 表时间，Although 表让步，逻辑都不通。'}
 ]},
-{d:48,k:'c11',t:'When a Machine Reads Your Application',zh:'一家大公司承认招聘软件在筛掉女性——不是有人教它歧视，而是它从十年的招聘记录里学的。机器不残忍，它只是在重复过去。可查、可调、可追问，恰恰是它比人强的地方。',p:`A few years ago, a large company admitted that its hiring software had been {{1}} women. Not because anyone told it to — because it had learned from ten years of hiring {{2}}, and ten years of hiring had mostly chosen men. The machine was not cruel. It was {{3}} the past, which is a different and quieter problem.
+{d:48,k:'c11',t:'When a Machine Reads Your Application',zh:'一家大公司承认招聘软件在筛掉女性——不是有人教它歧视，而是它从十年的招聘记录里学的。机器不残忍，它只是在重复过去。可查、可调、可追问，恰恰是它比人强的地方。',w:['result','replace','learn','train','review','recruit','adjust','avoid','remove','in charge of','information','manage','manager','insult','statement','software','application','inherit','choice','data','practice','fail','prejudice','cheat','applicant','company','decision','algorithm','system','refuse','meeting','different','explain','measure','mention','admit','questionnaire','imagine','tired','objective','hardly','this','chance','ones','should','reason','speed','feeling','exciting','practical','human','publish','rare','rude','image','bias','filter','fake','soft','hire'],p:`A few years ago, a large company admitted that its hiring software had been {{1}} women. Not because anyone told it to — because it had learned from ten years of hiring {{2}}, and ten years of hiring had mostly chosen men. The machine was not cruel. It was {{3}} the past, which is a different and quieter problem.
 
 The company {{4}} the system, hired outside auditors and published an honest summary of what had gone wrong. That is more than most companies {{5}}. Most stories about biased software end with a statement, not a {{6}}.
 
@@ -7327,7 +7328,7 @@ Applicants can do something too. If a rejection arrives in four seconds, {{17}} 
 {o:['repeat','repair','refuse','remove'],a:0,e:'repeat the same mistake：迟早会"重蹈"它本想避免的覆辙。repeat 与开头 It was repeating the past 首尾呼应，点出主题。repair / refuse / remove 都不与 the same mistake 搭配。'}
 ]},
 
-{d:52,k:'c12',t:'The Well and the Whiteboard',zh:'Ashford 村一口井、一条河、两百户人家。天气变了，井水每年夏天下沉一米。最终管用的不是委员会和海报，而是井边一块白板：取水的人写下水量和日期。一个月用水降了三分之一。',p:`The village of Ashford has one well, one river and two hundred families. For sixty years that was {{1}}: the well gave drinking water, the river watered the fields, and the only argument was about whose turn it was to fix the pump.
+{d:52,k:'c12',t:'The Well and the Whiteboard',zh:'Ashford 村一口井、一条河、两百户人家。天气变了，井水每年夏天下沉一米。最终管用的不是委员会和海报，而是井边一块白板：取水的人写下水量和日期。一个月用水降了三分之一。',w:['resource','protect','produce','commit','argument','waste','technology','data','family','government','turn out','turn to','policy','office','difficult','limit','argue','solve','suggest','this','one','rule','could','must','should','dream','region','order','usual','extra','strange','disaster','total','sweet'],p:`The village of Ashford has one well, one river and two hundred families. For sixty years that was {{1}}: the well gave drinking water, the river watered the fields, and the only argument was about whose turn it was to fix the pump.
 
 Then the weather changed. Rain that used to arrive in April now arrives in June, if it arrives at all. The river runs low for months, and the well, which never ran dry before, now {{2}} by a metre every summer. In a dry year, the village must decide — every single day — {{3}} the water goes.
 
@@ -7362,6 +7363,8 @@ Ashford did not solve the weather. What it did was smaller, but it {{20}}: it tu
 {o:['works','wins','waits','wastes'],a:0,e:'it works：它"管用"。works 指（办法）奏效，与 What finally worked 前后呼应。wins（获胜）缺对手，waits（等待）与"已见效"矛盾，wastes（浪费）意思相反。'}
 ]}
 ];
+/* 完形正文/选项里的超纲词：给零基础用户的中文提示（不进 WORDS，不改每日配额） */
+const CGLOSS={"wallet": "钱包", "medicine": "药", "reward": "报酬", "honesty": "诚实", "trust": "信任", "proof": "证明", "passenger": "乘客", "owner": "失主/主人", "pattern": "模式", "local": "当地的", "editor": "编辑", "guard": "护学岗/警卫", "crossing": "人行横道", "province": "省", "budget": "预算", "wage": "工资", "committee": "委员会", "complaint": "投诉", "poster": "海报", "inspector": "检查员", "rope": "绳子", "rope walkway": "木板便道", "walkway": "便道", "footpath": "步道", "glass box": "玻璃箱", "board": "告示板", "fund": "基金", "application": "申请", "entrance": "入口", "paperwork": "文书工作", "cart": "手推车/马车", "chunk": "大块", "mason": "泥瓦匠", "survey": "测量/调查", "pump": "水泵", "bucket": "桶", "whiteboard": "白板", "regional": "地区的", "official": "官员", "pencil": "铅笔", "folder": "文件夹", "spare": "匀出", "memory": "记忆", "brain": "大脑", "chapter": "章节", "path": "小路", "silence": "沉默", "experiment": "实验", "syllabus": "教学大纲", "staff room": "教研室", "district": "区", "method": "方法", "sentence": "句子", "trick": "诀窍", "practice": "练习", "delivery": "配送", "parcel": "包裹", "warehouse": "仓库", "vans": "货车", "packaging": "包装", "fuel": "燃料", "till": "收银台", "garment": "成衣", "wardrobe": "衣柜", "second-hand": "二手的", "mended": "缝补过的", "seam": "缝线", "fabric": "布料", "downstream": "下游的", "virgin plastic": "原生塑料", "label": "标签", "recycling logo": "回收标志", "bargain": "便宜货", "arithmetic": "算术", "cotton": "棉花", "spin": "纺纱", "fashion": "时尚", "t-shirt": "T 恤", "lunch": "午餐(基础)", "fast fashion": "快时尚", "clinic": "诊所", "notebook": "笔记本", "loneliness": "孤独", "pill": "药丸", "housing": "住房", "ambulance": "救护车", "visitor": "来访者", "glass": "玻璃", "interview": "面试", "newspaper": "报纸", "patients": "病人", "platform": "站台", "delay": "延误", "sensor": "传感器", "track": "轨道", "signal": "信号", "daughter": "女儿", "flash": "闪一下", "judgment": "判断", "strictly": "严格地", "clock": "钟", "staring": "盯着看", "semester": "学期", "magic": "魔法", "debt": "债务", "interest": "利息", "to-do list": "待办清单", "appointment": "约定", "border": "边界", "prescription": "处方", "reaction": "反应", "thief": "小偷", "thieves": "小偷", "glow": "发光", "refresh": "刷新", "interruptions": "打断", "half-awake": "半睡半醒", "carts": "马车", "cars": "汽车(基础)", "engineer": "工程师", "name": "名字(基础)", "hiring": "招聘", "recruiter": "招聘人员", "auditor": "审计员", "auditors": "审计员(复数)", "biased": "有偏见的", "prejudiced": "有偏见的", "questionnaire": "问卷", "fake": "伪造的", "lawsuit": "诉讼", "cover letter": "求职信", "applicant": "申请人", "rejection": "拒绝信", "objective": "客观的", "filter": "筛选", "recruiters": "招聘人员(复数)", "software": "软件", "hiring software": "招聘软件", "well": "水井", "drought": "干旱", "share": "份额(基础)", "limit": "限制(基础)", "custom": "习俗", "ritual": "仪式", "technology": "技术", "region": "地区", "minister": "部长", "monster": "怪物", "recorder": "录音机", "fiction": "小说", "hollow": "空洞的", "humid": "潮湿的", "humour": "幽默", "humor": "幽默", "temple": "寺庙", "decade": "十年", "dawn": "黎明", "fare": "车费", "vision": "远见", "victory": "胜利", "height": "身高", "difficulty": "困难", "distance": "距离", "minute": "分钟", "stranger": "陌生人", "guests": "客人", "guards": "卫兵", "seller": "卖家", "buyer": "买家", "worker": "工人", "ticket": "票", "fond": "喜爱的", "bound": "必定的", "agree": "同意", "agreed": "同意(过去式)", "charge": "收费", "computer": "电脑", "control": "控制", "copy": "照搬", "correct": "正确的", "denied": "否认(过去式)", "faster": "更快", "lesson": "课", "listening": "倾听", "machine": "机器", "match": "匹配", "mistake": "错误", "noticed": "注意到", "promise": "承诺", "reading": "读", "remember": "记得", "repeat": "重复", "repeated": "重复(过去式)", "repeating": "重复(进行式)", "repeats": "重复(三单)", "returned": "归还(过去式)", "speaking": "说", "speech": "演讲", "ties": "系住(三单)", "unites": "联合(三单)", "buying": "买(动名词)", "agrees": "同意(三单)", "arrives": "到达(三单)", "ask": "问", "cared": "照料(过去式)", "charged": "收费(过去式)", "cleaned": "清理(过去式)", "drinking": "喝", "fan": "风扇/爱好者", "games": "游戏", "gifts": "礼物", "hobby": "爱好", "honor": "光荣", "hotel": "旅馆", "huge": "巨大的", "piece": "一块", "remark": "评论", "satisfied": "满意的", "saved": "省下(过去式)", "shared": "分享(过去式)", "signed": "签署(过去式)", "silent": "安静的", "slips": "溜走", "steps": "脚步", "strangers": "陌生人", "surprised": "惊讶的", "swimming": "游泳", "washing": "洗", "wasting": "浪费", "save": "保全/节省", "check": "核查", "difference": "差别", "divided": "分割(过去式)", "doubt": "怀疑", "drinks": "喝(三单)", "elder": "年长的", "hidden": "隐藏的", "misses": "漏掉(三单)", "mixes": "混合(三单)", "posted": "张贴(过去式)", "printed": "打印(过去式)", "recording": "记录", "refusing": "拒绝", "rejecting": "拒绝/筛掉", "remembering": "记住", "repair": "修理", "repaired": "修理(过去式)", "reports": "报告", "view": "视野", "visit": "访问", "voice": "声音", "wave": "波浪", "wind": "风", "words": "词", "worth": "值得"};
 const WDEF=(function(){ const o={}; WORDS.forEach(w=>{o[w[0]]=w[1];}); return o; })();
 function defOf(w){ return WDEF[w]||''; }
 /* 词形匹配：一个词条在正文里可能有多种形态（took / are aware of / clarified / doing）
@@ -8001,6 +8004,24 @@ function clzNext(){
   }
   render();
 }
+function clzGloss(C){
+  const txt=(C.p+' '+C.g.map(function(g){return g.o.join(' ');}).join(' ')).toLowerCase();
+  const rows=[];
+  Object.keys(CGLOSS).forEach(function(w){
+    if(WDEF[w]) return;
+    const esc_w=w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/ /g,'\\s+');
+    let re;
+    try{ re=new RegExp('(^|[^a-z])'+esc_w+'(s|es)?(?=[^a-z]|$)','i'); }catch(e){ return; }
+    if(re.test(txt)) rows.push([w,CGLOSS[w]]);
+  });
+  rows.sort(function(x,y){ return x[0].localeCompare(y[0]); });
+  return rows;
+}
+function optHint(o){
+  const k=String(o).toLowerCase().trim();
+  if(WDEF[k]||!CGLOSS[k]) return '';
+  return '<span class="czgl">'+esc(CGLOSS[k])+'</span>';
+}
 function clzBody(C,r){
   return String(C.p).split('\n').filter(function(x){ return x.trim(); }).map(function(par){
     let h=esc(par.trim());
@@ -8026,9 +8047,19 @@ function viewCloze(){
 
   const note='<div class="note" style="margin-top:0;"><b>先通读全文，再动手填。</b>'+
     '完形考的不是单个词的意思，而是上下文：逻辑关系、固定搭配、词义辨析、前后指代。'+
-    '选项全部是你学过的词或考纲常见词。<br>'+
+    '这套用到第 '+C.d+' 天之前学过的 <b>'+(C.w||[]).length+' 个词</b>（见下方「本篇复现词」）；'+
+    '选项里若有没学过的词，已在本页给出中文，不会让你因为不认识而选错。<br>'+
     '<span style="font-size:12.4px;color:var(--ink-4);">大意：'+esc(C.zh||'')+'</span>'+
     (d<C.d?'<br><b style="color:var(--amber);">这套还没解锁</b>（第 '+C.d+' 天开放），可以先看正文和选项，正式做的话按进度来。':'')+'</div>';
+
+  const gl=clzGloss(C);
+  const glossCard=gl.length?('<div class="card"><h3>本篇生词提示 <span class="sub">'+gl.length+' 个 · 卡住再展开</span></h3>'+
+    '<div style="font-size:12.5px;color:var(--ink-3);line-height:1.85;">正文里有少量不在考纲词库里的场景词——真实考试的完形也会这样。'+
+    '<b>先靠上下文猜</b>，实在卡住再看下面。这些不是今天要背的词，也不影响判断答案。</div>'+
+    '<details style="margin-top:8px;"><summary style="cursor:pointer;font-size:12.4px;color:var(--blue);font-weight:700;">展开中英对照</summary>'+
+    '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px 16px;">'+gl.map(function(x){
+      return '<span style="font-size:12.5px;white-space:nowrap;"><b style="color:var(--ink-1);">'+esc(x[0])+'</b> <span style="color:var(--ink-4);">'+esc(x[1])+'</span></span>';
+    }).join('')+'</div></details></div>'):'';
 
   const body='<div class="card"><h3>'+esc(C.t)+' <span class="sub">'+n+' 空</span></h3>'+
     '<div class="rdgp">'+clzBody(C,r)+'</div></div>';
@@ -8040,7 +8071,7 @@ function viewCloze(){
       if(pick===oi) cls+=' sel';
       if(r.done){ if(oi===g.a) cls+=' ok'; else if(pick===oi) cls+=' no'; }
       return '<button class="'+cls+'" onclick="clzPick('+qi+','+oi+')"'+(r.done?' disabled':'')+'>'+
-        'ABCD'[oi]+'. '+esc(o)+'</button>';
+        'ABCD'[oi]+'. '+esc(o)+optHint(o)+'</button>';
     }).join('');
     const tag=(pick==null?'':(pick===g.a?'<span style="color:var(--ok);">✓</span>':'<span style="color:var(--rose);">✗</span>'));
     return '<div class="czrow"><div class="czno">'+(qi+1)+'</div><div class="czopts">'+opts+'</div>'+
@@ -8077,13 +8108,24 @@ function viewCloze(){
         '<div style="flex:none;font-size:11.8px;">'+t+'</div></div>';
     }).join('')+'</div>';
 
-  return head+note+
+  const wordCard='<div class="card"><h3>本篇复现词 <span class="sub">'+(C.w||[]).length+' 个 · 都是第 '+C.d+' 天之前学过的</span></h3>'+
+    '<div style="font-size:12.5px;color:var(--ink-3);line-height:1.85;">这些词出现在正文或选项里。'+
+    '做完题回头扫一遍——'+
+    '在句子里认出它，比在卡片上认出它更接近考场。</div>'+
+    '<details style="margin-top:8px;"><summary style="cursor:pointer;font-size:12.4px;color:var(--blue);font-weight:700;">展开中英对照</summary>'+
+    '<div style="margin-top:8px;">'+(C.w||[]).map(function(w){
+      return '<div style="display:flex;gap:9px;padding:5px 0;border-bottom:1px dashed var(--line);font-size:12.7px;line-height:1.7;">'+
+        '<b style="flex:none;min-width:112px;color:var(--ink-1);">'+esc(w)+'</b>'+
+        '<span style="color:var(--ink-3);">'+esc(defOf(w))+'</span></div>';
+    }).join('')+'</div></details></div>';
+
+  return head+note+glossCard+
     body+
     '<div class="card"><h3>作答 <span class="sub">'+(r.done?('对 '+right+' / '+n):'选完再交卷，别边填边看答案')+'</span></h3>'+
       '<div style="font-size:12.3px;color:var(--ink-4);margin-bottom:6px;">第 1 题对应正文里的 (1)，依次类推。</div>'+
       rowHtml+summary+
       '<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">'+acts+'</div></div>'+
-    list+
+    wordCard+list+
     '<div style="margin-bottom:20px;"><button class="btn" onclick="go(\'read\')">← 去读文章</button></div>';
 }
 function viewDrill(){
