@@ -5278,6 +5278,58 @@ function wstate(word){
   if(!S.words[word]) S.words[word]={box:0,due:todayISO(),hard:0,seen:0};
   return S.words[word];
 }
+/* ---- 练习错题回写词状态 ----
+   背词页判对不代表在句子里认得出。阅读/快练/完形/实战答错时，
+   把该题关联的词 hard+1、box 降一档、due 拉回今天，第二天队列自动再考。 */
+function markWeak(keys, src){
+  const t=todayISO(); let n=0; const uniq={};
+  (keys||[]).forEach(function(k){
+    k=String(k||'').toLowerCase().trim();
+    if(!k||uniq[k]||!WDEF[k]) return;
+    uniq[k]=1;
+    const st=S.words[k];
+    if(!st||!st.seen) return;               /* 没学过的词不建记录 */
+    if(st.done){ st.done=0; st.box=0; }     /* 已归档的认知词复活 */
+    else st.box=Math.max(0,(st.box||0)-1);
+    st.hard=(st.hard||0)+1;
+    st.due=t;                               /* 今天起回到到期队列 */
+    st.weakSrc=src; st.weakLast=t;
+    S.weak=S.weak||{n:0,by:{},day:{},words:{}};
+    S.weak.n++; S.weak.by[src]=(S.weak.by[src]||0)+1;
+    S.weak.day[t]=(S.weak.day[t]||0)+1;
+    S.weak.words[k]=(S.weak.words[k]||0)+1;
+    n++;
+  });
+  if(n) save();
+  return n;
+}
+/* 一道阅读题在考哪些词：从题干、正确选项、解析里的英文引文找本篇目标词 */
+function qWords(R,qi){
+  const q=R.q[qi]; if(!q) return [];
+  const txt=[q.s,q.o[q.a],q.e].join(' ');
+  return (R.w||[]).filter(function(w){ const re=mkRe([w],'i'); return re&&re.test(txt); });
+}
+/* 完形某个空关联哪些词：正确答案/误选项里在词库的 + 空位所在句子里的已学复现词 */
+function clzWords(C,qi,pick){
+  const g=C.g[qi], keys=[];
+  const k=String(g.o[g.a]).toLowerCase().trim(); if(WDEF[k]) keys.push(k);
+  if(pick!=null&&pick!==g.a){ const p=String(g.o[pick]).toLowerCase().trim(); if(WDEF[p]) keys.push(p); }
+  const tag='{{'+(qi+1)+'}}';
+  const para=String(C.p).split(/\n+/).filter(Boolean).join(' ');
+  const idx=para.indexOf(tag);
+  if(idx>=0){
+    const st=para.lastIndexOf('.',idx), en=para.indexOf('.',idx);
+    const sent=para.slice(st+1, en>0?en+1:para.length);
+    (C.w||[]).forEach(function(w){ const re=mkRe([w],'i'); if(re&&re.test(sent)) keys.push(w); });
+  }
+  return keys.filter(function(x){ return WDEF[x]; });
+}
+function weakStat(){
+  const w=S.weak||{n:0,by:{},day:{},words:{}};
+  return {total:w.n||0, today:(w.day||{})[todayISO()]||0,
+          by:w.by||{}, words:Object.keys(w.words||{}).sort(function(a,b){return w.words[b]-w.words[a];})};
+}
+
 /* 记录今天碰过的词：seens 首次出现进 tn（新学），否则进 tr（回炉） */
 function markToday(word,first){
   const t=todayISO();
@@ -7481,7 +7533,9 @@ function readAns(qi,oi){
   const R=RDG[rdgIdx()], r=rdgRec(R);
   if(r.a[qi]!=null) return;
   r.a[qi]=oi;
-  if(oi===rq(R,qi)._a) r.n=(r.n||0)+1;
+  const right=(oi===rq(R,qi)._a);
+  if(right) r.n=(r.n||0)+1;
+  else { r.wk=r.wk||{}; r.wk[qi]=markWeak(qWords(R,qi),'read')||0; }
   save(); render();
 }
 function openRead(i){
@@ -7556,7 +7610,8 @@ function viewRead(){
         'ABCD'[oi]+'. '+esc(o)+'</button>';
     }).join('');
     return '<div class="rdgq"><div class="qs">'+(qi+1)+'. '+esc(q.s)+'</div>'+opts+
-      (pick!=null?'<div class="rexp">'+(pick===Q._a?'✓ 对　':'✗ 错　')+esc(q.e)+'</div>':'')+'</div>';
+      (pick!=null?'<div class="rexp">'+(pick===Q._a?'✓ 对　':'✗ 错　')+esc(q.e)+
+        (pick!==Q._a&&r.wk&&r.wk[qi]?'<br><b style="color:var(--amber);">'+r.wk[qi]+' 个词已回炉，明天队列自动再考</b>':'')+'</div>':'')+'</div>';
   }).join('');
 
   const wl=R.w.map(function(w){
@@ -7592,7 +7647,8 @@ function viewRead(){
       (done===R.q.length?
         (right===R.q.length
           ? '<div class="note good" style="margin:10px 0 0;"><b>全对。</b>这篇的词在语境里认得出来，这才叫学会了。再来一篇或者换个难度。</div>'
-          : '<div class="note warn" style="margin:10px 0 0;"><b>错 '+(R.q.length-right)+' 题。</b>错的词回到背词页加练一轮，明天它还会出现在复习里。</div>')
+          : '<div class="note warn" style="margin:10px 0 0;"><b>错 '+(R.q.length-right)+' 题。</b>'+
+            '这些题关联的词已自动回炉（box 降一档、到期日拉回今天），明天背词队列会再考一次。</div>')
         :'')+
     '</div>'+
 
@@ -7748,6 +7804,7 @@ function drillAns(oi){
   const it=DR.items[DR.i];
   S.drill=S.drill||{n:0,ok:0};
   S.drill.n++; if(oi===it.a) S.drill.ok++;
+  else it.wn=markWeak([it.w],'drill')||0;
   save(); render();
 }
 function drillNext(){ if(DR&&DR.i<DR.items.length-1){ DR.i++; render(); window.scrollTo(0,0); } }
@@ -7805,6 +7862,23 @@ function examSubmit(){
     const R=RDG[ri];
     R.q.forEach(function(q,qi){ if(E.ans.r[di+':'+qi]===q.a) r++; });
   });
+  /* 交卷时把答错的空/题关联的词拉回背词队列（只标记一次，重做不重复累加） */
+  E.wk=E.wk||{}; let wn=0;
+  const CZ=CLOZE[E.cz];
+  CZ.g.forEach(function(x,qi){
+    const pick=E.ans.c[qi], tag='c'+qi;
+    if(pick==null||pick===x.a||E.wk[tag]) return;
+    E.wk[tag]=markWeak(clzWords(CZ,qi,pick),'exam')||0; wn+=E.wk[tag];
+  });
+  E.rd.forEach(function(ri,di){
+    const R=RDG[ri];
+    R.q.forEach(function(q,qi){
+      const pick=E.ans.r[di+':'+qi], tag='r'+di+'_'+qi;
+      if(pick==null||pick===q.a||E.wk[tag]) return;
+      E.wk[tag]=markWeak(qWords(R,qi),'exam')||0; wn+=E.wk[tag];
+    });
+  });
+  E.wn=wn;
   E.done=1; E.fin=Date.now();
   E.score={gq:g, gz:+(g*1.5).toFixed(1), cq:c, cs:c, rq:r, rs:+(r*2.5).toFixed(1), tot:+(g*1.5+c+r*2.5).toFixed(1)};
   S.exams=S.exams||[];
@@ -7935,6 +8009,8 @@ function viewExam(){
         '<span>词汇语法 <b>'+sc.gq+'/20 对 · '+sc.gz+' 分</b></span>'+
         '<span>完形 <b>'+sc.cq+'/'+C.g.length+' 对 · '+sc.cs+' 分</b></span>'+
         '<span>阅读 <b>'+sc.rq+'/8 对 · '+sc.rs+' 分</b></span></div>'+
+      (E.wn?'<div class="note warn" style="margin:10px 0 0;"><b>'+E.wn+' 个词次已回炉。</b>'+
+        '交卷时答错的空和题关联的词已写回 S.words，明天背词队列自动再考一次。</div>':'')+
       '<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">'+
         '<button class="btn pri" style="padding:9px 18px;" onclick="examStart()">再来一卷</button>'+
         '<button class="btn" style="padding:9px 16px;" onclick="examLeave()">关闭</button></div></div>';
@@ -7992,7 +8068,16 @@ function clzSubmit(){
   const C=CLOZE[clzIdx()], r=clzRec(C);
   const left=C.g.length-Object.keys(r.a).length;
   if(left>0 && typeof confirm==='function' && !confirm('还有 '+left+' 空没选，现在交卷吗？交卷后本套不能再改。')) return;
-  r.done=1; save(); render(); window.scrollTo(0,0);
+  r.done=1;
+  r.wk=r.wk||{}; let wn=0;
+  C.g.forEach(function(g,qi){
+    const pick=r.a[qi];
+    if(pick==null||pick===g.a||r.wk[qi]) return;
+    r.wk[qi]=markWeak(clzWords(C,qi,pick),'cloze')||0;
+    wn+=r.wk[qi];
+  });
+  r.wn=wn;
+  save(); render(); window.scrollTo(0,0);
 }
 function clzRedo(){ const C=CLOZE[clzIdx()], r=clzRec(C); r.a={}; r.done=0; save(); render(); }
 function clzOpen(i){ CLZV=i; go('cloze'); }
@@ -8081,7 +8166,8 @@ function viewCloze(){
   const score=r.done?Math.round(right/n*100):0;
   const summary=r.done
     ?'<div class="note '+(right===n?'good':'warn')+'" style="margin:10px 0 0;"><b>得分 '+right+' / '+n+'（'+right+' 分）</b>　正确率 '+score+'%。'+
-      (right===n?'全对——这套完形的衔接和搭配你都抓住了。':(right>=Math.ceil(n*0.8)?'错 '+(n-right)+' 空，对照下面的解析看是哪类考点丢的。':'错 '+(n-right)+' 空，先把错空的搭配抄进错词本，再重做一遍。'))+'</div>'
+      (right===n?'全对——这套完形的衔接和搭配你都抓住了。':(right>=Math.ceil(n*0.8)?'错 '+(n-right)+' 空，对照下面的解析看是哪类考点丢的。':'错 '+(n-right)+' 空，先把错空的搭配抄进错词本，再重做一遍。'))+
+      (r.wn?'<br><b style="color:var(--amber);">'+r.wn+' 个词次已回炉：</b>box 降一档、到期日拉回今天，明天背词队列会再考。':'')+'</div>'
     :'<div style="font-size:12.4px;color:var(--ink-4);margin-top:10px;">已选 '+done+' / '+n+' 空'+
       (done?'　<span style="color:var(--blue);font-weight:700;">答完点下面交卷判分</span>':'')+'</div>';
 
@@ -8169,7 +8255,9 @@ function viewDrill(){
     if(pick!=null){ if(oi===it.a) cls+=' ok'; else if(oi===pick) cls+=' no'; }
     return '<button class="'+cls+'" onclick="drillAns('+oi+')"'+(pick!=null?' disabled':'')+'>'+'ABCD'[oi]+'. '+esc(o)+'</button>';
   }).join('');
-  const exp=pick!=null?('<div class="rexp">'+(pick===it.a?'✓ 对　':'✗ 错　')+esc(it.w)+'：'+esc(it.def)+(it.src?'　<span style="color:var(--ink-4);">出自'+esc(it.src)+'</span>':'')+'</div>'):'';
+  const exp=pick!=null?('<div class="rexp">'+(pick===it.a?'✓ 对　':'✗ 错　')+esc(it.w)+'：'+esc(it.def)+
+    (it.src?'　<span style="color:var(--ink-4);">出自'+esc(it.src)+'</span>':'')+
+    (pick!==it.a&&it.wn?'<br><b style="color:var(--amber);">已回炉，明天队列自动再考</b>':'')+'</div>'):'';
   return head+bar+
     '<div class="card"><h3>第 '+(DR.i+1)+' / '+total+' 题 <span class="sub">'+tag+(it.src?' · '+esc(it.src):'')+'</span></h3>'+
       '<div class="rdgq" style="border-top:none;padding-top:0;"><div class="qs" style="font-size:14px;">'+qHtml+'</div>'+opts+exp+'</div>'+
@@ -8405,6 +8493,26 @@ function viewProg(){
       '<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);">'+
       '<div style="font-size:12px;color:var(--ink-3);margin-bottom:8px;"><b>词库维护</b></div>'+
       importBox()+'</div></div>'+
+    (function(){
+      const w=weakStat();
+      const names={read:'每日一读',drill:'快练',cloze:'完形',exam:'整卷实战'};
+      const src=Object.keys(w.by).map(function(k){ return (names[k]||k)+' '+(w.by[k]||0); }).join(' · ');
+      const top=w.words.slice(0,12).map(function(k){
+        return '<span style="display:inline-block;margin:0 8px 6px 0;padding:3px 8px;background:var(--amber-2);color:var(--amber);border-radius:6px;font-size:12px;">'+
+          esc(k)+' ×'+(S.weak.words[k]||0)+'</span>';
+      }).join('');
+      return '<div class="card"><h3>练习回炉 <span class="sub">错题自动写回背词队列</span></h3>'+
+        '<div class="row3">'+
+          '<div class="stat" style="border:0;padding:0;"><div class="k">今天回炉</div><div class="v" style="font-size:17px;">'+w.today+'</div></div>'+
+          '<div class="stat" style="border:0;padding:0;"><div class="k">累计回炉</div><div class="v" style="font-size:17px;">'+w.total+'</div></div>'+
+          '<div class="stat" style="border:0;padding:0;"><div class="k">涉及词</div><div class="v" style="font-size:17px;">'+w.words.length+'</div></div>'+
+        '</div>'+
+        '<div style="font-size:12.3px;color:var(--ink-3);line-height:1.8;margin-top:10px;">'+
+          '在阅读、快练、完形或整卷实战里答错 → 该题关联的词 <b>hard+1、box 降一档、due 拉回今天</b>，'+
+          '第二天背词队列自动再考。这样"卡片上认得、句子里认不出"的词会被抓回来。'+
+          (src?'<br>来源：'+esc(src):'')+(top?'<div style="margin-top:9px;">'+top+'</div>':'')+
+        '</div></div>';
+    })()+
     planMap()+
     (function(){
       let all=0, full=0, qs=0, ok=0;
