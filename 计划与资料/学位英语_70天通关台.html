@@ -163,6 +163,33 @@
   .lb{background:var(--amber-2); color:var(--amber);}
   .lc{background:var(--blue-2); color:var(--blue);}
 
+  /* 直读词卡：一次摊开，不再翻面 */
+  .flash.wcard{cursor:default; min-height:0; padding:18px 22px 20px; align-items:stretch; justify-content:flex-start; text-align:left;}
+  .flash.wcard:hover{border-color:var(--line);}
+  .wcard .wtop{display:flex; align-items:center; gap:8px; margin-bottom:10px;}
+  .wcard .layerbadge{position:static;}
+  .wcard .widx{font-size:11.4px; color:var(--ink-4); margin-left:auto;}
+  .wcard .whead{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .wcard .w{font-family:Georgia,"Times New Roman",serif; font-size:33px; color:var(--ink); letter-spacing:.01em; line-height:1.25;}
+  .wcard .saybtn{font-family:inherit; font-size:11.6px; font-weight:600; color:var(--blue); background:var(--blue-2);
+    border:0; padding:4px 11px; border-radius:99px; cursor:pointer; margin-top:4px;}
+  .wcard .saybtn:hover{background:var(--blue-3);}
+  .wcard .zh{font-size:17px; color:var(--blue); font-weight:600; margin-top:6px; line-height:1.7;}
+  .wcard .story{margin-top:14px; padding:12px 16px 13px; border-left:3px solid #dda23a;
+    background:linear-gradient(180deg,#fffbf2,#fdf6e8); border-radius:0 10px 10px 0; position:relative;}
+  .wcard .story .stag{display:inline-block; font-size:10.6px; font-weight:700; letter-spacing:.06em;
+    color:#96600f; background:#f7e3bf; padding:1px 8px; border-radius:99px;}
+  .wcard .story .q{position:absolute; right:13px; top:0; font-family:Georgia,serif; font-size:40px;
+    color:#eed9b4; line-height:1; user-select:none;}
+  .wcard .story p{margin:7px 0 0; font-size:14.2px; line-height:1.95; color:#5b3f16;}
+  .wcard .story p b{color:#8a4a06;}
+  .wcard .story.none{background:#fafbfd; border-left-color:var(--line);}
+  .wcard .story.none p{color:var(--ink-3); font-size:13px;}
+  .wcard .story.none .stag{color:var(--ink-4); background:var(--line-2);}
+  .wcard .story.none .q{display:none;}
+  .wcard .bkrow{margin-top:9px;}
+  .wcard .bkadd{margin-top:14px;}
+
   .gradebar{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:14px;}
   .gradebar .btn{padding:12px 0; font-size:13.6px;}
 
@@ -263,6 +290,10 @@
     main{padding:18px 14px 60px;}
     .row2,.row3,.cmp{grid-template-columns:1fr;}
     .flash .w{font-size:30px;}
+    .flash.wcard{padding:14px 15px 16px;}
+    .wcard .w{font-size:27px;}
+    .wcard .story{padding:11px 13px 12px;}
+    .wcard .story p{font-size:13.6px;}
     .cal{grid-template-columns:repeat(7,1fr);}
   }
 </style>
@@ -1195,6 +1226,511 @@ const MORPH={
 /* =========================================================
    趣记：谐音 / 联想 / 梗记忆。仅供记忆钩子，词义以释义为准
    ========================================================= */
+/* 一句话故事：一个画面 / 一个小反转，先把词「演」一遍，再记释义。仅供记忆钩子，词义以释义为准 */
+const STORY={
+  "increase":"工资 increase 两百，房租 increase 八百——这个词你不用背，你每个月都在体验它。",
+  "improve":"同一篇作文抄十遍不会 improve，改一句才会。improve 是变好，不是变多。",
+  "affect":"熬夜 affect 的不是成绩，是第二天的脸。affect 是动手的那个（动词），effect 是留下的那个（名词）。",
+  "cause":"一个没掐灭的烟头 cause 了一场山火。cause 后面跟结果，cause sb to do 是它的招牌句式。",
+  "provide":"食堂 provide 免费汤，但不 provide 勺子。provide sb with sth / provide sth for sb，方向别弄反。",
+  "require":"这个证 require 两年工作经验——require 是硬性要求，比 need 硬，后面接 that 从句要用 should。",
+  "involve":"结婚 involve 两个人，也 involve 两家人的意见。involve 是「把……卷进来」。",
+  "reduce":"奶茶从全糖 reduce 到三分糖，快乐直接 reduce 了一半。",
+  "avoid":"avoid 后面只接 doing，不接 to do——想避开错误，先避开这个。avoid meeting him。",
+  "prevent":"口罩 prevent 病毒传播，但 prevent sb from doing 里的 from 千万别丢，丢了就不算防。",
+  "achieve":"运动员 achieve 金牌那天，教练只说了一句：明天照常六点训练。",
+  "support":"support 一个词管两件事：给钱叫资助，给肩膀叫支持。",
+  "describe":"describe 是拿笔把人画出来：describe sb as… 就是「把他说成什么样」。",
+  "depend":"你 depend on 工资，工资 depend on 老板，老板 depend on 客户——一条谁也不敢断的链子。",
+  "contribute":"每人 contribute 十块，凑出一台空调。contribute to 既是「贡献给」，也是「导致」——捐钱和背锅用同一个短语。",
+  "benefit":"benefit from 是你沾光，benefit sb 是你给人好处，方向一反，句意全错。",
+  "suffer":"suffer from 后面跟病：suffer from a cold。痛苦总要有个来源，from 就是那个来源。",
+  "survive":"survive 后面直接跟灾难，不加 from：survive the earthquake。活下来的人不挑介词。",
+  "adapt":"人 adapt to 新环境，导演 adapt 名著。同一个词，一个适应，一个改编。",
+  "maintain":"maintain 管三件事：维持关系、维护机器、坚持观点——本质上都是「别让它掉下来」。",
+  "demand":"客户 demand 退款时不会用 ask。demand 的语气是硬的，后面接 that 从句要用 should。",
+  "respond":"老板发消息，你不 respond 他就当你没看见。respond to 是有反应，reply to 才是回话。",
+  "ignore":"ignore 不是没看见，是看见了当没看见——故意的，这才叫 ignore。",
+  "indicate":"仪表盘 indicate 油量，作者 indicate 态度。阅读题看到 indicate，就问「它说明了什么」。",
+  "influence":"父母 influence 你二十年，是一点点渗进去的；affect 更快，influence 更久。",
+  "measure":"measure 既是量，也是措施（take measures）——尺子和办法共用一个词。",
+  "observe":"observe 不只是看：observe the rules 是守规矩，盯着规矩看可不算。",
+  "occur":"It occurs to me that… 是「我突然想到」。occur 的主语常常是那件事，不是你。",
+  "reflect":"镜子 reflect 脸，文章 reflect 时代；reflect on 是回头想。",
+  "replace":"replace A with B 是用 B 换掉 A。写成 replace B with A，方向一反，整句错。",
+  "tend":"人 tend to do 就是忍不住要做——tend 是倾向，不是决定。",
+  "according to":"according to 后面只能跟来源（报告、课本、某人），不能跟「我觉得」。",
+  "infer":"老师说「有些同学作业写得真好」，你立刻 infer 出自己完了——这就是推断。",
+  "imply":"imply 是说话人藏在话里的，infer 是听话人听出来的——一个埋，一个挖。",
+  "purpose":"问 purpose 就是问「作者写这篇想干嘛」，答案通常在首段或末段。",
+  "attitude":"attitude 考的是褒贬：positive、negative、objective。三个都出现，就去读最后一句。",
+  "tone":"作者骂人不带脏字，那个语气叫 critical。tone 题问的是「他怎么说的」，不是「他说了什么」。",
+  "mainly":"mainly 是「主要是」。问主旨的题，正确选项里常藏着它。",
+  "statement":"statement 是「一种说法」，不是「国家」。哪个 statement 是真的，就是问哪句话对。",
+  "discuss":"discuss 后面直接跟话题，不加 about：discuss the problem。",
+  "paragraph":"问 the second paragraph 就去读第二段，别通读全文——考场没那么多时间。",
+  "factor":"原因有一堆，挑最重的那一个，它就是 key factor。",
+  "tendency":"tendency 偏人（人有某种倾向），trend 偏数据（数字有某种走势）。",
+  "phenomenon":"phenomenon 单数，phenomena 复数。网红是一种 phenomenon——现象。",
+  "consequence":"consequence 多指坏后果：as a consequence of 因为……",
+  "impact":"impact 是撞上去的那种影响：have an impact on。重音在前是名词。",
+  "drawback":"drawback 是往后拉你的那只手——draw + back，缺点就是拖后腿。",
+  "evidence":"evidence 不可数，只能一条条数：a piece of evidence。",
+  "risk":"risk 是风险：at risk 处在危险中，risk doing 冒险做。它后面从不跟 to do。",
+  "challenge":"challenge 既是挑战也是质疑：challenge the idea 是质疑这个观点。",
+  "opportunity":"opportunity 是机会，不是运气——take the opportunity to do，抓住了才叫机会。",
+  "pressure":"pressure 是压出来的力：under pressure 在压力下，press 就是按。",
+  "shortage":"short（少）+ age（状态）= shortage（短缺）：a shortage of water。",
+  "growth":"grow 加个 th 变名词 growth。经济往上走，叫 economic growth。",
+  "decline":"decline 有两副面孔：数字往下走是下降，礼貌说不用是婉拒，同一个词。",
+  "trend":"trend 是趋势也是潮流：follow the trend 就是跟风。",
+  "pattern":"pattern 是模式也是图案：sleep pattern 是睡眠规律，布上的花纹也是它。",
+  "standard":"standard 是标准：living standard 生活水平，standard of living 也是它。",
+  "process":"process 是过程：in the process of。重音在前是名词，挪到后面就变动词。",
+  "achievement":"achievement 是成就，a sense of achievement 是成就感——那股劲比证书值钱。",
+  "failure":"failure 不只是失败，也是「没做到」：failure to do sth 未能做某事。",
+  "experience":"experience 经验不可数，经历可数：much experience，an unforgettable experience。",
+  "ability":"ability to do 后面跟动词原形——能力是用来做事的，所以跟 do。",
+  "severe":"severe 是重：severe weather 恶劣天气，severe pain 剧痛。",
+  "slight":"slight 是轻：a slight increase 小幅上升。图表题里它和 sharply 是死对头。",
+  "gradual":"gradual 是一点点来：a gradual change；副词 gradually，慢到你看不见。",
+  "steady":"steady 是稳：a steady rise 稳步上升——不是不动，是不乱。",
+  "obvious":"obvious 是明显：It is obvious that… 显然……",
+  "specific":"specific 是具体：说 specific 一点，别只说「大概」。",
+  "typical":"It is typical of him to be late——他就这德行。typical 是「典型到能代表他」。",
+  "efficient":"efficient 是省时间，effective 是有效果——一个管快，一个管成。",
+  "positive":"positive 是加号那一侧：积极的、肯定的、阳性的。",
+  "negative":"negative 是减号那一侧：消极的、否定的、阴性的。",
+  "reasonable":"reasonable 是讲道理：合理的方案、公道的价格，都用它。",
+  "suitable":"suitable 是合适：be suitable for。衣服合适、人选合适，都用它。",
+  "equal":"equal 是相等：be equal to，是 to 不是 with。",
+  "independent":"independent 是独立：be independent of 不依赖——独立的对面是 of，不是 from。",
+  "unique":"unique 是唯一：不加 very，也没有比较级——唯一的没法更唯一。",
+  "minor":"minor 是小：a minor problem 小问题。它是 major 的反面。",
+  "basic":"basic 是基本：basic skills 基本功，basic needs 基本需求。",
+  "appear":"appear 是出现，也是「看起来」：It appears that…",
+  "argue":"The author argues that… 不是作者在吵架，是作者在主张。",
+  "attempt":"attempt 是尝试，比 try 正式：attempt to do sth。",
+  "compete":"compete with sb for sth：跟谁争、争什么，两个介词都不能少。",
+  "concern":"be concerned about 是担心，concerning 是「关于」——多一个 ing，担心变话题。",
+  "confirm":"confirm 是确认：confirm a booking 确认预订，点了才算数。",
+  "connect":"connect A with B 把 A 和 B 接起来，接头处叫 connection。",
+  "contain":"contain 是装着：这本书 contain 十个故事；include 只是包含其中一部分。",
+  "remain":"remain 是仍然是：remain silent 保持沉默，后面直接跟形容词。",
+  "seem":"seem 是看起来：It seems that… 主语常常是 it，不是你以为的那个人。",
+  "offer":"offer 是主动递过去：offer sb sth，offer to do 主动提出去做。",
+  "remove":"remove 是拿走：remove the stain 去污，remove A from B。",
+  "address":"address 是地址，也是「处理」：address the problem 是解决问题，不是给问题写地址。",
+  "subject":"subject 是科目、主题，也是「使遭受」：be subject to 受制于。",
+  "figure":"figure 是数字、身材，口语里还是「觉得」：I figure it's fine。",
+  "matter":"matter 是事情，也是「要紧」：It doesn't matter 没关系——不要紧的才叫没事。",
+  "issue":"issue 是问题，也是期号：the latest issue 最新一期。",
+  "appreciate":"appreciate 是感激也是欣赏：I appreciate your help——谢的是事，不是人，所以不说 appreciate you。",
+  "while":"while 一边……一边，也是「然而」：While I agree, I still doubt it 我同意，但我还是怀疑。",
+  "however":"however 后面必须加逗号，而且不能和 but 连用——两个转折词并列，句子就残了。",
+  "therefore":"therefore 前面是原因，后面是结论：下雨，therefore 我带伞。",
+  "moreover":"moreover 是往上加码：说完一条理由，再来一条更硬的。",
+  "besides":"besides 是「另外还有」，except 是「除了没有」——一个加，一个减。",
+  "otherwise":"otherwise 是否则：Hurry up, otherwise you'll be late。",
+  "whereas":"whereas 是「然而」的对比版：前面说 A 好，后面说 B 差。",
+  "thus":"thus 因此，书面味重，比 so 正式，作文里用它显得像读过书。",
+  "meanwhile":"meanwhile 是与此同时：两条线同时往前走。",
+  "instead":"instead 是反而、代替：instead of 而不是。",
+  "this":"this 指上文刚说完的那件事——阅读题里看到 this，线索一定在上一句。",
+  "these":"these 是复数，看到它就往前找复数名词。",
+  "those":"those 常替代前文的复数：those who 那些……的人。",
+  "one":"one 代替前面出现过的单数名词，避免重复：I lost my pen, so I bought one。",
+  "ones":"ones 是 one 的复数：the ones who… 那些……的人。",
+  "could":"could 是 can 的软版本：更客气，也更没把握。",
+  "may":"may 是可能、可以：may have done 是对过去的推测。",
+  "might":"might 比 may 更没底：might have done 本来可能（其实没发生）。",
+  "must":"must 是一定：must have done 是「肯定做过」，考推测就看它。",
+  "should":"should 是应该：should have done 是「本该做却没做」，一句一分的考点。",
+  "would":"would 是 will 的软版本，也是虚拟语气常客：would rather 宁愿。",
+  "effective":"effective 是有效果（药吃了真管用），efficient 是有效率（一小时干完三小时的活）。",
+  "effect":"effect 是名词：have an effect on。我 affect 你，你身上留下 effect。",
+  "considerate":"considerate 是体贴：把别人考虑进去的人。它跟「数量」一点关系都没有。",
+  "considerable":"considerable 是相当多：a considerable amount 一大笔——别按 consider 想成「体贴」。",
+  "economical":"economical 是省钱：an economical car 省油的车。",
+  "economic":"economic 是经济的：economic growth 经济增长，跟国家有关，不跟省钱有关。",
+  "sensible":"sensible 是明智：a sensible decision。别按 sense 想成「敏感的」。",
+  "sensitive":"sensitive 是敏感：sensitive skin 敏感肌，be sensitive to 对……敏感。",
+  "principal":"principal 是校长、也是「主要的」；principle 才是原则。校长讲原则，两个词只差一个字母。",
+  "principle":"principle 是原则：in principle 原则上。-ple 结尾是规矩，-pal 结尾是人（校长）。",
+  "raise":"raise 是举起、提高，后面必须有东西：raise your hand。它自己不会升。",
+  "rise":"rise 是自己升：the sun rises。太阳不用谁举，所以 rise 后面不跟宾语。",
+  "lay":"lay 是放：lay the book on the table，过去式 laid。",
+  "lie":"lie 是躺：lie on the bed，过去式 lay——跟 lay 的原形撞车，这是考试最爱埋的雷。",
+  "expect":"expect 是预料：expect to do，expect sb to do。",
+  "acquire":"acquire 是慢慢攒来的获得：acquire a skill 学到一门手艺。",
+  "devote":"devote 是献出：devote oneself to，这个 to 后面跟 doing。",
+  "reserve":"reserve 是预订、保留：reserve a table 订个位子。",
+  "assume":"assume 是假定：Let's assume… 先这么假设，别当成事实。",
+  "consume":"consume 是消耗：consume energy；consumer 是消费者，花了才算。",
+  "personnel":"personnel 是全体员工（不可数），personal 是个人的——多一个 n，一个人变成一批人。",
+  "adopt":"adopt 是收养，也是采纳：adopt a child，adopt a plan。",
+  "confident":"confident 是自信：be confident of success。",
+  "confidential":"confidential 是机密：a confidential file 机密文件。",
+  "historic":"historic 是有历史意义的：a historic moment 历史性时刻。",
+  "historical":"historical 是历史的：a historical novel 历史小说。",
+  "respectable":"respectable 是体面的：a respectable job 一份像样的工作。",
+  "industrious":"industrious 是勤勉的：industry 既是工业，也是勤奋。",
+  "imaginative":"imaginative 是有想象力的：an imaginative writer。",
+  "intensive":"intensive 是密集的：an intensive course 强化课。",
+  "extensive":"extensive 是广泛的：extensive reading 泛读。",
+  "continual":"continual 是反复发生（断了又来）：continual interruptions 没完没了的打断。",
+  "continuous":"continuous 是连续不断（中间不停）：continuous rain 一直下。",
+  "beside":"beside 是在旁边：beside the door；besides 才是「另外」。",
+  "suggest":"suggest 是建议：suggest doing 或 suggest that sb (should) do，就是不接 to do。",
+  "allow":"allow sb to do，但 allow doing——有人的时候必须带 to。",
+  "consider":"consider 是考虑：consider doing，别写 consider to do。",
+  "explain":"explain 是解释：explain sth to sb，不能 explain sb sth。",
+  "compare":"compare A with B 比差异，compare A to B 比作——with 是量，to 是比。",
+  "technology":"technology 是「技艺的学问」：techno 技艺 + logy 学问，别拼成 technoledge。",
+  "digital":"digital 是数字的：digital payment 数字支付。digit 是手指——用手指数数，所以是数字。",
+  "device":"device 是装置：a mobile device 移动设备，手机上每一个「小东西」都是 device。",
+  "data":"data 是数据：正式写法当复数（The data show…），口语里也有人当不可数。",
+  "information":"information 不可数：a piece of information。没有 informations 这个词。",
+  "software":"software 是软件，不可数：a piece of software。ware 是「制品」，hardware 是硬件。",
+  "intelligence":"intelligence 是智力，也是情报：artificial intelligence 人工智能。",
+  "network":"network 是网：net（网）+ work（工作）→ 织起来干活的网，social network 社交网络。",
+  "application":"application 是申请，也是应用：job application 求职申请，mobile application 手机应用。",
+  "innovation":"innovation 是创新：in-（进入）+ nov（新）+ ation，把新东西引进来。",
+  "automatic":"automatic 是自动的：auto（自己）+ matic，不用你动手它就动。",
+  "virtual":"virtual 是虚拟的：a virtual meeting 线上会议——人不在，但会照开。",
+  "platform":"platform 原指站台，现在指「让你站着做事的地方」：a learning platform 学习平台。",
+  "environment":"environment 是环境：protect the environment 保护环境，the 不能丢。",
+  "pollution":"pollution 是污染：air pollution 空气污染，动词是 pollute。",
+  "climate":"climate 是气候，也是氛围：climate change 气候变化；political climate 政治气氛。",
+  "energy":"energy 是能量，也是精力：I have no energy today 我今天一点劲都没有。",
+  "resource":"resource 是资源：natural resources 自然资源，re-（再）+ source（源泉）。",
+  "waste":"waste 是浪费，也是垃圾：a waste of time 浪费时间，waste paper 废纸。",
+  "recycle":"recycle 是回收：re-（再）+ cycle（循环）→ 让它再走一圈。",
+  "sustainable":"sustainable 是可持续的：sustain（撑住）+ able，能一直撑下去的发展。",
+  "emission":"emission 是排放：carbon emission 碳排放，e-（向外）+ miss（送出去）。",
+  "carbon":"carbon 是碳：carbon footprint 碳足迹——你活一天留下的碳印子。",
+  "ecosystem":"ecosystem 是生态系统：eco（生态）+ system（系统），一个不能随便拆的局。",
+  "protect":"protect 是保护：protect sb from sth，from 后面是你要挡住的东西。",
+  "damage":"damage 是损害，不可数：do damage to。它比 destroy 轻——还修得回来。",
+  "natural":"natural 是自然的：natural gas 天然气；natural 的反面是 man-made。",
+  "renewable":"renewable 是可再生的：renew（更新）+ able，用完还能再长出来的。",
+  "temperature":"temperature 是温度：take one's temperature 量体温，高烧就是 a high temperature。",
+  "species":"species 是物种，单复数同形：a species，many species，别加 s。",
+  "conservation":"conservation 是保护（资源）：energy conservation 节能。跟 conversation 差一个字母，一个是省，一个是聊。",
+  "disease":"disease 是疾病：dis（不）+ ease（舒服）→ 不舒服，就是病。",
+  "treatment":"treatment 是治疗，也是对待：medical treatment 治疗，equal treatment 平等待遇。",
+  "patient":"patient 是病人，也是「有耐心的」：be patient with sb。等得住的才叫病人。",
+  "mental":"mental 是心理的：mental health 心理健康，跟 physical（身体）成对出现。",
+  "obesity":"obesity 是肥胖：obese 是形容词。健康类文章年年考它。",
+  "immune":"immune 是免疫的：immune system 免疫系统，be immune to 对……不受影响。",
+  "symptom":"symptom 是症状：a symptom of ……的征兆，s 不发音。",
+  "nutrition":"nutrition 是营养：nutrition label 营养标签，读食品包装先看它。",
+  "physical":"physical 是身体的、物理的：physical exercise 体育锻炼，physical 的反面是 mental。",
+  "career":"career 是职业生涯：career path 职业道路。它比 job 长——job 是饭碗，career 是一辈子。",
+  "employee":"employee 是雇员（被雇的），employer 是雇主（雇人的）：-ee 是被动，-er 是主动。",
+  "employer":"employer 是老板：-er 是做事的那个人，雇人的那个。",
+  "salary":"salary 是按月/按年给的钱，wage 是按小时给的钱：salary 更体面一点。",
+  "interview":"interview 是面试，也是采访：inter（相互）+ view（看）→ 互相打量。",
+  "resume":"resume 是简历：跟 resume（重新开始）拼写一样，只是重音不同，别念错。",
+  "professional":"professional 是专业的：a professional athlete 职业运动员，反义 amateur。",
+  "teamwork":"teamwork 是团队合作：team + work，一个人干不成的事才需要它。",
+  "leadership":"leadership 是领导力：leader + ship（身份、能力）→ 当头的本事。",
+  "community":"community 是社区：the local community 当地社区，也指「一群人」。",
+  "population":"population 是人口：an aging population 老龄人口，说人口多寡用它。",
+  "generation":"generation 是一代人：the younger generation 年轻一代，gap 是代沟。",
+  "policy":"policy 是政策：government policy 政府政策。跟 police（警察）只差一个字母。",
+  "citizen":"citizen 是公民：senior citizen 是「老年人」的委婉说法。",
+  "poverty":"poverty 是贫困：live in poverty 生活贫困，poor 的名词。",
+  "equality":"equality 是平等：gender equality 性别平等，equal 的名词。",
+  "tradition":"tradition 是传统：by tradition 按传统，traditional 是形容词。",
+  "behavior":"behavior 是行为，不可数：good behavior 良好表现，behave 是动词。",
+  "individual":"individual 是个体，也是「个人的」：each individual 每一个人。",
+  "value":"value 是价值，也是重视：value sth 看重某物；values 是价值观。",
+  "decrease":"decrease 是减少：de-（向下）+ crease，跟 increase 正好对着走。",
+  "develop":"develop 是发展，也是「养成」：develop a habit 养成习惯——不是只有经济才 develop。",
+  "create":"create 是创造：create jobs 创造就业，从没有到有才叫 create。",
+  "include":"include 是包含其中一部分，contain 是装着全部：这本书 include 三篇，但 contain 十个故事。",
+  "encourage":"encourage 是鼓励：encourage sb to do，后面必须有 to。",
+  "important":"important 是重要：It is important that… 从句里用 should do 或动词原形。",
+  "necessary":"necessary 是必要：It is necessary for sb to do，for 别丢。",
+  "possible":"possible 是可能：as soon as possible 尽快，as…as possible 能多…就多…。",
+  "difficult":"difficult 是难：have difficulty (in) doing——形容词是 difficult，名词是 difficulty。",
+  "similar":"similar 是相似：be similar to，是 to 不是 with。",
+  "different":"different 是不同：be different from，是 from 不是 with。",
+  "common":"common 是常见、共同：have sth in common 有共同点。",
+  "serious":"serious 是严肃，也是严重：a serious problem 严重问题，别只记「严肃」。",
+  "available":"available 是可获得的，也指「人有空」：Tickets are available online；Are you available？",
+  "valuable":"valuable 是宝贵：value + able，值钱的东西才叫 valuable。",
+  "various":"various 是各种各样的：various reasons 各种原因，后面跟复数。",
+  "certain":"certain 是确定的，也是「某些」：a certain person 某个人（不想点名）。",
+  "likely":"likely 是可能：be likely to do——比 possible 更像「真会发生」。",
+  "major":"major 是主要的：a major factor 主要因素，反义 minor。",
+  "recent":"recent 是最近的：in recent years 近年来，常配现在完成时。",
+  "rapid":"rapid 是快速：rapid growth 快速增长，比 fast 书面。",
+  "significant":"significant 是显著的：a significant change 显著变化，图表题的高频词。",
+  "essential":"essential 是必不可少：be essential to，比 important 更硬——没它不行。",
+  "complex":"complex 是复杂：a complex problem 复杂问题，反义 simple。",
+  "potential":"potential 是潜在的，也是潜力：potential customers 潜在客户。",
+  "appropriate":"appropriate 是合适：appropriate for 适合……的场合。",
+  "comprehensive":"comprehensive 是全面的：comprehensive reading 精读，com-（全）+ prehens（抓）。",
+  "familiar":"familiar 是熟悉：be familiar with sb/sth，with 别写成 to。",
+  "take measures to":"作文万能句：We should take measures to… 采取措施做某事。measures 用复数，to 后面跟动词原形。",
+  "play a role in":"play a role in 在……里起作用：中间加 important 更有分量，in 后面跟 doing。",
+  "pay attention to":"这里的 to 是介词，后面跟 doing：pay attention to spelling，不是 to spell。",
+  "make a difference":"make 的是 difference，不是 effect：一个小举动也能 make a difference。",
+  "make sense":"make sense 是讲得通：It makes sense 有道理；make sense of 才是「看懂」。",
+  "make up for":"make up for 弥补：make up for lost time 把丢掉的时间补回来。",
+  "make full use of":"make full use of 充分利用：full 放在 use 前面，别漏。",
+  "take part in":"take part in 参加活动，join 是加入组织——参加比赛用 take part in。",
+  "take advantage of":"take advantage of 利用机会，也可以指「占别人便宜」，看上下文。",
+  "take into account":"take sth into account 把……考虑进去：sth 夹在中间，别堆到句尾。",
+  "take effect":"take effect 生效：药 take effect 是起效，法律 take effect 是实施。",
+  "take place":"take place 是「按计划发生」，happen 是「碰巧发生」。",
+  "take up":"take up 占据时间，也开始一项爱好：take up yoga 开始练瑜伽。",
+  "take over":"take over 接管：新老板 take over 公司，over 是「接过来」。",
+  "take off":"take off 起飞，也指脱下：飞机和你都会 take off。",
+  "put off":"put off 推迟：put off doing，不能 put off to do。",
+  "put up with":"put up with 忍受：忍到极限就是 can't put up with it any more。",
+  "put forward":"put forward 提出（建议、计划）：put forward a plan。",
+  "put out":"put out 扑灭：put out the fire 灭火，别理解成「放出去」。",
+  "come up with":"come up with 想出：come up with an idea，with 不能丢。",
+  "come across":"come across 偶然遇到：I came across an old friend 我碰上了一位老朋友。",
+  "come down to":"come down to 归结为：说到底，It comes down to money。",
+  "come true":"come true 实现：梦想自己 come true，不能说 come true it。",
+  "look forward to":"to 是介词：look forward to hearing from you，不是 to hear。",
+  "look into":"look into 调查：look into the matter 查这件事，不是往里看。",
+  "look up to":"look up to 敬佩：一直往上看的那个人，就是你的榜样。",
+  "turn out":"turn out 结果是：It turned out that he was right 结果他是对的。",
+  "turn down":"turn down 拒绝，也指调小：turn down the music 关小点声。",
+  "turn to":"turn to 求助于：turn to sb for help，for 后面是求什么。",
+  "break down":"break down 出故障，也指人崩溃：车会 break down，人也会。",
+  "break out":"break out 爆发：战争、火灾、疫情都用它，它不及物。",
+  "bring about":"bring about 带来（变化）：about 是「转一圈」，把变化带出来。",
+  "bring up":"bring up 养育，也是「提出话题」：bring up a child；bring up a question。",
+  "carry out":"carry out 执行：carry out a plan 把计划做出来。",
+  "carry on":"carry on 继续：carry on with sth，别停。",
+  "give up":"give up 放弃：give up doing，不接 to do。",
+  "give in":"give in 让步：give in to pressure 向压力低头，in 是「退进去」。",
+  "give off":"give off 散发（气味、光、热）：give off a strange smell。",
+  "give away":"give away 送掉，也指泄密：give away the answer 把答案漏了。",
+  "get rid of":"get rid of 摆脱：get rid of the habit 改掉这个习惯。",
+  "get along with":"get along with 与……相处：跟谁相处，with 后面就是谁。",
+  "get over":"get over 克服、恢复：get over a cold 感冒好利索了。",
+  "get used to":"get used to 习惯于：to 是介词，后面跟 doing，不是 do。",
+  "run out of":"run out of 用完：主语是人，东西在后面——We ran out of time。",
+  "run into":"run into 撞上、偶遇：run into trouble 遇上麻烦。",
+  "set up":"set up 建立：set up a company 开公司，先把架子搭起来。",
+  "set off":"set off 出发，也指引爆：set off for Beijing 动身去北京。",
+  "set aside":"set aside 留出、搁置：set aside some money 存点钱。",
+  "be aware of":"be aware of 意识到：aware 是形容词，of 不能丢。",
+  "be capable of":"be capable of 有能力：of 后面跟 doing。",
+  "be responsible for":"be responsible for 对……负责：for 后面是负责的对象。",
+  "be used to doing":"be used to doing 习惯于；used to do 是「过去常常」——一个 to 是介词，一个 to 是不定式。",
+  "be subject to":"be subject to 受制于、易受：Prices are subject to change 价格可能变动。",
+  "be beneficial to":"be beneficial to 对……有益：to 是介词，方向跟 benefit from 正好相反。",
+  "be harmful to":"be harmful to 对……有害：跟 beneficial to 是一对反义。",
+  "be short of":"be short of 缺少：short of money 缺钱，short 是「短一截」。",
+  "be based on":"be based on 以……为基础：based 是过去分词，on 不能换成 in。",
+  "be known as":"be known as 被称为：as 后面是名号；be known for 后面才是特点。",
+  "be worth doing":"be worth doing 值得做：worth 后面跟 doing，不跟 to do。",
+  "in addition to":"in addition to 除……之外还有：跟 besides 一个意思，to 是介词。",
+  "in terms of":"in terms of 就……而言：换个角度说同一件事。",
+  "in charge of":"in charge of 负责；in the charge of 是「由别人负责」——一个 the，主客颠倒。",
+  "in favor of":"in favor of 支持：投票赞成就是 vote in favor of。",
+  "in spite of":"in spite of 尽管：等于 despite，后面只能跟名词或 doing。",
+  "in case of":"in case of 万一发生：in case of fire 万一着火，跟 in case（以防）不是一回事。",
+  "in the long run":"in the long run 从长远看：run 这里指「一段时期」。",
+  "in general":"in general 总的来说：要概括全局时用它。",
+  "in particular":"in particular 尤其：前面说一类，后面点一个。",
+  "in other words":"in other words 换句话说：换一种说法，意思不变。",
+  "on the contrary":"on the contrary 恰恰相反：用来纠正对方，不是随便转折。",
+  "on behalf of":"on behalf of 代表：on behalf of the company 代表公司。",
+  "on average":"on average 平均而言：数字类文章的高频状语。",
+  "at present":"at present 目前：等于 now，但更书面。",
+  "as a result of":"as a result of 由于：后面跟原因；as a result 单独用，后面跟结果。",
+  "due to":"due to 由于：后面跟名词，别接句子。",
+  "owing to":"owing to 由于：用法同 due to，作文里换着写。",
+  "thanks to":"thanks to 多亏：后面接好的原因，带感激色彩。",
+  "regardless of":"regardless of 不管：后面跟名词，不跟句子。",
+  "rather than":"rather than 而不是：连接两个平行的成分，前后形式要一致。",
+  "apart from":"apart from 除了：既能表示「除……还有」，也能表示「除……没有」，看语境。",
+  "along with":"along with 连同：连接主语时，谓语跟前面那个走。",
+  "as well as":"as well as 也、和：连接主语时，谓语跟着前面那个人。",
+  "so far":"so far 迄今为止：常配现在完成时。",
+  "by contrast":"by contrast 相比之下：两个事物对着说。",
+  "for instance":"for instance 例如：跟 for example 一样，后面加逗号。",
+  "to sum up":"to sum up 总结一下：作文最后一段的开场白。",
+  "what is more":"what is more 而且：往上再加一条更重要的理由。",
+  "keep pace with":"keep pace with 跟上：pace 是步伐，跟上时代就是 keep pace with the times。",
+  "catch up with":"catch up with 追上：落后了才需要 catch up。",
+  "attach importance to":"attach importance to 重视：to 是介词，后面跟 doing 或名词。",
+  "raise awareness of":"raise awareness of 提高对……的认识：awareness 不可数。",
+  "meet the needs of":"meet the needs of 满足……的需求：meet 这里是「满足」，不是「遇见」。",
+  "have access to":"have access to 有权使用：access 后面跟 to，不加 of。",
+  "lead to":"lead to 导致：to 是介词，后面跟名词或 doing。",
+  "adapt to":"adapt to 适应：to 是介词，后面跟环境，不跟句子。",
+  "object to":"object to 反对：to 是介词，后面跟 doing。",
+  "depend on":"depend on 依赖：on 后面跟依赖的对象；It depends 是「看情况」。",
+  "be rich in":"be rich in 富含：be rich in vitamins 富含维生素。",
+  "in contrast to":"in contrast to 与……相比：两个事物摆一起看差别。",
+  "on the whole":"on the whole 总体上：跟 in general 差不多。",
+  "at the expense of":"at the expense of 以……为代价：发展不能 at the expense of the environment。",
+  "in response to":"in response to 作为对……的回应：response 后面跟 to。",
+  "by means of":"by means of 借助：靠某种手段达成，means 单复数同形。",
+  "in advance":"in advance 提前：book in advance 提前预订。",
+  "in vain":"in vain 白费：try in vain 白试一场，vain 是「空的」。",
+  "on purpose":"on purpose 故意：跟 by accident（偶然）对着考。",
+  "in detail":"in detail 详细地：explain in detail，detail 前不加冠词。",
+  "under no circumstances":"under no circumstances 绝不：放句首时句子要倒装。",
+  "in the face of":"in the face of 面对：面对困难、危险都用它。",
+  "prior to":"prior to 在……之前：比 before 正式，to 是介词。",
+  "in light of":"in light of 鉴于：根据新出现的情况做判断。",
+  "with regard to":"with regard to 关于：regard 后面是 to，这里不加 s。",
+  "in accordance with":"in accordance with 依照：按照规则、法律来办。",
+  "on the basis of":"on the basis of 根据：basis 是基础，复数是 bases。",
+  "for the sake of":"for the sake of 为了……的缘故：sake 就是「缘故」。",
+  "be accustomed to":"be accustomed to 习惯于：to 是介词，后面跟 doing。",
+  "be committed to":"be committed to 致力于：to 是介词，commit 是「交付出去」。",
+  "be exposed to":"be exposed to 暴露于：expose sb to sth，被动就是 be exposed to。",
+  "be opposed to":"be opposed to 反对：to 是介词，后面跟 doing。",
+  "be attributed to":"be attributed to 归因于：把功劳或原因归到谁头上。",
+  "be engaged in":"be engaged in 从事：engage 还有「订婚」的意思，be engaged to sb。",
+  "be involved in":"be involved in 参与、卷入：involve 的被动，in 不能丢。",
+  "result in":"result in 导致（后面是结果）；result from 是「由……造成」（后面是原因）。",
+  "account for":"account for 解释，也指「占（比例）」：占三成就是 account for 30%。",
+  "contribute to":"contribute to 促成、有助于：to 是介词，后面跟名词或 doing。",
+  "give rise to":"give rise to 引起：rise 是名词，前面有 give 就够了。",
+  "make sense of":"make sense of 理解：看懂一段话、一个局面，都用 of。",
+  "take for granted":"take sth for granted 想当然：把别人的好当成理所当然。",
+  "keep in mind":"keep in mind 记住：keep it in mind，it 要放中间。",
+  "live up to":"live up to 达到（期望）：live up to expectations，配得上。",
+  "fall short of":"fall short of 未达到：short 是「差一截」，差一点也叫 short。",
+  "be likely to":"be likely to 很可能：比 possible 更像「真会发生」。",
+  "be bound to":"be bound to 必定：bind（绑）的过去分词，像被绑住一样必然。",
+  "be supposed to":"be supposed to 应该：本来应该（常常没做到），带点埋怨。",
+  "be prone to":"be prone to 易于：prone 是「趴着的」，身子容易往那边倒。",
+  "put emphasis on":"put emphasis on 强调：emphasis 的重音在第一个音节。",
+  "draw a conclusion":"draw a conclusion 得出结论：conclusion 是「拉」出来的。",
+  "analyze":"analyze 是拆开看：ana-（分开）+ lyze（松开）→ 把文章拆成零件再判断。",
+  "evaluate":"evaluate 是估价：e- + value + ate，给一件事定个价，就是评估。",
+  "implement":"implement 是执行：implement a plan 把方案落地；它作名词时是「工具」。",
+  "negotiate":"negotiate 是谈判：nego（不）+ ti（闲）+ ate → 不闲着，来回谈。",
+  "cooperate":"cooperate 是合作：co-（共同）+ operate（干活）→ 一起干。",
+  "enhance":"enhance 是提升（质量、形象、价值）：enhance the image 提升形象。",
+  "promote":"promote 是促进，也是升职：把人往上推，就是 promote。",
+  "facilitate":"facilitate 是使便利：facile（容易）+ ate → 让事情变容易。",
+  "ensure":"ensure 是确保：en-（使）+ sure（确定）→ 使它确定。insure 才是买保险。",
+  "approach":"approach 是接近，也是方法：走向一个问题的那条路，就是 approach。",
+  "establish":"establish 是建立：establish a company 从零把架子立起来。",
+  "obtain":"obtain 是获得：ob-（向）+ tain（握）→ 伸手握到手里。",
+  "pursue":"pursue 是追求：pursue a dream 追一个梦；也能 pursue a suspect 追嫌疑人。",
+  "refuse":"refuse 是拒绝：re-（回）+ fuse（倒）→ 把请求倒回去。",
+  "accept":"accept 是接受：ac-（向）+ cept（拿）→ 拿过来。",
+  "admit":"admit 是承认，也是准许进入：admit the mistake 认错；be admitted to 被录取。",
+  "deny":"deny 是否认，也是拒绝给：deny the fact 否认事实；deny sb sth 拒绝给某人某物。",
+  "insist":"insist 是坚持：insist on doing，on 不能丢。",
+  "recommend":"recommend 是推荐：recommend doing，或 recommend that sb (should) do。",
+  "propose":"propose 是提议，也是求婚：propose a plan 提方案；propose to her 向她求婚。",
+  "rely":"rely on 依靠：rely 后面必须跟 on，不能光溜溜地站着。",
+  "focus":"focus on 专注于：focus 原是「焦点」，把光聚到一个点上。",
+  "relate":"relate 是有关联，也是讲述：be related to 与……有关。",
+  "belong":"belong to 属于：belong 没有被动，也不用进行时。",
+  "consist":"consist of 由……组成：整体 consist of 部分，它本身不用被动。",
+  "result":"result 是结果，也是「导致」：result in 导致，result from 源于。",
+  "refer":"refer to 指的是、参考：refer to the passage 回看文章。",
+  "apply":"apply 是申请，也是应用：apply for a job 求职；apply to 适用于。",
+  "employ":"employ 是雇用，也是使用：employ a method 用某种方法。",
+  "impress":"impress 是留下印象：be impressed by 被……打动。",
+  "express":"express 是表达，也是快递：express one's ideas；express mail。",
+  "expose":"expose 是暴露：expose sb to sth，把人放到某种影响之下。",
+  "extend":"extend 是延伸、延长：extend the deadline 延长期限。",
+  "expand":"expand 是扩张：expand the market 扩大市场，体积变大用它。",
+  "explore":"explore 是探索：explore the unknown 走进未知的地方。",
+  "examine":"examine 是检查：医生 examine 病人，考生 examine 选项。",
+  "identify":"identify 是识别：identify the main idea 找出主旨。",
+  "imagine":"imagine 是想象：imagine doing，别写 imagine to do。",
+  "inform":"inform 是通知：inform sb of sth，介词是 of。",
+  "introduce":"introduce 是介绍，也是引进：introduce A to B 把 A 介绍给 B。",
+  "invest":"invest 是投资：invest in sth，in 不能丢。",
+  "judge":"judge 是判断：judge from / by 从……来看，别急着下结论。",
+  "justify":"justify 是证明正当：justify doing 为做某事找理由。",
+  "limit":"limit 是限制：be limited to 被限制在……范围之内。",
+  "locate":"locate 是定位，也指「位于」：be located in 位于某地。",
+  "manage":"manage 是管理，也是「设法做成」：manage to do 设法做成。",
+  "mention":"mention 是提到：Don't mention it 不客气。",
+  "participate":"participate in 参加：in 不能丢，比 take part in 正式。",
+  "perform":"perform 是表演，也是执行：perform a task 完成任务。",
+  "permit":"permit 是允许：permit sb to do；weather permitting 天气允许的话。",
+  "persuade":"persuade 是说动：persuade sb to do，说成了才叫 persuade，没成只是 try。",
+  "predict":"predict 是预测：pre-（提前）+ dict（说）→ 提前说出来。",
+  "prefer":"prefer 是更喜欢：prefer A to B，是 to 不是 than。",
+  "prepare":"prepare 是准备：prepare for 为……做准备；be prepared to do 准备好做。",
+  "present":"present 是现在、出席的，也是「呈现」：present a report 做汇报。",
+  "preserve":"preserve 是保存：preserve the tradition 保留传统，别让它坏掉。",
+  "produce":"produce 是生产：produce goods 生产商品，名词 product 是产品。",
+  "prove":"prove 是证明：prove to be 证明是……，事实自己会说话。",
+  "recognize":"recognize 是认出：re-（再）+ cogn（知道）→ 再一次认出来。",
+  "remind":"remind 是提醒：remind sb of sth 让某人想起某事。",
+  "represent":"represent 是代表：represent the company 代表公司。",
+  "solve":"solve 是解决：solve the problem，名词是 solution to，是 to 不是 of。",
+  "supply":"supply 是供应：supply sb with sth / supply sth to sb。",
+  "threaten":"threaten 是威胁：threaten to do 威胁要做某事。",
+  "look after":"look after 照顾：after 是「跟在后面」，跟着才照顾得到。",
+  "look for":"look for 寻找：for 是「为了」，为了找到它才看。",
+  "turn into":"turn into 变成：水 turn into 冰，into 是「进去变成」。",
+  "education":"education 不可数：get a good education 接受良好教育，不说 an education（除非指「一种教育」）。",
+  "student":"student 是学生：a college student 大学生，student 前面要有个 a。",
+  "teacher":"teacher 是老师：teach + er，教书的那个人。",
+  "school":"school 是学校：at school 是「在上学」，in the school 才是「在学校里」。",
+  "university":"university 是大学：go to university 上大学，这里不加 the。",
+  "course":"course 是课程：take a course 选一门课；of course 是「当然」。",
+  "degree":"degree 是学位，也是程度：a master's degree 硕士学位；to some degree 在某种程度上。",
+  "knowledge":"knowledge 不可数：a good knowledge of English 英语很好，别加 s。",
+  "skill":"skill 可数：communication skills 沟通能力，一项一项数。",
+  "learn":"learn 是学会：learn to do 学着做，过去式 learnt 或 learned 都行。",
+  "study":"study 是学习，也是研究：study abroad 留学；study 还可以是书房。",
+  "teach":"teach 是教：teach sb sth 教某人某事，不能说 teach sb to sth。",
+  "train":"train 既是火车，也是训练：train sb to do 训练某人做某事。",
+  "exam":"exam 是考试：take the exam 参加考试，pass the exam 通过考试——两个动词别混。",
+  "graduate":"graduate from 从……毕业：from 一丢，句子就断了。",
+  "academic":"academic 是学术的：academic writing 学术写作，academy 是学院。",
+  "research":"research 不可数：do research on 对……进行研究。",
+  "lecture":"lecture 是讲座：attend a lecture 听讲座，听的是课不是人。",
+  "campus":"campus 是校园：on campus 在校园里，介词是 on。",
+  "scholarship":"scholarship 是奖学金：win a scholarship 拿到奖学金，是 win 不是 get。",
+  "internet":"internet 前面要 the：on the internet 在网上。",
+  "online":"online 是线上：shop online 网购，副词用法不加介词。",
+  "smartphone":"smartphone 是智能手机：smart（聪明）+ phone（电话）。",
+  "robot":"robot 是机器人：industrial robots 工业机器人，可数。",
+  "screen":"screen 是屏幕，也是「筛查」：screen the patients 筛查病人。",
+  "health":"health 是健康（名词），healthy 是健康的（形容词）：in good health 身体好。",
+  "medicine":"medicine 是药，也是医学：take medicine 吃药，通常不加 a。",
+  "hospital":"hospital 是医院：in hospital 是「住院」，in the hospital 只是「在医院里」。",
+  "exercise":"exercise 锻炼不可数，练习题可数：do exercise 锻炼，do exercises 做练习。",
+  "diet":"diet 是饮食：be on a diet 在节食，on 不能换。",
+  "stress":"stress 是压力，也是强调：stress the importance of 强调……的重要性。",
+  "sleep":"sleep 是睡眠：go to sleep 是「入睡」，go to bed 才是「上床」。",
+  "virus":"virus 是病毒，可数：a virus，computer virus 电脑病毒。",
+  "therapy":"therapy 是治疗：physical therapy 理疗，therapy 偏「疗程」。",
+  "job":"job 可数，work 不可数：find a job 找工作，a piece of work 一件工作。",
+  "company":"company 是公司，也是陪伴：keep sb company 陪某人——公司陪你，也说得通。",
+  "industry":"industry 是工业、行业：the car industry 汽车行业。",
+  "business":"business 是生意：on business 出差，do business with 和……做生意。",
+  "market":"market 是市场：on the market 在售，in the market for 想买。",
+  "management":"management 是管理：time management 时间管理，manage 的名词。",
+  "manager":"manager 是经理：manage（管）+ er（人）→ 管事的那个。",
+  "productive":"productive 是高效的：a productive day 有产出的一天，product 是产品。",
+  "workplace":"workplace 是工作场所：work + place，职场就是这个词。",
+  "society":"society 是社会：in modern society 在现代社会，通常不加 the。",
+  "culture":"culture 是文化：cultural 是形容词，culture 还可指「培养」。",
+  "family":"family 是家庭：当作整体时谓语用单数，强调成员时用复数。",
+  "government":"government 是政府：the government 作主语，谓语常用单数。",
+  "public":"public 是公众、公共的：in public 当众，the public 是大众。",
+  "urban":"urban 是城市的：urban area 城区，反义 rural。",
+  "rural":"rural 是乡村的：rural area 农村地区，跟 urban 成对。",
+  "account":"account 是账户，也是「解释」：take sth into account 把……考虑进去。",
+  "react":"react to 对……作出反应：to 不能丢，re-（回）+ act（行动）。"
+};
 const MEMO={
 "in":"in 是『装进去』：in red 穿红衣——人穿衣服就像把自己装进袋子里",
 "on":"on 是『贴在表面』：on the wall 贴墙上；on Monday 就是『贴』在周一这天",
@@ -2286,7 +2822,7 @@ function viewToday(){
   let points=W.points.map(p=>'<li>'+esc(p)+'</li>').join('');
 
   const first=(S.sentences.length===0&&done===0)?
-    '<div class="note good" style="margin-bottom:14px;"><b>第一次用：</b>① 点左边「课堂」先学《先看懂这些词》（术语入门，不然后面的课文看不懂）→ ② 点「背词」过 25 个（点卡片翻面 → 选「认识 / 模糊 / 不认识」）→ ③ 点「拆句」练 5 句。所有记录自动存在这台电脑的浏览器里，关掉再打开还在。</div>':'';
+    '<div class="note good" style="margin-bottom:14px;"><b>第一次用：</b>① 点左边「课堂」先学《先看懂这些词》（术语入门，不然后面的课文看不懂）→ ② 点「背词」过 25 个（卡片一次全摊开：单词、释义、故事、搭配、例句一起看，读完选「一眼就懂 / 有点模糊 / 跟它不熟」）→ ③ 点「拆句」练 5 句。所有记录自动存在这台电脑的浏览器里，关掉再打开还在。</div>':'';
 
   const l0st=lstate('L0');
   let lessonBtns;
@@ -2541,7 +3077,7 @@ function viewVocab(){
   const ws=wordStats();
   let head='<div class="vhead"><h1>背词</h1><p>按「读懂一篇阅读需要什么词」来背：<b>R 阅读核心</b>词优先（题干词、抽象名词、评价形容词、高频动词）→ C 复用词（会拼会搭换词汇题分）→ B 主题词 → A 连接词。</p></div>'+
     '<div class="mnote"><b>为什么这些词能直接提阅读分：</b>江苏卷阅读 2 篇 8 题 20 分，卡住你的从来不是生僻词，而是 <b>infer / imply / factor / decline / severe</b> 这类高频实词，以及 <b>however / therefore</b> 这类逻辑词。'+
-    '每个 R 层词的卡片背面都配了一句【阅读】例句（英文＋中文），你背词的同时就在读句子——这比背单词表更接近考试真正要你做的事。</div>';
+    '每张卡片都是一次摊开的：<b>单词 → 释义 → 一句话故事 → 词根技巧 → 搭配 → 阅读例句</b>，不用点、不用翻。你背词的同时就在读句子，这比背单词表更接近考试真正要你做的事。</div>';
 
   const rd=readingStats();
   const bar='<div class="row3" style="margin-bottom:14px;">'+
@@ -2569,7 +3105,7 @@ function viewVocab(){
     const st=ses.stat;
     return head+bar+'<div class="card"><div class="empty" style="padding:44px 20px;">'+
       '<div style="font-size:26px;margin-bottom:10px;">本轮结束</div>'+
-      '认识 '+st.know+'　模糊 '+st.fuzzy+'　不认识 '+st.no+
+      '一眼就懂 '+st.know+'　有点模糊 '+st.fuzzy+'　跟它不熟 '+st.no+
       '<div style="margin-top:18px;display:flex;gap:9px;justify-content:center;">'+
       '<button class="btn pri" onclick="again()">再来一轮</button>'+
       '<button class="btn" onclick="go(\'train\')">去拆句</button></div></div></div>'+
@@ -2580,69 +3116,71 @@ function viewVocab(){
   const layer=w[3]||'C';
   const LBM={R:'<span class="layerbadge lr">R 阅读核心</span>',A:'<span class="layerbadge la">A 连接词</span>',B:'<span class="layerbadge lb">B 主题词</span>',C:'<span class="layerbadge lc">C 复用词</span>'};
   const lb=LBM[layer]||LBM.C;
-  const mp=MORPH[w[0]];
-  let card;
-  if(!ses.flip){
-    const hint=(mp&&mp.r&&ROOTS[mp.r])?
-      '<div class="roothint"><span class="rh">词根线索</span>'+esc(ROOTS[mp.r].t)+'　'+esc(ROOTS[mp.r].c)+'</div>':
-      (mp?'<div class="roothint"><span class="rh">提示</span>本词是整体词，按搭配记</div>':'');
-    card='<div class="flash" onclick="flip()">'+lb+'<div class="inner">'+hint+
-      '<div class="w">'+esc(w[0])+'</div>'+
-      '<div class="saybar" onclick="event.stopPropagation();say(curWord())">🔊 不会读？点这里听一遍</div>'+
-      '<div class="pt">先想 2 秒：它可能和什么有关？</div></div>'+
-      '<div class="hint">点一下卡片翻面</div></div>';
-  }else{
-    const rows=[];
-    let tip;
-    if(mp){ tip=esc(mp.p); }
-    else{
-      const fb=layer==='R'?'阅读核心词：别背中文标签，读下面那句【阅读】例句，把它记在句子里'
-        :(layer==='A'?'连接词不拆：只记它的逻辑方向（转折 / 因果 / 递进 / 让步）'
-        :(layer==='B'?'主题词不硬拆：归到话题里记，同类词一起记'
-          :'复用词记搭配，不记孤词——把整个搭配当一个单位记'));
-      tip='<em class="tipnone">'+esc(fb)+'</em>';
-    }
-    rows.push('<div class="bkrow"><span class="btag t-tip">技巧</span><span class="bval">'+tip+'</span></div>');
-    if(w[2]) rows.push('<div class="bkrow"><span class="btag t-use">搭配</span><span class="bval">'+esc(w[2])+'</span></div>');
-    if(RSENT[w[0]]) rows.push('<div class="bkrow"><span class="btag t-read">阅读</span><span class="bval readsen"><i>'+esc(RSENT[w[0]][0])+'</i><b>'+esc(RSENT[w[0]][1])+'</b></span></div>');
-    if(CONF[w[0]]) rows.push('<div class="bkrow"><span class="btag t-cmp">辨析</span><span class="bval">'+esc(CONF[w[0]])+'</span></div>');
-    if(mp&&mp.f&&mp.f.length){
-      const fam=mp.f.map(x=>'<span class="fw">'+esc(x[0])+'<i>'+esc(x[1])+'</i></span>').join('');
-      const canAdd=mp.f.some(x=>WORDS.some(y=>y[0]===x[0]));
-      rows.push('<div class="bkrow"><span class="btag t-ext">拓展</span><span class="bval fam-inline">'+fam+
-        (canAdd?'<span class="fadd" onclick="studyFam()">加入今日队列</span>':'')+'</span></div>');
-    }
-    const mine=S.memo[w[0]];
-    if(mine) rows.push('<div class="bkrow"><span class="btag t-mine">我的</span><span class="bval">'+esc(mine)+
-      ' <span class="medit" onclick="delMemo()">删除</span></span></div>');
-    if(MEMO[w[0]]) rows.push('<div class="bkrow"><span class="btag t-fun">趣记</span><span class="bval">'+esc(MEMO[w[0]])+'</span></div>');
-    rows.push('<div class="bkadd" onclick="addMemo()">'+(mine?'✎ 改我的记忆':'＋ 记我的')+'<span class="bkadd-s">谐音 / 联想 / 笑话都行，自己编的最记得住</span></div>');
-    card='<div class="flash back">'+lb+'<div class="inner">'+
-      '<div class="zh">'+esc(w[1])+' <span class="saymini" onclick="event.stopPropagation();say(\''+esc(w[0]).replace(/'/g,"\\'")+'\')">🔊</span></div>'+
-      rows.join('')+
-      '<div class="poslegend">词性：n.=名词　v.=动词　adj.=形容词　adv.=副词　prep.=介词　conj.=连词　pron.=代词　art.=冠词　·　趣记仅为记忆钩子，词义以释义为准</div>'+
-      '</div></div>';
+  const word=w[0];
+  const mp=MORPH[word];
+  const rows=[];
+  let tip;
+  if(mp){ tip=esc(mp.p); }
+  else{
+    const fb=layer==='R'?'阅读核心词：别背中文标签，读下面那句【阅读】例句，把它记在句子里'
+      :(layer==='A'?'连接词不拆：只记它的逻辑方向（转折 / 因果 / 递进 / 让步）'
+      :(layer==='B'?'主题词不硬拆：归到话题里记，同类词一起记'
+        :'复用词记搭配，不记孤词——把整个搭配当一个单位记'));
+    tip='<em class="tipnone">'+esc(fb)+'</em>';
   }
+  rows.push('<div class="bkrow"><span class="btag t-tip">技巧</span><span class="bval">'+tip+'</span></div>');
+  if(w[2]) rows.push('<div class="bkrow"><span class="btag t-use">搭配</span><span class="bval">'+esc(w[2])+'</span></div>');
+  if(RSENT[word]) rows.push('<div class="bkrow"><span class="btag t-read">阅读</span><span class="bval readsen"><i>'+esc(RSENT[word][0])+'</i><b>'+esc(RSENT[word][1])+'</b></span></div>');
+  if(CONF[word]) rows.push('<div class="bkrow"><span class="btag t-cmp">辨析</span><span class="bval">'+esc(CONF[word])+'</span></div>');
+  if(mp&&mp.f&&mp.f.length){
+    const fam=mp.f.map(x=>'<span class="fw">'+esc(x[0])+'<i>'+esc(x[1])+'</i></span>').join('');
+    const canAdd=mp.f.some(x=>WORDS.some(y=>y[0]===x[0]));
+    rows.push('<div class="bkrow"><span class="btag t-ext">拓展</span><span class="bval fam-inline">'+fam+
+      (canAdd?'<span class="fadd" onclick="studyFam()">加入今日队列</span>':'')+'</span></div>');
+  }
+  const mine=S.memo[word];
+  if(mine) rows.push('<div class="bkrow"><span class="btag t-mine">我的</span><span class="bval">'+esc(mine)+
+    ' <span class="medit" onclick="delMemo()">删除</span></span></div>');
+  if(MEMO[word]&&MEMO[word]!==STORY[word]) rows.push('<div class="bkrow"><span class="btag t-fun">词源</span><span class="bval">'+esc(MEMO[word])+'</span></div>');
 
-  const gb=ses.flip?
-    '<div class="gradebar">'+
-      '<button class="btn" style="border-color:#f0cfd7;color:var(--rose);" onclick="grade(\'no\')">不认识</button>'+
-      '<button class="btn" style="border-color:#f5dfc0;color:var(--amber);" onclick="grade(\'fuzzy\')">模糊</button>'+
-      '<button class="btn pri" onclick="grade(\'know\')">认识</button>'+
-    '</div>'
-    :'<div class="gradebar" style="grid-template-columns:1fr;">'+
-      '<button class="btn" onclick="flip()">想好了，看答案</button></div>';
+  const st=STORY[word];
+  const story=st
+    ? '<div class="story"><span class="stag">这样记</span><span class="q">”</span><p>'+hlStory(st,word)+'</p></div>'
+    : '<div class="story none"><span class="stag">这样记</span><p>这个词暂时没有故事钩子——把它下面的【搭配】和【阅读】例句整句读两遍，句子就是它的故事。</p></div>';
+
+  const card='<div class="flash wcard">'+
+      '<div class="wtop">'+lb+'<span class="widx">第 '+(ses.idx+1)+' / '+ses.queue.length+' 张</span></div>'+
+      '<div class="whead"><span class="w">'+esc(word)+'</span>'+
+        '<button class="saybtn" onclick="say(curWord())">🔊 听读音</button></div>'+
+      '<div class="zh">'+esc(w[1])+'</div>'+
+      story+rows.join('')+
+      '<div class="bkadd" onclick="addMemo()">'+(mine?'✎ 改我的记忆':'＋ 记我的')+'<span class="bkadd-s">谐音 / 联想 / 笑话都行，自己编的最记得住</span></div>'+
+      '<div class="poslegend">词性：n.=名词　v.=动词　adj.=形容词　adv.=副词　prep.=介词　conj.=连词　pron.=代词　art.=冠词　·　故事只做记忆钩子，词义以释义为准</div>'+
+    '</div>';
+
+  const gb='<div class="gradebar">'+
+      '<button class="btn" style="border-color:#f0cfd7;color:var(--rose);" onclick="grade(\'no\')">跟它不熟</button>'+
+      '<button class="btn" style="border-color:#f5dfc0;color:var(--amber);" onclick="grade(\'fuzzy\')">有点模糊</button>'+
+      '<button class="btn pri" onclick="grade(\'know\')">一眼就懂</button>'+
+    '</div>';
 
   const prog=Math.round(ses.idx/Math.max(1,ses.queue.length)*100);
 
   return head+bar+
-    '<div class="card" style="padding:16px 18px 18px;">'+
+    '<div class="card" style="padding:14px 16px 18px;">'+
       '<div style="display:flex;justify-content:space-between;font-size:11.8px;color:var(--ink-4);margin-bottom:9px;">'+
-        '<span>第 '+(ses.idx+1)+' / '+ses.queue.length+' 张'+(ses.plan?'　今日新词：阅读'+(ses.plan.R||0)+'·复用'+(ses.plan.C||0)+'·主题'+(ses.plan.B||0)+'·连接'+(ses.plan.A||0):'')+'</span>'+
-        '<span>认识 '+ses.stat.know+' · 模糊 '+ses.stat.fuzzy+' · 不认识 '+ses.stat.no+'</span></div>'+
-      '<div class="bar" style="margin-bottom:16px;"><i style="width:'+prog+'%"></i></div>'+
+        '<span>自评一下：<b style="color:var(--ink-3);">读完释义和故事，你是哪种感觉</b>'+(ses.plan?'　本批：阅读'+(ses.plan.R||0)+'·复用'+(ses.plan.C||0)+'·主题'+(ses.plan.B||0)+'·连接'+(ses.plan.A||0):'')+'</span>'+
+        '<span>一眼就懂 '+ses.stat.know+' · 模糊 '+ses.stat.fuzzy+' · 不熟 '+ses.stat.no+'</span></div>'+
+      '<div class="bar" style="margin-bottom:14px;"><i style="width:'+prog+'%"></i></div>'+
       card+gb+
     '</div>'+importBox();
+}
+/* 故事里出现的目标词加粗（含词形变化），让人一眼看到「就是它」 */
+function hlStory(t, word){
+  let out=esc(t);
+  const k=esc(word).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  try{ out=out.replace(new RegExp('\\b('+k+'\\w*)','gi'),'<b>$1</b>'); }catch(e){}
+  return out;
 }
 function say(w){
   if(!w) return;
