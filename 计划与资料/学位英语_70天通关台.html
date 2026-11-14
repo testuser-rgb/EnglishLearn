@@ -226,7 +226,7 @@
   .rbody .rq{font-size:12.4px; color:var(--ink-3); padding:8px 0 2px; line-height:1.8;}
   .rcard2{background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:12px;}
 
-  /* 拆句器 */
+  /* 句子本：拆句输入区 */
   .sent{font-family:Georgia,"Times New Roman",serif; font-size:17.5px; line-height:2.05; color:var(--ink);
     background:#f8fafd; border:1px solid var(--line); border-radius:11px; padding:18px 20px;}
   .lab{font-size:12.2px; color:var(--ink-3); margin:16px 0 6px; display:flex; align-items:center; gap:7px;}
@@ -243,6 +243,16 @@
   .cmp .b .t{font-size:11.3px; color:var(--ink-4); margin-bottom:4px;}
   .cmp .mine{background:#fdfbf7;}
   .cmp .ref{background:#f6fbf9;}
+  /* 课堂：本周长难句示范 */
+  .demo{margin-top:18px; padding-top:14px; border-top:1px dashed var(--line);}
+  .demo h4{font-size:13px; color:var(--ink-2); margin:0 0 2px;}
+  .ditem{padding:13px 0; border-bottom:1px dashed var(--line-2);}
+  .ditem:last-child{border-bottom:0; padding-bottom:2px;}
+  .ditem .de{font-family:Georgia,"Times New Roman",serif; font-size:14.4px; line-height:1.95; color:var(--ink); margin-bottom:8px;}
+  .dsegs{margin-bottom:7px;}
+  .dseg{display:inline-block; font-size:12.4px; padding:2px 7px; background:var(--teal-2); color:var(--teal); border-radius:5px; margin:0 5px 4px 0;}
+  .drow{font-size:12.6px; line-height:1.85; color:var(--ink-3);}
+  .drow b{color:var(--ink-2); font-weight:600;}
 
   .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;}
   .chip{border:1px solid var(--line); border-radius:99px; padding:5px 13px; font-size:12.4px; color:var(--ink-2); cursor:pointer; background:#fff;}
@@ -306,7 +316,6 @@
       <button data-v="today" class="on"><span class="ic">◎</span>今日</button>
       <button data-v="vocab"><span class="ic">▤</span>背词</button>
       <button data-v="learn"><span class="ic">◈</span>课堂</button>
-      <button data-v="train"><span class="ic">✂</span>拆句</button>
       <button data-v="book"><span class="ic">▥</span>句子本</button>
       <button data-v="prog"><span class="ic">◔</span>进度</button>
       <button data-v="plan"><span class="ic">▦</span>计划</button>
@@ -2728,56 +2737,35 @@ function gradeAgain(){
 }
 
 /* =========================================================
-   拆句器逻辑
+   句子本：拆句流程
    ========================================================= */
-let tr={en:'',ref:null,step:'input',cut:'',trunk:'',zh:'',errs:[],mode:'bank'};
-
-function pickSent(){
-  const wk=weekNum();
-  const lo=(wk-1)*4, hi=lo+4;
-  const done={}; S.sentences.forEach(s=>{if(s.en) done[s.en]=1;});
-  let pool=SENTS.slice(lo,hi).filter(s=>!done[s.en]);
-  if(!pool.length) pool=SENTS.filter(s=>!done[s.en]);
-  if(!pool.length) pool=SENTS.slice();
-  return pool[Math.floor(Math.random()*pool.length)];
-}
-function newSentence(){
-  const s=pickSent();
-  tr={en:s.en,ref:s,step:'input',cut:'',trunk:'',zh:'',errs:[],mode:'bank'};
+/* 句子本里的拆句流程：只练你自己从真题里摘的句子 */
+let tr=null;   // {en, step:'input'|'review', cut, trunk, zh, errs}
+function beginOwn(){
+  const el=document.getElementById('own-en');
+  const v=el?String(el.value||'').trim():'';
+  if(!v){ alert('先把真题里的一句英文粘进来。'); return; }
+  tr={en:v, step:'input', cut:'', trunk:'', zh:'', errs:[]};
   render();
+  const a=document.getElementById('own-cut'); if(a&&a.focus) a.focus();
 }
-function submitSentence(){
-  const c=document.getElementById('in-cut');
-  const t=document.getElementById('in-trunk');
-  const z=document.getElementById('in-zh');
-  if(!c||!t||!z) return;
-  if(!z.value.trim()){ alert('最少要把你的译文写出来——这一段是整件事的关键，不能空着。'); return; }
-  tr.cut=c.value.trim(); tr.trunk=t.value.trim(); tr.zh=z.value.trim();
-  tr.step='review';
-  render();
+function submitOwn(){
+  const c=document.getElementById('own-cut'), t=document.getElementById('own-trunk'), z=document.getElementById('own-zh');
+  if(!z||!z.value.trim()){ alert('最少要把译文写出来，不能空着。'); return; }
+  tr.cut=c?c.value.trim():''; tr.trunk=t?t.value.trim():''; tr.zh=z.value.trim();
+  tr.step='review'; render();
 }
 function toggleErr(e){
   const i=tr.errs.indexOf(e);
   if(i>=0) tr.errs.splice(i,1); else tr.errs.push(e);
   render();
 }
-function saveSentence(){
-  S.sentences.push({
-    id:Date.now(), date:todayISO(), en:tr.en,
-    cut:tr.cut, trunk:tr.trunk, zh:tr.zh,
-    ref:tr.ref?{cut:tr.ref.cut,trunk:tr.ref.trunk,zh:tr.ref.zh,pt:tr.ref.pt}:null,
-    errs:tr.errs.slice()
-  });
+function saveOwn(){
+  S.sentences.push({id:Date.now(), date:todayISO(), en:tr.en, cut:tr.cut, trunk:tr.trunk, zh:tr.zh, ref:null, errs:tr.errs.slice()});
   const r=dayRec(); r.sent=(r.sent||0)+1;
-  save();
-  newSentence();
+  save(); tr=null; render();
 }
-function ownSentence(){
-  const v=prompt('把你今天真题里的一句英文粘进来：');
-  if(!v||!v.trim()) return;
-  tr={en:v.trim(),ref:null,step:'input',cut:'',trunk:'',zh:'',errs:[],mode:'own'};
-  render();
-}
+function cancelOwn(){ tr=null; render(); }
 
 /* =========================================================
    视图渲染
@@ -2795,7 +2783,6 @@ function render(){
   if(view==='today') m.innerHTML=viewToday();
   else if(view==='vocab') m.innerHTML=viewVocab();
   else if(view==='learn') m.innerHTML=viewLearn();
-  else if(view==='train') m.innerHTML=viewTrain();
   else if(view==='book') m.innerHTML=viewBook();
   else if(view==='prog') m.innerHTML=viewProg();
   else if(view==='plan') m.innerHTML=viewPlan();
@@ -2993,11 +2980,29 @@ function learnList(){
   return '<div class="vhead"><h1>课堂</h1></div>'+
     rev+rows;
 }
+function weekSents(lid){
+  const m=/^L([1-7])$/.exec(lid||'');
+  if(!m) return [];
+  const wk=+m[1];
+  return SENTS.slice((wk-1)*4, wk*4);
+}
+function demoBlock(lid){
+  const arr=weekSents(lid);
+  if(!arr.length) return '';
+  const items=arr.map(s=>{
+    const segs=s.cut.split(/\s*\/\s*/).filter(Boolean).map(x=>'<span class="dseg">'+esc(x)+'</span>').join('');
+    return '<div class="ditem"><div class="de">'+esc(s.en)+'</div>'+
+      '<div class="dsegs">'+segs+'</div>'+
+      '<div class="drow"><b>主干</b>　'+esc(s.trunk)+'</div>'+
+      '<div class="drow"><b>译文</b>　'+esc(s.zh)+'</div>'+
+      '<div class="drow"><b>考点</b>　'+esc(s.pt)+'</div></div>';
+  }).join('');
+  return '<div class="demo"><h4>本周长难句示范</h4>'+items+'</div>';
+}
 function learnTeach(L){
   const body=L.teach.map(sec=>'<div class="lsec"><h4>'+esc(sec[0])+'</h4><div class="lbody">'+sec[1]+'</div></div>').join('');
-  const st=lstate(L.id);
   return '<div class="vhead"><h1>'+esc(L.t)+'</h1><p>'+esc(L.sub)+'</p></div>'+
-    '<div class="card"><div class="lsec">'+body+'</div>'+
+    '<div class="card"><div class="lsec">'+body+'</div>'+demoBlock(L.id)+
     '<div style="margin-top:18px;display:flex;gap:9px;flex-wrap:wrap;">'+
     '<button class="btn pri" onclick="startQuiz(\''+L.id+'\')">学完了，开始练习（10 题）</button>'+
     '<button class="btn ghost" onclick="exitLesson()">返回课堂</button></div></div>';
@@ -3225,75 +3230,48 @@ function clearAll(){
   initState(); ses.active=false; render();
 }
 
-/* ---- 拆句 ---- */
-function viewTrain(){
-  if(!tr.en) newSentence();
-  const head='<div class="vhead"><h1>拆句训练</h1></div>';
-
-  if(tr.step==='input'){
-    return head+
-      '<div class="card">'+
-        '<div style="font-size:11.6px;color:var(--ink-4);margin-bottom:9px;">原句　'+
-          (tr.mode==='bank'?'来自内置句库':'你自己粘贴的句子')+'</div>'+
-        '<div class="sent">'+esc(tr.en)+'</div>'+
-
-        '<div class="lab"><b>① 切意群</b></div>'+
-        '<textarea id="in-cut" rows="2" placeholder="The number of students / who study abroad / has increased rapidly / in recent years.">'+esc(tr.cut)+'</textarea>'+
-
-        '<div class="lab"><b>② 抓主干</b></div>'+
-        '<textarea id="in-trunk" rows="2" placeholder="The number … has increased. （主语是 number，不是 students）">'+esc(tr.trunk)+'</textarea>'+
-
-        '<div class="lab"><b>③ 写译文</b></div>'+
-        '<textarea id="in-zh" rows="3" placeholder="近年来，出国留学的学生人数迅速增加。">'+esc(tr.zh)+'</textarea>'+
-
-        '<div style="margin-top:16px;display:flex;gap:9px;flex-wrap:wrap;">'+
-          '<button class="btn pri" onclick="submitSentence()">提交，对照参考答案</button>'+
-          '<button class="btn" onclick="newSentence()">换一句</button>'+
-          '<button class="btn ghost" onclick="ownSentence()">粘贴一句自己的</button>'+
-        '</div>'+
-      '</div>';
-  }
-
-  const ref=tr.ref;
-  let cmp='';
-  if(ref){
-    cmp='<div class="cmp">'+
-      '<div class="b mine"><div class="t">你的切分</div>'+esc(tr.cut||'（没写）')+'</div>'+
-      '<div class="b ref"><div class="t">参考切分</div>'+esc(ref.cut)+'</div>'+
-      '</div>'+
-      '<div class="cmp">'+
-      '<div class="b mine"><div class="t">你的主干</div>'+esc(tr.trunk||'（没写）')+'</div>'+
-      '<div class="b ref"><div class="t">参考主干</div>'+esc(ref.trunk)+'</div>'+
-      '</div>'+
-      '<div class="cmp">'+
-      '<div class="b mine"><div class="t">你的译文</div>'+esc(tr.zh)+'</div>'+
-      '<div class="b ref"><div class="t">参考译文</div>'+esc(ref.zh)+'</div>'+
-      '</div>'+
-      '<div class="note good"><b>这句的考点：</b>'+esc(ref.pt)+'</div>';
-  }else{
-    cmp='<div class="note"><b>自建句：</b>没有参考答案，请对照真题译文自己核对。</div>'+
-      '<div class="cmp"><div class="b mine"><div class="t">你的译文</div>'+esc(tr.zh)+'</div>'+
-      '<div class="b ref"><div class="t">你的切分 / 主干</div>'+esc(tr.cut||'—')+'<br>'+esc(tr.trunk||'—')+'</div></div>';
-  }
-
-  const chips=ERRORS.map(e=>'<div class="chip '+(tr.errs.indexOf(e)>=0?'on':'')+'" onclick="toggleErr(\''+e+'\')">'+e+'</div>').join('');
-
-  return head+
-    '<div class="card">'+
-      '<div class="sent">'+esc(tr.en)+'</div>'+cmp+
-      '<div class="lab"><b>给这一句的错误归类</b></div>'+
-      '<div class="chips">'+chips+'</div>'+
-      '<div style="margin-top:18px;display:flex;gap:9px;flex-wrap:wrap;">'+
-        '<button class="btn pri" onclick="saveSentence()">存进句子本，下一句</button>'+
-        '<button class="btn ghost" onclick="newSentence()">不存，换一句</button>'+
-      '</div>'+
-    '</div>';
-}
-
 /* ---- 句子本 ---- */
 let bookFilter='all';
 function viewBook(){
   const head='<div class="vhead"><h1>句子本</h1></div>';
+
+  if(tr){
+    if(tr.step==='input'){
+      return head+'<div class="card">'+
+        '<div class="sent">'+esc(tr.en)+'</div>'+
+        '<div class="lab"><b>① 切意群</b></div>'+
+        '<textarea id="own-cut" rows="2" placeholder="The number of students / who study abroad / has increased rapidly / in recent years.">'+esc(tr.cut)+'</textarea>'+
+        '<div class="lab"><b>② 抓主干</b></div>'+
+        '<textarea id="own-trunk" rows="2" placeholder="The number … has increased. （主语是 number，不是 students）">'+esc(tr.trunk)+'</textarea>'+
+        '<div class="lab"><b>③ 写译文</b></div>'+
+        '<textarea id="own-zh" rows="3" placeholder="近年来，出国留学的学生人数迅速增加。">'+esc(tr.zh)+'</textarea>'+
+        '<div style="margin-top:16px;display:flex;gap:9px;flex-wrap:wrap;">'+
+          '<button class="btn pri" onclick="submitOwn()">写完了，归因</button>'+
+          '<button class="btn ghost" onclick="cancelOwn()">取消</button>'+
+        '</div></div>';
+    }
+    const chips=ERRORS.map(e=>'<div class="chip '+(tr.errs.indexOf(e)>=0?'on':'')+'" onclick="toggleErr(\''+e+'\')">'+e+'</div>').join('');
+    return head+'<div class="card">'+
+      '<div class="sent">'+esc(tr.en)+'</div>'+
+      '<div class="cmp">'+
+        '<div class="b mine"><div class="t">你的切分</div>'+esc(tr.cut||'（没写）')+'</div>'+
+        '<div class="b ref"><div class="t">你的主干</div>'+esc(tr.trunk||'（没写）')+'</div>'+
+      '</div>'+
+      '<div class="cmp" style="grid-template-columns:1fr;margin-top:12px;">'+
+        '<div class="b mine"><div class="t">你的译文</div>'+esc(tr.zh)+'</div>'+
+      '</div>'+
+      '<div class="lab"><b>给这一句的错误归类</b></div>'+
+      '<div class="chips">'+chips+'</div>'+
+      '<div style="margin-top:16px;display:flex;gap:9px;flex-wrap:wrap;">'+
+        '<button class="btn pri" onclick="saveOwn()">存进句子本</button>'+
+        '<button class="btn ghost" onclick="cancelOwn()">不存</button>'+
+      '</div></div>';
+  }
+
+  const enter='<div class="card" style="padding:14px 16px;margin-bottom:14px;">'+
+    '<textarea id="own-en" rows="2" placeholder="把真题里的一句英文粘进来，拆一遍"></textarea>'+
+    '<div style="margin-top:10px;"><button class="btn sm pri" onclick="beginOwn()">拆这一句</button></div></div>';
+
   const list=S.sentences.slice().reverse();
   const cnt={'词不认识':0,'结构看错':0,'中文不顺':0};
   S.sentences.forEach(s=>(s.errs||[]).forEach(e=>{if(cnt[e]!=null) cnt[e]++;}));
@@ -3323,13 +3301,15 @@ function viewBook(){
       '<div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-4);margin-bottom:6px;">'+
         '<span>'+esc(s.date)+'</span><span>'+((s.errs||[]).join(' · ')||'未归类')+'</span></div>'+
       '<div style="font-family:Georgia,serif;font-size:14.6px;line-height:1.9;color:var(--ink);margin-bottom:8px;">'+esc(s.en)+'</div>'+
-      '<div style="font-size:12.9px;color:var(--ink-3);line-height:1.8;">你的译文：'+esc(s.zh)+'</div>'+
+      (s.cut?'<div style="font-size:12.9px;color:var(--ink-3);line-height:1.8;">切分：'+esc(s.cut)+'</div>':'')+
+      (s.trunk?'<div style="font-size:12.9px;color:var(--ink-3);line-height:1.8;">主干：'+esc(s.trunk)+'</div>':'')+
+      '<div style="font-size:12.9px;color:var(--ink-3);line-height:1.8;">译文：'+esc(s.zh)+'</div>'+
       (s.ref?'<div style="font-size:12.9px;color:var(--teal);line-height:1.8;margin-top:3px;">参考：'+esc(s.ref.zh)+'</div>':'')+
     '</div>';
   });
-  if(!shown.length) items='<div class="card"><div class="empty">还没有记录。去「拆句」练第一句。</div></div>';
+  if(!shown.length) items='<div class="card"><div class="empty">还没有记录。上面粘一句真题里的话，拆一遍就存进来了。</div></div>';
 
-  return head+stat+adv+filt+items;
+  return head+enter+stat+adv+filt+items;
 }
 function setFilter(f){bookFilter=f; render();}
 
@@ -3484,13 +3464,13 @@ function viewRef(){
 /* =========================================================
    路由与启动
    ========================================================= */
-function go(v){view=v; if(v==='vocab'&&!ses.active) startSession(); if(v==='train'&&!tr.en) newSentence(); if(v==='learn') LV=null; render(); window.scrollTo(0,0);}
+function go(v){view=v; if(v==='vocab'&&!ses.active) startSession(); if(v==='learn') LV=null; render(); window.scrollTo(0,0);}
 function go_(v){go(v);}
 window.say=say; window.go=go; window.flip=flip; window.grade=grade; window.again=again; window.addMemo=addMemo; window.delMemo=delMemo;
 window.openLesson=openLesson; window.startQuiz=startQuiz; window.startReview=startReview; window.quizPick=quizPick; window.quizNext=quizNext; window.exitLesson=exitLesson;
 window.studyFam=studyFam;
-window.toggleTask=toggleTask; window.submitSentence=submitSentence; window.toggleErr=toggleErr;
-window.saveSentence=saveSentence; window.newSentence=newSentence; window.ownSentence=ownSentence;
+window.toggleTask=toggleTask; window.toggleErr=toggleErr;
+window.beginOwn=beginOwn; window.submitOwn=submitOwn; window.saveOwn=saveOwn; window.cancelOwn=cancelOwn;
 window.setFilter=setFilter; window.toggleMile=toggleMile; window.addExam=addExam; window.delExam=delExam;
 window.setStart=setStart; window.doImport=doImport; window.clearAll=clearAll;
 
