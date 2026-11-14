@@ -5211,6 +5211,21 @@ function todayISO(){return iso(new Date());}
 function addDays(s,n){const d=new Date(s+'T00:00:00'); d.setDate(d.getDate()+n); return iso(d);}
 function diffDays(a,b){return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000);}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+/* 未解锁条目的点击反馈：告诉用户什么时候开、还差几天，而不是静默无反应 */
+function lockTip(kind,openDay){
+  const left=openDay-dayNum();
+  const msg=kind+'第 '+openDay+' 天解锁'+(left>0?('，还差 '+left+' 天'):'')+'。前面的词学到那天会自动开放，现在先按今天的任务走。';
+  let el=document.getElementById('locktip');
+  if(!el){
+    el=document.createElement('div'); el.id='locktip';
+    el.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:99;background:#16202e;color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;line-height:1.6;max-width:82vw;box-shadow:0 4px 18px rgba(0,0,0,.18);';
+    document.body.appendChild(el);
+  }
+  el.textContent=msg;
+  clearTimeout(window.__lockTimer);
+  window.__lockTimer=setTimeout(function(){ if(el&&el.parentNode) el.parentNode.removeChild(el); },3400);
+}
+
 
 let S=null;
 function load(){try{const r=localStorage.getItem(KEY); if(r) return JSON.parse(r);}catch(e){} return null;}
@@ -5806,7 +5821,7 @@ function pickItems(lid,n){
   });
   return sel;
 }
-function openLesson(lid){LV={mode:'lesson',lid:lid,part:'teach'}; save(); render(); window.scrollTo(0,0);}
+function openLesson(lid){ view='learn'; LV={mode:'lesson',lid:lid,part:'teach'}; save(); render(); window.scrollTo(0,0);}
 function startQuiz(lid){
   lstate(lid).learned=true;
   LV={mode:'lesson',lid:lid,part:'quiz',items:pickItems(lid,10),qi:0,right:0,wrongs:[],picked:null};
@@ -7588,7 +7603,7 @@ function openRead(i){
     if(S.rhist.length>10) S.rhist=S.rhist.slice(-10);
     save();
   }
-  go('read');
+  go('read',1);                      /* 保留刚设置的 RDGV，别再被 go 清空 */
 }
 function openReadList(){ go('readlist'); }
 
@@ -7730,8 +7745,9 @@ function viewReadList(){
       else if(got>=R.q.length) st=(rr.n>=R.q.length?'<span style="color:var(--ok);font-weight:700;">全对</span>':'<span style="color:var(--warn);font-weight:700;">答 '+rr.n+'/'+R.q.length+'</span>');
       else st='<span style="color:var(--ink-4);">'+(got?'答 '+got+'/'+R.q.length:'未做')+'</span>';
       const cnt=R.p.replace(/\s+/g,' ').split(' ').filter(Boolean).length;
-      return '<div onclick="'+(x.lock?'':'openRead('+x.i+')')+'" style="display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px dashed var(--line);'+
-        (x.lock?'opacity:.45;cursor:default;':'cursor:pointer;')+'">'+
+      const act=x.lock?("lockTip('这篇短文',"+R.d+")"):('openRead('+x.i+')');
+      return '<div onclick="'+act+'" style="display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px dashed var(--line);'+
+        (x.lock?'opacity:.45;cursor:help;':'cursor:pointer;')+'">'+
         '<b style="flex:none;width:36px;text-align:right;font-size:12px;color:var(--ink-4);">'+x.dv+'</b>'+
         '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:650;color:var(--ink-1);">'+esc(R.t)+'</div>'+
         '<div style="font-size:11.6px;color:var(--ink-4);">第 '+R.d+' 天 · '+cnt+' 词 · '+R.q.length+' 题</div></div>'+
@@ -8141,7 +8157,8 @@ function clzNext(){
     const i=(cur+k)%n;
     if(CLOZE[i].d<=d){ CLZV=i; render(); window.scrollTo(0,0); return; }
   }
-  render();
+  const nx=CLOZE.find(function(x){ return x.d>d; });
+  alert(nx?('目前解锁的完形套题都在这里了，第 '+nx.d+' 天会开放下一套。'):'全部完形套题都解锁了，可以用「换一套」回头重做。');
 }
 function clzGloss(C){
   const txt=(C.p+' '+C.g.map(function(g){return g.o.join(' ');}).join(' ')).toLowerCase();
@@ -8240,8 +8257,9 @@ function viewCloze(){
       if(lk) t='<span style="color:var(--ink-4);">第 '+x.d+' 天开放</span>';
       else if(rr.done) t='<span style="color:'+(rt>=x.g.length?'var(--ok)':'var(--amber)')+';font-weight:700;">'+rt+'/'+x.g.length+'</span>';
       else t='<span style="color:var(--ink-4);">'+(g2?'做了 '+g2+'/'+x.g.length:'未做')+'</span>';
-      return '<div onclick="'+(lk?'':'clzOpen('+xi+')')+'" style="display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px dashed var(--line);'+
-        (lk?'opacity:.45;':'cursor:pointer;')+'">'+
+      const act=lk?("lockTip('这套完形',"+x.d+")"):('clzOpen('+xi+')');
+      return '<div onclick="'+act+'" style="display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px dashed var(--line);'+
+        (lk?'opacity:.45;cursor:help;':'cursor:pointer;')+'">'+
         '<b style="flex:none;width:30px;font-size:12px;color:var(--ink-4);">'+(xi+1)+'</b>'+
         '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:650;color:var(--ink-1);">'+esc(x.t)+'</div>'+
         '<div style="font-size:11.6px;color:var(--ink-4);">'+x.g.length+' 空 · 第 '+x.d+' 天</div></div>'+
@@ -8689,7 +8707,13 @@ function viewRef(){
 /* =========================================================
    路由与启动
    ========================================================= */
-function go(v){view=v; if(v==='read') RDGV=null; if(v==='vocab'&&!ses.active) startSession(); if(v==='learn') LV=null; render(); window.scrollTo(0,0);}
+function go(v,keepRdg){
+  view=v;
+  if(v==='read'&&!keepRdg) RDGV=null;   /* 导航进入=回今日推荐；openRead 传 keepRdg 保留指定篇目 */
+  if(v==='vocab'&&!ses.active) startSession();
+  if(v==='learn') LV=null;
+  render(); window.scrollTo(0,0);
+}
 function go_(v){go(v);}
 window.say=say; window.answer=answer; window.go=go; window.flip=flip; window.grade=grade; window.again=again; window.addMemo=addMemo; window.delMemo=delMemo;
 window.openLesson=openLesson; window.startQuiz=startQuiz; window.startReview=startReview; window.quizPick=quizPick; window.quizNext=quizNext; window.exitLesson=exitLesson;
