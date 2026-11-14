@@ -328,8 +328,6 @@
       <button data-v="learn"><span class="ic">◈</span>课堂</button>
       <button data-v="book"><span class="ic">▥</span>句子本</button>
       <button data-v="prog"><span class="ic">◔</span>进度</button>
-      <button data-v="plan"><span class="ic">▦</span>计划</button>
-      <button data-v="ref"><span class="ic">?</span>速查</button>
     </nav>
     <div class="side-foot" id="sidefoot"></div>
   </aside>
@@ -4854,7 +4852,6 @@ function render(){
   else if(view==='learn') m.innerHTML=viewLearn();
   else if(view==='book') m.innerHTML=viewBook();
   else if(view==='prog') m.innerHTML=viewProg();
-  else if(view==='plan') m.innerHTML=viewPlan();
   else m.innerHTML=viewRef();
 }
 
@@ -4903,6 +4900,9 @@ function viewToday(){
 
     '<div class="card"><h3>今日五件事</h3>'+tasks+'</div>'+
     reviewCard()+
+    (wk>=9?'<div class="card" style="padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">'+
+      '<b style="font-size:13.5px;">考前速查</b>'+
+      '<button class="btn pri" style="padding:6px 14px;" onclick="go(\'ref\')">打开</button></div>':'')+
     '<div class="card"><h3>'+cardTitle+'</h3><ul class="tight">'+points+'</ul>'+
       '<div style="margin-top:12px;display:flex;gap:9px;flex-wrap:wrap;">'+lessonBtns+'</div></div>'+
     '';
@@ -5558,6 +5558,7 @@ function viewProg(){
       '<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);">'+
       '<div style="font-size:12px;color:var(--ink-3);margin-bottom:8px;"><b>词库维护</b></div>'+
       importBox()+'</div></div>'+
+    planMap()+
     '<div class="card"><h3>里程碑自检</h3>'+miles+'</div>'+
     '<div class="card"><h3>模考记录</h3>'+
       '<div style="display:flex;gap:9px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">'+
@@ -5571,7 +5572,10 @@ function viewProg(){
       '<div style="display:flex;gap:9px;align-items:center;">'+
       '<input type="text" id="startd" value="'+esc(S.start)+'" style="width:150px;">'+
       '<button class="btn sm" onclick="setStart()">更新</button>'+
-      '<span style="font-size:12px;color:var(--ink-4);">格式 2026-11-13。改它会重算天数，打卡记录保留。</span></div></div>';
+      '<span style="font-size:12px;color:var(--ink-4);">格式 2026-11-13。改它会重算天数，打卡记录保留。</span></div></div>'+
+    '<div class="card" style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">'+
+      '<b style="font-size:13.5px;">考前速查</b>'+
+      '<button class="btn" style="padding:6px 14px;" onclick="go(\'ref\')">打开</button></div>';
 }
 function toggleMile(w){S.mile[w]=S.mile[w]?0:1; save(); render();}
 function addExam(){
@@ -5587,26 +5591,20 @@ function setStart(){
   S.start=v; save(); render();
 }
 
-/* ---- 计划 ---- */
-function viewPlan(){
+/* ---- 10 周地图（并进进度页） ---- */
+function planMap(){
   let rows='';
   WEEKS.forEach(w=>{
     const on=w.w===weekNum();
     rows+='<tr'+(on?' style="background:#eaf1fa;"':'')+'>'+
-      '<td class="c nw">第 '+w.w+' 周'+(on?' <span class="pill">当前</span>':'')+'</td>'+
+      '<td class="c nw">'+w.w+'</td>'+
       '<td>'+esc(w.theme)+'</td>'+
       '<td class="c">'+w.words+'</td>'+
       '<td>'+esc(w.check)+'</td></tr>';
   });
-  const flow=TASKS.map(t=>'<tr><td class="nw">'+t.m+' 分钟</td><td>'+(t.k==='t2'?'新词 '+targetNew()+' 个（按词块记）':esc(t.n))+'</td></tr>').join('');
-
-  return '<div class="vhead"><h1>计划</h1></div>'+
-    '<div class="card"><h3>10 周作战地图</h3>'+
-      '<table><thead><tr><th class="c">周次</th><th>这一周只攻一个主题</th><th class="c">累计目标</th><th>周末验收</th></tr></thead><tbody>'+rows+'</tbody></table>'+
-    '</div>'+
-    '<div class="card"><h3>每天 '+TASKS.reduce((a,t)=>a+t.m,0)+' 分钟</h3>'+
-      '<table><thead><tr><th class="nw">时间块</th><th>做什么</th></tr></thead><tbody>'+flow+'</tbody></table>'+
-    '</div>';
+  return '<div class="card"><h3>10 周地图 <span class="sub">第 '+weekNum()+' 周</span></h3>'+
+    '<table><thead><tr><th class="c">周</th><th>这一周只攻一个主题</th><th class="c">累计词量</th><th>周末验收</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+    '<div style="margin-top:12px;font-size:12px;color:var(--ink-4);">每天 '+TASKS.reduce((a,t)=>a+t.m,0)+' 分钟：'+TASKS.map(t=>t.m+'′ '+t.n.replace(/（.*?）/g,'')).join('　')+'</div></div>';
 }
 
 /* ---- 速查 ---- */
