@@ -102,6 +102,10 @@
   .flash .bkrow{display:flex; align-items:flex-start; gap:9px; margin-top:10px; width:100%; text-align:left;}
   .flash .btag{flex:none; font-size:11px; font-weight:700; padding:2.5px 8px; border-radius:6px; margin-top:1.5px; letter-spacing:.04em;}
   .flash .t-tip{background:var(--blue-2); color:var(--blue);}
+  .flash .t-cmp{background:#f1ecfb; color:#6b4fbf;}
+  .flash .saybar{font-size:11.5px; color:var(--blue); background:var(--blue-2); display:inline-block; padding:4px 11px; border-radius:20px; margin-top:9px; cursor:pointer;}
+  .flash .saymini{cursor:pointer; font-size:13px; opacity:.65; margin-left:4px;}
+  .flash .saymini:hover{opacity:1;}
   .flash .t-use{background:#ecf7ef; color:#2e7d43;}
   .flash .t-ext{background:#f2edfa; color:#7452b0;}
   .flash .t-fun{background:var(--amber-2); color:var(--amber);}
@@ -278,53 +282,7 @@
    数据区（词库与句库）
    ========================================================= */
 const WORDS=[
-/* ===== A 层：功能骨架词 100（要求 0.5 秒反应） ===== */
-["in","prep. 在……里；在……方面","in recent years 近年来","A"],
-["on","prep. 在……上；关于","on the other hand 另一方面","A"],
-["at","prep. 在（点）；以（速度）","at the same time 同时","A"],
-["of","prep. ……的","the number of ……的数量","A"],
-["to","prep. 到；向；（不定式符号）","lead to 导致","A"],
-["for","prep. 为了；对于；持续","for instance 例如","A"],
-["with","prep. 和；带有；随着","with the development of 随着……发展","A"],
-["by","prep. 通过；被；到……为止","by the end of 到……末","A"],
-["from","prep. 从；来自","result from 由……引起","A"],
-["about","prep. 关于；大约","be about to do 即将做","A"],
-["into","prep. 进入；变成","turn into 变成","A"],
-["over","prep. 在……上方；超过","over the past decade 过去十年","A"],
-["under","prep. 在……下；在……中","under control 在控制中","A"],
-["between","prep. 在两者之间","between A and B","A"],
-["among","prep. 在三者以上之间","among students 在学生当中","A"],
-["during","prep. 在……期间","during the meeting","A"],
-["before","conj./prep. 在……之前","before Friday 周五前","A"],
-["after","conj./prep. 在……之后","after graduation 毕业后","A"],
-["since","conj./prep. 自从；因为","since he graduated 自从他毕业","A"],
-["until","conj./prep. 直到","not until 直到……才","A"],
-["through","prep. 穿过；通过","through hard work 通过努力","A"],
-["across","prep. 横过；遍及","across the country 全国各地","A"],
-["against","prep. 反对；靠着","against the rules 违反规则","A"],
-["without","prep. 没有","without a teacher's help 没有老师帮助","A"],
-["within","prep. 在……之内","within a week 一周内","A"],
-["beyond","prep. 超出","beyond doubt 毫无疑问","A"],
-["despite","prep. 尽管（后接名词）","despite the rain 尽管下雨","A"],
-["except","prep. 除……之外","except for 除……之外","A"],
-["toward","prep. 朝向；对于","attitude toward 对……的态度","A"],
-["upon","prep. 在……之上；一……就","upon arrival 一到就","A"],
-["and","conj. 和；并且","both A and B","A"],
-["but","conj. 但是","not A but B 不是A而是B","A"],
-["or","conj. 或者；否则","either A or B","A"],
-["so","conj. 所以","so that 以便","A"],
-["because","conj. 因为","because of + 名词","A"],
-["although","conj. 虽然","Although it rained, …","A"],
-["though","conj. 虽然；adv. 不过","as though 好像","A"],
 ["while","conj. 当……时；然而","while others 而另一些","A"],
-["if","conj. 如果；是否","if necessary 如有必要","A"],
-["unless","conj. 除非","unless you try 除非你试","A"],
-["as","conj. 当……时；因为；正如","as long as 只要","A"],
-["when","conj. 当……时","when it comes to 谈到","A"],
-["where","conj. 在……的地方","where necessary 必要时","A"],
-["whether","conj. 是否","whether or not 是否","A"],
-["than","conj. 比","more than 多于","A"],
-["that","conj./pron. 那个；引导从句；替代前文","the fact that 同位语从句","A"],
 ["however","adv. 然而","However, we must… 句首转折","A"],
 ["therefore","adv. 因此","therefore we should…","A"],
 ["moreover","adv. 此外，而且","递进关系","A"],
@@ -334,52 +292,17 @@ const WORDS=[
 ["thus","adv. 因此","thus 引出结果","A"],
 ["meanwhile","adv. 同时","Meanwhile, …","A"],
 ["instead","adv. 反而；代替","instead of 而不是","A"],
-["it","pron. 它；形式主语/宾语","It is important that…","A"],
-["they","pron. 他们","They say that… 据说","A"],
-["them","pron. 他们（宾格）","tell them","A"],
-["we","pron. 我们","We should…","A"],
-["you","pron. 你/你们；泛指人","You can see that…","A"],
-["he","pron. 他","he works","A"],
-["she","pron. 她","she said","A"],
 ["this","pron./adj. 这","this 可指代上文整句","A"],
 ["these","pron./adj. 这些","these days 如今","A"],
 ["those","pron. 那些；替代前文复数","those who… 那些……的人","A"],
 ["one","pron. 一个；替代前文单数名词","the one on the desk","A"],
 ["ones","pron. 替代前文复数名词","the ones who…","A"],
-["both","pron./adj. 两者都","both…and…","A"],
-["either","pron. 两者之一","either…or…","A"],
-["neither","pron. 两者都不","neither…nor…","A"],
-["all","pron./adj. 全部","all of them","A"],
-["none","pron. 一个也没有","none of us","A"],
-["some","adj./pron. 一些","some…others…","A"],
-["any","adj./pron. 任何；一些（否定/疑问）","any of them","A"],
-["each","adj./pron. 每个","each other 互相","A"],
-["every","adj. 每个","every day","A"],
-["such","adj. 这样的","such as 例如","A"],
-["which","pron. 哪一个；引导定语从句","the book which I bought","A"],
-["who","pron. 谁；引导定语从句","those who…","A"],
-["whom","pron. 谁（宾格）","the man whom I met","A"],
-["whose","pron. 谁的","the man whose car…","A"],
-["what","pron. 什么；引导主语/宾语从句","What matters is…","A"],
-["can","modal 能；可以","can be done 能够被……","A"],
 ["could","modal 能（过去）；可能","could have done 本可以做","A"],
 ["may","modal 可能；可以","may well 很可能","A"],
 ["might","modal 也许","might have done 本可能","A"],
 ["must","modal 必须；一定","must have done 一定做过","A"],
 ["should","modal 应该","should have done 本应该","A"],
 ["would","modal 将会；愿意","would rather 宁愿","A"],
-["will","modal 将；愿意","will have done 将来完成","A"],
-["shall","modal 将（第一人称）","Shall we…?","A"],
-["need","v./modal 需要","need to do；need not do","A"],
-["dare","v./modal 敢","dare to do","A"],
-["how","adv. 怎样；多么","how much / how to do","A"],
-["why","adv. 为什么","the reason why…","A"],
-["not","adv. 不","not only…but also…","A"],
-["only","adv./adj. 只；唯一的","only by doing 只有通过","A"],
-["also","adv. 也","not only…also…","A"],
-["very","adv. 很","the very same 正是同一个","A"],
-
-/* ===== B 层：阅读主题词 164（见词知义即可） ===== */
 ["education","n. 教育","receive education 接受教育","B"],
 ["student","n. 学生","college students","B"],
 ["teacher","n. 教师","a teacher's supervision 老师监督","B"],
@@ -543,8 +466,6 @@ const WORDS=[
 ["appropriate","adj. 合适的","be appropriate for","B"],
 ["comprehensive","adj. 全面的","a comprehensive plan","B"],
 ["familiar","adj. 熟悉的","be familiar with","B"],
-
-/* ===== C 层：复用核心词与词块 188（要会拼、会搭、会造句） ===== */
 ["analyze","v. 分析","analyze the causes 分析原因","C"],
 ["evaluate","v. 评估","evaluate the effect","C"],
 ["implement","v. 实施","implement the policy","C"],
@@ -723,7 +644,80 @@ const WORDS=[
 ["lead to","导致","lead to failure","C"],
 ["adapt to","适应","adapt to the new life","C"],
 ["object to","反对","object to the plan","C"],
-["depend on","依靠；取决于","depend on effort","C"]
+["depend on","依靠；取决于","depend on effort","C"],
+["be rich in","adj. 富含……","be rich in iron / vitamins 富含铁、维生素","C"],
+["in contrast to","prep. 与……形成对比","in contrast to the past 与过去相比","C"],
+["on the whole","adv. 总的来说","On the whole, the plan works. 总的来说计划可行","C"],
+["at the expense of","prep. 以……为代价","develop at the expense of the environment","C"],
+["in response to","prep. 回应……","in response to the request 应……的请求","C"],
+["by means of","prep. 借助……","by means of technology 借助技术","C"],
+["in advance","adv. 提前","book in advance 提前预订","C"],
+["in vain","adv. 徒劳","try in vain 白费力气","C"],
+["on purpose","adv. 故意","do it on purpose 故意这么做","C"],
+["in detail","adv. 详细地","explain in detail 详细解释","C"],
+["under no circumstances","adv. 决不（置于句首要倒装）","Under no circumstances should you give up.","C"],
+["in the face of","prep. 面对……","in the face of difficulty 面对困难","C"],
+["prior to","prep. 在……之前","prior to graduation 毕业前","C"],
+["in light of","prep. 鉴于……","in light of the evidence 鉴于证据","C"],
+["with regard to","prep. 关于……","with regard to your letter 关于你的来信","C"],
+["in accordance with","prep. 依照……","in accordance with the rules 依照规定","C"],
+["on the basis of","prep. 基于……","on the basis of facts 基于事实","C"],
+["for the sake of","prep. 为了……","for the sake of health 为了健康","C"],
+["be accustomed to","v. 习惯于","be accustomed to getting up early 习惯早起（to 是介词）","C"],
+["be committed to","v. 致力于","be committed to quality 致力于质量","C"],
+["be exposed to","v. 接触到；暴露于","be exposed to sunlight 暴露在阳光下","C"],
+["be opposed to","v. 反对","be opposed to the plan 反对该计划","C"],
+["be attributed to","v. 归因于","The success is attributed to hard work.","C"],
+["be engaged in","v. 从事于","be engaged in research 从事研究","C"],
+["be involved in","v. 参与；卷入","be involved in the project 参与项目","C"],
+["result in","v. 导致（引出结果）","result in failure 导致失败","C"],
+["account for","v. 解释；占（比例）","account for 30% of the total 占总量的30%","C"],
+["contribute to","v. 有助于；促成","contribute to success 促成成功","C"],
+["give rise to","v. 引起","give rise to concern 引起担忧","C"],
+["make sense of","v. 理解","make sense of the sentence 理解这句话","C"],
+["take for granted","v. 认为理所当然","take health for granted 把健康当作理所当然","C"],
+["keep in mind","v. 记住","keep in mind that… 记住……","C"],
+["live up to","v. 符合（期望）","live up to expectations 不负期望","C"],
+["fall short of","v. 未达到","fall short of the standard 未达标准","C"],
+["be likely to","v. 可能","be likely to succeed 可能成功","C"],
+["be bound to","v. 必然","be bound to fail 必然失败","C"],
+["be supposed to","v. 应该","be supposed to arrive at 8 应该八点到","C"],
+["be prone to","v. 易于（多指不好的事）","be prone to errors 容易出错","C"],
+["put emphasis on","v. 强调","put emphasis on practice 强调实践","C"],
+["draw a conclusion","v. 得出结论","draw a conclusion from data 从数据得出结论","C"],
+["effect","n. 影响；效果（名词）","have a great effect on 对……有很大影响","C"],
+["adopt","v. 采纳；收养","adopt a plan 采纳一项计划","C"],
+["considerate","adj. 体贴的","It is considerate of you. 你真体贴","C"],
+["considerable","adj. 相当大的","a considerable amount of 相当多的","C"],
+["economical","adj. 节约的","an economical car 省油的车","C"],
+["economic","adj. 经济的","economic growth 经济增长","C"],
+["sensible","adj. 明智的","a sensible decision 明智的决定","C"],
+["sensitive","adj. 敏感的","be sensitive to light 对光敏感","C"],
+["principal","adj. 主要的；n. 校长","the principal reason 主要原因","C"],
+["principle","n. 原则","in principle 原则上","C"],
+["raise","v. 提高（及物，必须带宾语）","raise prices 提价","C"],
+["rise","v. 上升（不及物，不带宾语）","Prices rose sharply. 价格大幅上涨","C"],
+["lay","v. 放置（及物，过去式 laid）","lay the book on the desk 把书放桌上","C"],
+["lie","v. 躺（不及物，过去式 lay）","lie on the bed 躺在床上","C"],
+["expect","v. 期待；预料","expect to do 期望做","C"],
+["acquire","v. 获得（靠努力学到）","acquire knowledge 获得知识","C"],
+["devote","v. 把……奉献给","devote oneself to 致力于","C"],
+["reserve","v. 预订；保留","reserve a room 预订房间","C"],
+["assume","v. 假定；承担","assume responsibility 承担责任","C"],
+["consume","v. 消耗；消费","consume energy 消耗能源","C"],
+["personnel","n. 全体人员（集合名词，谓语用复数）","the personnel department 人事部","C"],
+["historic","adj. 有历史意义的","a historic moment 历史性时刻","C"],
+["historical","adj. 历史的（与历史有关的）","historical research 历史研究","C"],
+["respectable","adj. 值得尊敬的","a respectable family 体面人家","C"],
+["industrious","adj. 勤奋的","an industrious student 勤奋的学生","C"],
+["imaginative","adj. 富有想象力的","an imaginative writer 有想象力的作家","C"],
+["intensive","adj. 密集的；强化的","intensive training 强化训练","C"],
+["extensive","adj. 广泛的","extensive reading 泛读","C"],
+["continual","adj. 反复不断的（中间有间隔）","continual interruptions 反复的打扰","C"],
+["continuous","adj. 连续不停的（中间无间隔）","continuous rain 连绵不断的雨","C"],
+["confident","adj. 自信的","be confident of success 对成功有信心","C"],
+["confidential","adj. 机密的","confidential information 机密信息","C"],
+["beside","prep. 在……旁边","sit beside me 坐我旁边","C"]
 ];
 const SENTS=[
 /* ===== 第 1 周：简单句骨架 ===== */
@@ -1314,6 +1308,72 @@ const MEMO={
 };
 
 /* =========================================================
+   易混词辨析（词汇题主力题型）
+   渲染在词卡背面【辨析】行：考试爱考的就是这几组
+   ========================================================= */
+const CONF={
+"affect":"affect 只能当动词「影响」：Smoking affects health. ｜ effect 只能当名词：have an effect on。看到 the / a / have…on 就填 effect",
+"effect":"effect 是名词：have a great effect on。有冠词、有 have…on 结构就是它；affect 才是动词",
+"adapt":"adapt = 适应、改编（adapt to 适应）｜ adopt = 采纳、收养（adopt a plan）。差一个字母，年年考",
+"adopt":"adopt = 采纳、收养，后接 plan / policy / child ｜ adapt = 适应，常接 to",
+"considerate":"considerate = 体贴的（替别人着想）｜ considerable = 相当大的（数量）。记法：considerate 里藏着 consider（考虑别人）",
+"considerable":"considerable = 相当大的（a considerable amount）｜ considerate = 体贴的",
+"economical":"economical = 节约的、省钱的（an economical car）｜ economic = 经济的（economic growth）",
+"economic":"economic = 经济领域的 ｜ economical = 节约的。加 -al 反而变「省钱」",
+"sensible":"sensible = 明智的、有道理的 ｜ sensitive = 敏感的（be sensitive to）",
+"sensitive":"sensitive = 敏感的（易受影响）｜ sensible = 明智的",
+"principal":"principal = 主要的 / 校长 ｜ principle = 原则。口诀：principal 的 -pal 像「朋友」，当校长的朋友最主要",
+"principle":"principle = 原则（in principle 原则上）｜ principal = 主要的、校长",
+"raise":"raise 及物，后面必须跟宾语：raise prices 提价 ｜ rise 不及物，不能带宾语：Prices rose",
+"rise":"rise 不及物（Prices rose）；raise 及物（raise prices）。真题常考 The price has risen",
+"lay":"lay 及物＝放置，过去式 laid ｜ lie 不及物＝躺，过去式 lay——两个词共用 lay 这个形式，最容易混",
+"lie":"lie 不及物＝躺，过去式 lay、过去分词 lain；lie＝说谎时是规则动词 lied ｜ lay 及物＝放置（laid）",
+"expect":"expect = 期待、预料 ｜ except = 除……之外。只差一个字母，阅读里看错就整句错",
+"acquire":"acquire = 靠努力获得（acquire knowledge / skills）｜ require = 需要 ｜ inquire = 询问",
+"require":"require = 需要、要求（require sb to do；require that…(should) do）｜ acquire = 获得 ｜ inquire = 询问",
+"devote":"devote = 把时间精力奉献给（devote oneself to）｜ contribute = 贡献、促成；两者都可接 to，但方向不同",
+"preserve":"preserve = 保存、保护（维持原状：preserve tradition）｜ reserve = 预订、保留（reserve a room）",
+"reserve":"reserve = 预订、保留 ｜ preserve = 保存、保护",
+"assume":"assume = 假定；承担（assume responsibility）｜ consume = 消耗 ｜ resume = 恢复",
+"consume":"consume = 消耗、消费 ｜ assume = 假定 ｜ resume = 恢复",
+"expand":"expand = 扩张（体积、规模变大）｜ extend = 延伸（长度、时间拉长）｜ expend = 花费",
+"extend":"extend = 延伸、延长（extend the deadline）｜ expand = 扩张 ｜ expend = 花费",
+"personnel":"personnel = 全体人员（集合名词，谓语用复数）｜ personal = 个人的。人事部 = personnel department",
+"historic":"historic = 有历史意义的（a historic moment）｜ historical = 与历史有关的（historical research）",
+"historical":"historical = 历史的、史学的 ｜ historic = 具有历史意义的",
+"respectable":"respectable = 值得尊敬的 ｜ respectful = 恭敬的（对人态度）｜ respective = 各自的",
+"industrious":"industrious = 勤奋的 ｜ industrial = 工业的",
+"imaginative":"imaginative = 富有想象力的 ｜ imaginary = 虚构的（不真实）｜ imaginable = 可想象的",
+"intensive":"intensive = 密集的、强化的（intensive training）｜ extensive = 广泛的（extensive reading）",
+"extensive":"extensive = 广泛的、大量的 ｜ intensive = 密集的、强化的",
+"continual":"continual = 反复不断的（中间有间隔：continual interruptions）｜ continuous = 连续不停（无间隔：continuous rain）",
+"continuous":"continuous = 连续不停的 ｜ continual = 反复发生的（有间隔）",
+"confident":"confident = 自信的（be confident of）｜ confidential = 机密的",
+"confidential":"confidential = 机密的 ｜ confident = 自信的",
+"beside":"beside = 在……旁边（sit beside me）｜ besides = 此外、除……之外。少一个 s 意思全变",
+"besides":"besides = 此外、除……之外 ｜ beside = 在……旁边",
+"result":"result in = 导致（in 后面是结果）｜ result from = 由……引起（from 后面是原因）。方向反了就错",
+"contribute":"contribute to = 有助于、促成（给出去）｜ attribute to = 把……归因于（归回去）",
+"account":"account for = 解释；占（比例）｜ take…into account = 把……考虑在内 ｜ account 作名词＝账户",
+"consist":"consist of = 由……组成，无被动（✗ be consisted of）｜ consist in = 在于",
+"belong":"belong to 不用被动、不用进行时：✗ is belonged to ／ ✓ belongs to。改错题白捡分",
+"occur":"occur = 发生（不及物、无被动）；occur to sb = 某人想到 ｜ happen 同义但更口语",
+"apply":"apply for = 申请（职位）｜ apply to = 适用于 ｜ apply…to… = 把……应用于",
+"compare":"compare A with B = 把 A 和 B 作比较（找差异）｜ compare A to B = 把 A 比作 B",
+"provide":"provide sb with sth = provide sth for sb。搭配方向别混；supply 同规则",
+"expose":"expose sb to sth = 使某人接触……；be exposed to 暴露于。阅读里常与 be subject to 混",
+"be subject to":"be subject to = 易受……影响、须服从（subject 是形容词，读音重音在后）｜ be subjected to = 被迫经受（被动，语气更强）",
+"available":"available = 可获得的、可用的，常后置：the tickets available ／ is available to sb",
+"necessary":"It is necessary that… 后用 (should) do 虚拟：It is necessary that he (should) go",
+"important":"It is important that… 后用 (should) do 虚拟，是语法题固定考点",
+"suggest":"suggest 表「建议」时后接 (should) do；表「暗示」时用陈述语气：His smile suggested that he was happy",
+"insist":"insist 表「坚持要求」用 (should) do；表「坚持说」用陈述语气，看语境",
+"demand":"demand that…(should) do；demand to do；不说 demand sb to do（错）",
+"recommend":"recommend that…(should) do；recommend doing；recommend sth to sb",
+"propose":"propose that…(should) do；propose doing sth；propose to do",
+"avoid":"avoid 后只接 doing，不接 to do：✗ avoid to make ／ ✓ avoid making",
+}
+/* =========================================================
    10 周计划（与文档一致）
    ========================================================= */
 const WEEKS=[
@@ -1845,24 +1905,45 @@ function wordStats(){
 
 let ses={queue:[],idx:0,flip:false,stat:{know:0,fuzzy:0,no:0},active:false};
 
-function buildQueue(){
-  const t=todayISO();
-  const due=[],fresh=[];
+let LASTPLAN=null;
+function freshPool(){
+  const fr={A:[],B:[],C:[]};
   WORDS.forEach(w=>{
     const st=S.words[w[0]];
-    if(st&&st.seen){
-      if(st.due<=t) due.push(w);
-    }else{
-      fresh.push(w);
-    }
+    if(!(st&&st.seen)) fr[w[3]||'C'].push(w);
+  });
+  return fr;
+}
+/* 新词配比：复用词最该背（会拼会搭，直接换分），主题词次之（阅读认词），
+   连接词最后且量最小（认识即可）。不再按 ABC 数组顺序出，避免前几天全背介词。 */
+function newMix(tgt){
+  const fr=freshPool();
+  const nC=Math.round(tgt*0.45), nB=Math.round(tgt*0.35), nA=tgt-nC-nB;
+  let pick=fr.C.slice(0,nC).concat(fr.B.slice(0,nB)).concat(fr.A.slice(0,nA));
+  if(pick.length<tgt){
+    const used=new Set(pick.map(w=>w[0]));
+    const rest=fr.C.concat(fr.B,fr.A).filter(w=>!used.has(w[0]));
+    pick=pick.concat(rest.slice(0,tgt-pick.length));
+  }
+  shuffle(pick);
+  return {pick:pick,plan:{C:Math.min(nC,fr.C.length),B:Math.min(nB,fr.B.length),A:Math.min(nA,fr.A.length)}};
+}
+function buildQueue(){
+  const t=todayISO();
+  const due=[];
+  WORDS.forEach(w=>{
+    const st=S.words[w[0]];
+    if(st&&st.seen&&st.due<=t) due.push(w);
   });
   due.sort((a,b)=>(S.words[a[0]].box||0)-(S.words[b[0]].box||0));
   const tgt=targetNew();
-  const q=due.slice(0,40).concat(fresh.slice(0,tgt));
-  return q;
+  const mix=newMix(tgt);
+  LASTPLAN=mix.plan;
+  return due.slice(0,40).concat(mix.pick);
 }
 function startSession(){
-  ses={queue:buildQueue(),idx:0,flip:false,stat:{know:0,fuzzy:0,no:0},active:true};
+  const q=buildQueue();
+  ses={queue:q,idx:0,flip:false,stat:{know:0,fuzzy:0,no:0},active:true,plan:LASTPLAN};
 }
 function grade(v){
   const w=ses.queue[ses.idx];
@@ -2243,9 +2324,9 @@ function learnQuiz(){
 /* ---- 背词 ---- */
 function viewVocab(){
   const ws=wordStats();
-  let head='<div class="vhead"><h1>背词</h1><p>三层记忆：能不能拆（词根词缀）→ 有没有同族 → 落到搭配和例句。拆解直接写在词卡背面，翻面就能看到。</p></div>'+
-    '<div class="mnote"><b>什么时候该用词根法：</b>拉丁、希腊来源的学术词与复用词（B / C 层）通常能拆，拆一个等于记一串；'+
-    '功能词（in / on / of）和整体词（perform / improve / develop）不能硬拆，硬拆会把结构记错——这类词的卡片会直接写「整体记」。</div>';
+  let head='<div class="vhead"><h1>背词</h1><p>只背能换分的词：复用词（会拼会搭）→ 主题词（阅读认词）→ 连接词（认逻辑方向）。in / on / at 这类介词不再单独出卡，它们只在固定搭配里出现。</p></div>'+
+    '<div class="mnote"><b>为什么删掉 in / on / at：</b>江苏卷不考介词的汉语释义，考的是搭配——rich <b>in</b> iron、be subject <b>to</b>、<b>at</b> present。'+
+    '所以介词只在搭配卡里出现（如 be rich in 富含），单独背「in = 在……里」是白花时间。词卡背面有【辨析】行的，是近义词辨析题的直接考点。</div>';
 
   const bar='<div class="row3" style="margin-bottom:14px;">'+
     '<div class="stat"><div class="k">未学</div><div class="v">'+ws.fresh+'<em>词</em></div></div>'+
@@ -2273,7 +2354,7 @@ function viewVocab(){
 
   const w=ses.queue[ses.idx];
   const layer=w[3]||'C';
-  const lb=layer==='A'?'<span class="layerbadge la">A 骨架词</span>':(layer==='B'?'<span class="layerbadge lb">B 主题词</span>':'<span class="layerbadge lc">C 复用词</span>');
+  const lb=layer==='A'?'<span class="layerbadge la">A 连接词</span>':(layer==='B'?'<span class="layerbadge lb">B 主题词</span>':'<span class="layerbadge lc">C 复用词</span>');
   const mp=MORPH[w[0]];
   let card;
   if(!ses.flip){
@@ -2282,6 +2363,7 @@ function viewVocab(){
       (mp?'<div class="roothint"><span class="rh">提示</span>本词是整体词，按搭配记</div>':'');
     card='<div class="flash" onclick="flip()">'+lb+'<div class="inner">'+hint+
       '<div class="w">'+esc(w[0])+'</div>'+
+      '<div class="saybar" onclick="event.stopPropagation();say(curWord())">🔊 不会读？点这里听一遍</div>'+
       '<div class="pt">先想 2 秒：它可能和什么有关？</div></div>'+
       '<div class="hint">点一下卡片翻面</div></div>';
   }else{
@@ -2297,6 +2379,7 @@ function viewVocab(){
     }
     rows.push('<div class="bkrow"><span class="btag t-tip">技巧</span><span class="bval">'+tip+'</span></div>');
     if(w[2]) rows.push('<div class="bkrow"><span class="btag t-use">搭配</span><span class="bval">'+esc(w[2])+'</span></div>');
+    if(CONF[w[0]]) rows.push('<div class="bkrow"><span class="btag t-cmp">辨析</span><span class="bval">'+esc(CONF[w[0]])+'</span></div>');
     if(mp&&mp.f&&mp.f.length){
       const fam=mp.f.map(x=>'<span class="fw">'+esc(x[0])+'<i>'+esc(x[1])+'</i></span>').join('');
       const canAdd=mp.f.some(x=>WORDS.some(y=>y[0]===x[0]));
@@ -2309,7 +2392,7 @@ function viewVocab(){
     if(MEMO[w[0]]) rows.push('<div class="bkrow"><span class="btag t-fun">趣记</span><span class="bval">'+esc(MEMO[w[0]])+'</span></div>');
     rows.push('<div class="bkadd" onclick="addMemo()">'+(mine?'✎ 改我的记忆':'＋ 记我的')+'<span class="bkadd-s">谐音 / 联想 / 笑话都行，自己编的最记得住</span></div>');
     card='<div class="flash back">'+lb+'<div class="inner">'+
-      '<div class="zh">'+esc(w[1])+'</div>'+
+      '<div class="zh">'+esc(w[1])+' <span class="saymini" onclick="event.stopPropagation();say(\''+esc(w[0]).replace(/'/g,"\\'")+'\')">🔊</span></div>'+
       rows.join('')+
       '<div class="poslegend">词性：n.=名词　v.=动词　adj.=形容词　adv.=副词　prep.=介词　conj.=连词　pron.=代词　art.=冠词　·　趣记仅为记忆钩子，词义以释义为准</div>'+
       '</div></div>';
@@ -2329,11 +2412,21 @@ function viewVocab(){
   return head+bar+
     '<div class="card" style="padding:16px 18px 18px;">'+
       '<div style="display:flex;justify-content:space-between;font-size:11.8px;color:var(--ink-4);margin-bottom:9px;">'+
-        '<span>第 '+(ses.idx+1)+' / '+ses.queue.length+' 张</span>'+
+        '<span>第 '+(ses.idx+1)+' / '+ses.queue.length+' 张'+(ses.plan?'　新词配比：复用'+(ses.plan.C||0)+'·主题'+(ses.plan.B||0)+'·连接'+(ses.plan.A||0):'')+'</span>'+
         '<span>认识 '+ses.stat.know+' · 模糊 '+ses.stat.fuzzy+' · 不认识 '+ses.stat.no+'</span></div>'+
       '<div class="bar" style="margin-bottom:16px;"><i style="width:'+prog+'%"></i></div>'+
       card+gb+
     '</div>'+importBox();
+}
+function say(w){
+  if(!w) return;
+  try{
+    if(!('speechSynthesis' in window)) { alert('这个浏览器不支持朗读，换 Edge 或 Chrome 试试'); return; }
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(String(w).replace(/[\/]/g,' '));
+    u.lang='en-US'; u.rate=0.8;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
 }
 function flip(){ses.flip=!ses.flip; render();}
 function again(){ses.active=false; ses.queue=[]; startSession(); render();}
@@ -2607,7 +2700,8 @@ function viewPlan(){
     '<div class="card"><h3>每天的 100 分钟</h3>'+
       '<table><thead><tr><th class="nw">时间块</th><th>做什么</th></tr></thead><tbody>'+flow+'</tbody></table>'+
       '<div class="note">顺序不要换。复习永远在最前面，因为遗忘发生在你学完的当下，不是明天。<br>'+
-      '<b>词量说明：</b>每天 25 个 × 每周 6 天 ≈ 150 词/周，9 周约 1350 词；表里的「累计目标」到 1500，差额是留给第 1 周 A 层速过（只认脸、不占每日配额）和考前的顽固词。</div>'+
+      '<b>词量说明：</b>每天 25 个（复用词 11 · 主题词 9 · 连接词 5）× 每周 6 天 ≈ 150 词/周，9 周约 1350 词；表里的「累计目标」到 1500。'+
+      '差额不靠背 more 单词补，靠「搭配 + 辨析」补——江苏卷的词汇题考的是固定搭配和近义词辨析，不是单词量的堆叠。</div>'+
     '</div>'+
     '<div class="card"><h3>三条铁律</h3><ul class="tight">'+
       '<li><b>先手写，再对照。</b>看译文觉得"懂了"，懂的是中文，不是英文结构。</li>'+
@@ -2667,7 +2761,7 @@ function viewRef(){
    ========================================================= */
 function go(v){view=v; if(v==='vocab'&&!ses.active) startSession(); if(v==='train'&&!tr.en) newSentence(); if(v==='learn') LV=null; render(); window.scrollTo(0,0);}
 function go_(v){go(v);}
-window.go=go; window.flip=flip; window.grade=grade; window.again=again; window.addMemo=addMemo; window.delMemo=delMemo;
+window.say=say; window.go=go; window.flip=flip; window.grade=grade; window.again=again; window.addMemo=addMemo; window.delMemo=delMemo;
 window.openLesson=openLesson; window.startQuiz=startQuiz; window.startReview=startReview; window.quizPick=quizPick; window.quizNext=quizNext; window.exitLesson=exitLesson;
 window.studyFam=studyFam;
 window.toggleTask=toggleTask; window.submitSentence=submitSentence; window.toggleErr=toggleErr;
