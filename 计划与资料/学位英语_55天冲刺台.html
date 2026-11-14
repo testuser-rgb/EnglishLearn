@@ -5591,11 +5591,11 @@ function viewToday(){
 /* 今日一读：独立卡片，别藏在任务列表里 */
 function readCard(d){
   const i=rdgIdx(), R=RDG[i]; if(!R) return '';
-  const r=rdgRec(R.d), n=Object.keys(r.a).length, right=n?r.n:0;
+  const r=rdgRec(R), n=Object.keys(r.a).length, right=n?r.n:0;
   const isToday=(R.d===d);
   let all=0, full=0;
   RDG.forEach(function(RR){
-    const rr=(S.rdg||{})['d'+RR.d];
+    const rr=recOf(RR);
     if(rr&&Object.keys(rr.a).length){ all++; if((rr.n||0)>=RR.q.length) full++; }
   });
   return '<div class="card" style="border-left:3px solid var(--blue);">'+
@@ -5861,7 +5861,7 @@ function viewVocab(){
   '</div>';
 
   const R0=RDG[rdgIdx()];
-  const r0=R0?rdgRec(R0.d):null;
+  const r0=R0?rdgRec(R0):null;
   const done0=r0?Object.keys(r0.a).length:0;
   const rcard=R0?('<div class="card" style="padding:13px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">'+
       '<div><div style="font-size:12.9px;font-weight:700;color:var(--ink-1);">今日一读 · 第 '+R0.d+' 天</div>'+
@@ -5894,7 +5894,7 @@ function viewVocab(){
       (function(){
         const R=RDG[rdgIdx()];
         if(!R) return '';
-        const r=rdgRec(R.d), done=Object.keys(r.a).length;
+        const r=rdgRec(R), done=Object.keys(r.a).length;
         return '<div style="margin-top:18px;padding-top:18px;border-top:1px dashed var(--line);text-align:left;">'+
           '<div style="font-size:13px;font-weight:700;color:var(--ink-1);">今天的词能不能认出来？读一篇试试</div>'+
           '<div style="font-size:12.4px;color:var(--ink-3);line-height:1.8;margin:6px 0 11px;">'+
@@ -6226,7 +6226,7 @@ function writeTopic(){ const i=writeIdx(); return i<0?null:WRITE[i]; }
    d=第几天  w=本篇要复现的目标词  q=题（a=正确项下标）
    ========================================================= */
 const RDG=[
-{d:1,t:"An Emergency by the River",zh:"暴雨冲坏了河岸，社区靠调研和分工渡过难关，事后人们反思并改进了防范。",w:["emergency","respond","erosion","elect","remind","research","resource","result","eliminate","replace","reflect","enormous","evolve","receive","accept","emotion"],
+{d:1,k:'d1-1',t:"An Emergency by the River",zh:"暴雨冲坏了河岸，社区靠调研和分工渡过难关，事后人们反思并改进了防范。",w:["emergency","respond","erosion","elect","remind","research","resource","result","eliminate","replace","reflect","enormous","evolve","receive","accept","emotion"],
  p:`Last month our city had an emergency. Heavy rain caused serious erosion along the river, and several roads were closed. Our community had to respond quickly.
 The local government elected a small team to lead the work. They reminded every family to store water and food, and they did a lot of research on what resource could still be used. The result was clear: volunteers were sent to eliminate the biggest danger first, and the oldest pipes were replaced with new ones.
 After the rain, people began to reflect on what had gone wrong. Some said the city had an enormous problem — it had grown too fast. But others believed it could evolve and learn. Beside the river a new park was built, and besides that, students began to receive training on safety. Most people accepted the plan, and their emotion turned from fear into hope.`,
@@ -6235,7 +6235,20 @@ After the rain, people began to reflect on what had gone wrong. Some said the ci
   {s:"The word \"eliminate\" in Paragraph 2 is closest in meaning to ______.",o:["add","remove","count","hide"],a:1,e:"eliminate＝消除、去掉，与 remove 同义。同义替换是阅读细节题的常见手法。"},
   {s:"What can we learn from the last paragraph?",o:["Nobody cared about the rain","People changed their attitude after the rain","The park was built before the rain","Students refused to receive training"],a:1,e:"末句 their emotion turned from fear into hope，态度变化。其余三项都与原文相反。"}
  ]},
-{d:2,t:"A City That Learned to Recycle",zh:"人口增长带来垃圾和拥堵，政府投资可再生能源，条件是标准要始终一致；专家建议从每家少消费做起。",w:["recycle","renewable","invest","revenue","consume","contaminate","congest","condition","increase","indicate","involve","individual","consistent","recommend","contract","presume","assume","context"],
+{d:1,k:'d1-2',t:"The Drill",zh:"学校为暴雨做应急预案：老师代表学生说话，演练发现楼梯太窄，于是改成两条路线，并每年更新一次。",w:["emergency","represent","research","result","remind","beside","besides","emerge","replace","eliminate","reflect","enormous","respond","evolve","receive","accept","emotion"],
+ p:`Every school should have a plan for an emergency. Ours was written by a science teacher who wanted to represent the students, not only the staff. She asked us to research what a real flood does to a small town, and the result was a short list on the wall.
+
+The plan has three steps. First, a monitor will remind every class to close the windows. Second, we walk to the hill beside the school — not through the gate, besides the gym, where the ground is higher. Third, the office will call the parents.
+
+Last week we practised it. A new problem emerged at once: the stairs were too narrow for so many students. So we replaced the old route with two routes, and we decided to eliminate one step on the second floor, where the windows are already closed. After the drill we sat down to reflect on it. An enormous amount of time was lost at the door, and some students did not respond when their names were called.
+
+The teacher said the plan would evolve every year, because a school that receives a good idea today will need a better one next year. I accepted that. In an emergency, an emotion is not enough; a habit is.`,
+ q:[
+  {s:"Why did the teacher write the plan?",o:["To close the school in bad weather","To represent the students as well as the staff","To train a new monitor","To sell the old building"],a:1,e:"首段 who wanted to represent the students, not only the staff。"},
+  {s:"The word \"eliminate\" in Paragraph 3 is closest in meaning to ______.",o:["add","remove","count","hide"],a:1,e:"eliminate＝去掉、取消；与前句 replaced the old route 并列，都是减少步骤。"},
+  {s:"What did the drill show?",o:["The stairs were too narrow for so many students","The hill was too far away","The office had no phone","The windows could not be closed"],a:0,e:"第三段 A new problem emerged at once: the stairs were too narrow for so many students，随后改成两条路线。"}
+ ]},
+{d:2,k:'d2-1',t:"A City That Learned to Recycle",zh:"人口增长带来垃圾和拥堵，政府投资可再生能源，条件是标准要始终一致；专家建议从每家少消费做起。",w:["recycle","renewable","invest","revenue","consume","contaminate","congest","condition","increase","indicate","involve","individual","consistent","recommend","contract","presume","assume","context"],
  p:`Every year our city produces more waste than it can recycle. Because of the increasing population, the roads are often congested and the river is contaminated in some places. The government has decided to invest in renewable energy and to build a new plant by the river.
 A report indicates that the project will involve about two thousand individuals. Each worker will sign a contract, and the revenue of the town will increase step by step. The condition is simple but firm: the plant must keep a consistent standard — not a high one today and a low one tomorrow.
 Experts recommend that every family should consume less and reuse more. They also warn us not to presume that the problem will solve itself. We must assume that change starts at home. In this context, even a small action can make a difference.`,
@@ -6244,7 +6257,18 @@ Experts recommend that every family should consume less and reuse more. They als
   {s:"The word \"consistent\" in Paragraph 2 is closest in meaning to ______.",o:["the same over time","very high","easy to change","very cheap"],a:0,e:"consistent＝前后一致的，与 the same over time 同义。注意原文用 not a high one today and a low one tomorrow 来解释它。"},
   {s:"What do experts recommend?",o:["Building more roads","Consuming less and reusing more","Moving to another city","Closing all the factories"],a:1,e:"末段 Experts recommend that every family should consume less and reuse more。"}
  ]},
-{d:3,t:"The First Experiment",zh:"一项研究说重视技能的学生考得更好；学校靠捐赠建了实验室，老师要求尊重数据、不许只挑合意的结果。",w:["according to","attach importance to","due to","owing to","thanks to","have access to","exhibit","restrict","exceed","exclude","experiment","knowledge","skill","relax","respect","affect","effect","learn","study","teach","train","exam","recover"],
+{d:2,k:'d2-2',t:"A Reference Copy",zh:"老李退休前把修过的机器登记造册、留一份合同参考；旧规定没写废水，他说规矩没人照做就只是一张参考；他建议每人每年下一次清洁队。",w:["retire","register","reference","resign","conflict","include","assume","condition","recommend","presume","consume"],
+ p:`When Mr. Li decided to retire, the office asked him to register every machine he had repaired and to keep a reference copy of each contract. He did not resign at once; he stayed for three months to teach the young workers.
+
+There was a conflict between the old rules and the new ones. The old rules did not include a rule about waste water, and the new ones assumed that every factory would clean it. Mr. Li said the condition was simple: a rule that nobody follows is only a reference, not a standard.
+
+He recommended one change: every worker should spend one day a year in the cleaning team. Do not presume that the river will clean itself, he said. A factory that does not consume less will always produce more waste.`,
+ q:[
+  {s:"What did Mr. Li do before he left the factory?",o:["He resigned at once","He stayed three months to teach young workers","He sold the machines","He wrote a new contract"],a:1,e:"首段 He did not resign at once; he stayed for three months to teach the young workers。"},
+  {s:"What was the conflict about?",o:["The salary","The old rules had no rule about waste water","The number of workers","The age of the machines"],a:1,e:"第二段 The old rules did not include a rule about waste water, and the new ones assumed that every factory would clean it。"},
+  {s:"What did Mr. Li recommend?",o:["Closing the factory","That every worker spend one day a year cleaning","Buying new machines","Hiring a new manager"],a:1,e:"第三段 He recommended one change: every worker should spend one day a year in the cleaning team。"}
+ ]},
+{d:3,k:'d3-1',t:"The First Experiment",zh:"一项研究说重视技能的学生考得更好；学校靠捐赠建了实验室，老师要求尊重数据、不许只挑合意的结果。",w:["according to","attach importance to","due to","owing to","thanks to","have access to","exhibit","restrict","exceed","exclude","experiment","knowledge","skill","relax","respect","affect","effect","learn","study","teach","train","exam","recover"],
  p:`According to a recent study, students who attach importance to skills do better in exams than those who only remember facts. Due to the pressure of tests, many students cannot relax, and their health is affected.
 Our school has opened a new lab. Thanks to a large donation, students now have access to modern equipment. In the first experiment, we were asked to exhibit our results on a board and explain them. She would teach us to respect the data: we must not exclude the numbers that did not fit our idea. She also restricted the time to forty minutes, so nobody could exceed it.
 Knowledge is not something you can recover after losing it. Owing to this, the school attaches great importance to training. We learn how to use limited resources well, and the effect is clear: students study with more interest.`,
@@ -6253,7 +6277,18 @@ Knowledge is not something you can recover after losing it. Owing to this, the s
   {s:"The word \"restricted\" in Paragraph 2 is closest in meaning to ______.",o:["limited","forgotten","increased","explained"],a:0,e:"restrict＝限制，与 limit 同义；原文后一句 so nobody could exceed it（没人能超过）正好提示它是时间上限。"},
   {s:"What is the effect of the training mentioned at the end?",o:["Students give up the exam","Students study with more interest","Students have less free time","Students forget the knowledge"],a:1,e:"末句 students study with more interest，注意 the effect is clear 是信号词。"}
  ]},
-{d:4,t:"A Project That Changed a Class",zh:"一位教授推行教育项目：每周复习、复述，收走手机减少干扰，结果成绩开始上升，其他院系也想复制。",w:["professor","introduce","project","improve","education","promote","productive","recruit","review","revise","recite","arise","distract","discard","reduce","influence","dispose","enhance","facilitate","reuse","produce","dismiss","protect","consequence","professional","rise","arouse","reproduce"],
+{d:3,k:'d3-2',t:"The Export Order",zh:"实验室靠\"盯住小数字\"做出耐用电池，首批出口来自国外小公司；教授限定广告用词，不许说\"安全\"；一封退款信贴到墙上，团队反而进步。",w:["pay attention to","release","export","exploit","restrict","exceed","exclude","experiment","refund","effect","train","skill"],
+ p:`Our lab had a simple rule: pay attention to the small numbers. When we released a battery that could last two days, the first export order came from a small company abroad.
+
+The manager wanted to exploit the news and print it on every box. The professor restricted the words we could use: we could not exceed three claims, and we had to exclude the word "safe". A claim that is not proved is not an experiment; it is an advertisement.
+
+One customer asked for a refund. Instead of hiding the letter, we put it on the wall. The effect was surprising: the young workers began to train harder, and the skill of the team improved. Knowledge grows when a mistake is released, not when it is hidden.`,
+ q:[
+  {s:"What was the lab rule?",o:["Sell as fast as possible","Pay attention to the small numbers","Never write to customers","Work only for the government"],a:1,e:"首句 pay attention to the small numbers。"},
+  {s:"Why did the professor restrict the words on the box?",o:["To save money on printing","Because unproved claims are advertising, not science","Because the box was too small","To make the words easier to read"],a:1,e:"第二段 A claim that is not proved is not an experiment; it is an advertisement，所以只准写三条、不准写 safe。"},
+  {s:"What happened after a customer asked for a refund?",o:["The team hid the letter","The team trained harder and improved","The lab closed","The manager was fired"],a:1,e:"第三段 Instead of hiding the letter, we put it on the wall … the young workers began to train harder。"}
+ ]},
+{d:4,k:'d4-1',t:"A Project That Changed a Class",zh:"一位教授推行教育项目：每周复习、复述，收走手机减少干扰，结果成绩开始上升，其他院系也想复制。",w:["professor","introduce","project","improve","education","promote","productive","recruit","review","revise","recite","arise","distract","discard","reduce","influence","dispose","enhance","facilitate","reuse","produce","dismiss","protect","consequence","professional","rise","arouse","reproduce"],
  p:`A professor at our university introduced a new project last term. Its aim is to improve education and promote productive learning. The team recruited thirty students and asked them to review their notes every week, revise what they had written, and recite the key sentences aloud.
 One problem soon arose: phones distracted the students, and many discarded their plans after a week. To reduce this influence, the teacher asked them to dispose of their phones before class. This simple rule enhanced their attention and facilitated discussion.
 The project also asked students to reuse paper and to produce less waste. Nobody was dismissed for a low score; instead, the team tried to protect those who had fallen behind. The consequence was clear: the class became more professional in its habits, and their grades began to rise. The result aroused interest in other departments, who hope to reproduce the model next year.`,
@@ -6262,7 +6297,18 @@ The project also asked students to reuse paper and to produce less waste. Nobody
   {s:"Why did the teacher ask students to dispose of their phones?",o:["To sell them","To reduce distraction","To clean the classroom","To save electricity"],a:1,e:"To reduce this influence 指上文 phones distracted the students，dispose of 在这里是\"处理掉、收起\"。"},
   {s:"What does the last sentence suggest?",o:["The project failed","Other departments want to copy the model","Students refused to reuse paper","The university closed the project"],a:1,e:"hope to reproduce the model next year＝想复制这套做法，是典型的推断题。"}
  ]},
-{d:5,t:"The Factory by the River",zh:"村民抗议老厂污染，市里换经理、上清洁技术，两年后利润没降、污染减少，还有工人升职。",w:["take place","production","exaggerate","expense","take into account","impact","take measures to","take over","take advantage of","take effect","take part in","exact","steady","growth","profit","decline","boost","take up","promotion","progress","extinct","alter"],
+{d:4,k:'d4-2',t:"The Old Books",zh:"图书馆书多地方小，教授被请去清点；她不舍得丢，先给旧书拍封面、发给学生、讲来历；结果旧书被重新借走，阅读人数上升。",w:["review","discard","dismiss","protect","reproduce","distribute","introduce","project","produce","reuse","rise","education","promote","consequence","enhance"],
+ p:`The library had too many old books and too little space. The director asked a professor to review the collection and to discard what nobody borrowed.
+
+The professor did not dismiss the idea, but she wanted to protect the collection first. She asked us to reproduce the cover of every old book, to distribute the photos to the students, and to introduce the history of each one. A book that is reviewed by a class is not dead; it is only waiting.
+
+The project produced a surprising result: students began to reuse the old books, and the number of readers rose. The education office decided to promote the model. One consequence was easy to see: a quiet room can enhance a course more than a new building.`,
+ q:[
+  {s:"What did the director want to do?",o:["Buy more books","Discard books nobody borrowed","Close the library","Hire more teachers"],a:1,e:"首段 asked a professor to review the collection and to discard what nobody borrowed。"},
+  {s:"Why did the professor want to reproduce the covers?",o:["To sell them","To show students the history of the books","To decorate the wall","To count the books"],a:1,e:"第二段 reproduce the cover … to distribute the photos … to introduce the history of each one。"},
+  {s:"What was the result of the project?",o:["Fewer students came","Students began to reuse the old books","The library was closed","The professor resigned"],a:1,e:"第三段 students began to reuse the old books, and the number of readers rose。"}
+ ]},
+{d:5,k:'d5-1',t:"The Factory by the River",zh:"村民抗议老厂污染，市里换经理、上清洁技术，两年后利润没降、污染减少，还有工人升职。",w:["take place","production","exaggerate","expense","take into account","impact","take measures to","take over","take advantage of","take effect","take part in","exact","steady","growth","profit","decline","boost","take up","promotion","progress","extinct","alter"],
  p:`Last spring a protest took place outside an old chemical factory. Local people said that production had damaged the river and that the company had exaggerated its profits while cutting expenses. The factory, they argued, should take into account the impact on the village.
 The city decided to take measures to stop the pollution. A new manager was brought in to take over the plant. He promised to take advantage of clean technology, and said that the change would take effect within a year. Many students from the local university took part in the survey, and their exact numbers were published in the report.
 Two years later the figures show a steady growth. Profit has not declined; on the contrary, the company has begun to boost its sales. The expense of the new machines was high, but the plant now takes up less water and produces less waste. Some workers have won promotion. Progress has been slow, and the new plan will alter the way the plant works, but nobody talks about the fish becoming extinct any more.`,
@@ -6271,7 +6317,18 @@ Two years later the figures show a steady growth. Profit has not declined; on th
   {s:"What does it mean that the factory should \"take the impact into account\"?",o:["It should pay a fine","It should consider the effect on the village","It should close down at once","It should hire more workers"],a:1,e:"take … into account＝把……考虑进去；impact 是\"影响\"，指对村庄的影响。这是短语题，考搭配理解。"},
   {s:"What do the figures show two years later?",o:["Profit has fallen sharply","Growth is steady and profit has not declined","The factory has closed","Workers have lost their jobs"],a:1,e:"a steady growth；Profit has not declined，两句合起来。on the contrary 之后的 boost its sales 是进一步证据。"}
  ]},
-{d:6,t:"Phones, Sleep and a Free Clinic",zh:"青少年知道手机成瘾有害却管不住；某市把心理治疗对学生免费，医生先问症状再给\"处方\"，还强调家庭支持不能替代。",w:["be aware of","be capable of","be harmful to","be short of","be responsible for","avoid","reform","therapy","be used to doing","intersection","be subject to","symptom","recipe","be beneficial to","refresh","interpret","physical","support","prevent","addiction","adolescent","nutrition","achieve","depend"],
+{d:5,k:'d5-2',t:"A Higher Fee",zh:"学生抗议学费太贵：学位不该由家庭收入决定；校方解释成本，学生要求参与预算会议；最后新规生效——涨价必须先公开报告。",w:["protest","expensive","school","course","degree","take measures to","take part in","take effect","progress","growth","teacher","university"],
+ p:`Last term the students of our school organized a protest. The reason was simple: the course was becoming too expensive. A degree should not depend on the salary of a family.
+
+The university took measures to explain the cost, but the students did not accept the first answer. They asked to take part in the meeting where the budget was decided. A teacher who supported them said that progress is not a higher fee; it is a better class.
+
+In the end a new rule took effect: no course could raise its price without a public report. The growth of the fee stopped for one year. It was not a victory, but it was a beginning.`,
+ q:[
+  {s:"Why did the students protest?",o:["The course was too expensive","The teachers were absent","The library was closed","The exam was too hard"],a:0,e:"首段 The reason was simple: the course was becoming too expensive。"},
+  {s:"What did the students ask for?",o:["Free books","To take part in the meeting about the budget","A longer holiday","New classrooms"],a:1,e:"第二段 They asked to take part in the meeting where the budget was decided。"},
+  {s:"What rule took effect in the end?",o:["Every course became free","No course could raise its price without a public report","Students could not protest","Teachers set the price"],a:1,e:"末段 a new rule took effect: no course could raise its price without a public report。"}
+ ]},
+{d:6,k:'d6-1',t:"Phones, Sleep and a Free Clinic",zh:"青少年知道手机成瘾有害却管不住；某市把心理治疗对学生免费，医生先问症状再给\"处方\"，还强调家庭支持不能替代。",w:["be aware of","be capable of","be harmful to","be short of","be responsible for","avoid","reform","therapy","be used to doing","intersection","be subject to","symptom","recipe","be beneficial to","refresh","interpret","physical","support","prevent","addiction","adolescent","nutrition","achieve","depend"],
  p:`Many adolescents today are aware of the danger of phone addiction, but few are capable of controlling it. Doctors say that staying up late is harmful to the body, and that a poor diet is short of the nutrition a young person needs. Parents are responsible for setting limits, and schools should not avoid the topic. Games, after all, are advertised on every platform, and no student can escape them alone.
 A recent reform in one city has made therapy free for students. Teenagers who are used to playing games for hours can now get help at the intersection near the school. The clinic is subject to government review, and every case is kept private. Doctors first ask about each symptom, then offer a simple recipe for change: exercise, regular sleep, and a hobby.
 Such a plan is beneficial to both mind and body. It helps students refresh themselves and interpret their own emotions. Whether a student can achieve more depends on many things, but since the program began, the number of students who need physical treatment has fallen. Nothing can replace a family's support, yet the reform shows that small steps can prevent a big problem.`,
@@ -6280,7 +6337,18 @@ Such a plan is beneficial to both mind and body. It helps students refresh thems
   {s:"\"A poor diet is short of the nutrition\" means the diet ______.",o:["has too much nutrition","does not have enough nutrition","is very expensive","is hard to cook"],a:1,e:"be short of＝缺少。同义替换题，注意不要选成\"营养太多\"。"},
   {s:"What does the writer think of the reform?",o:["It is useless","It helps, but family support still matters","It should be stopped","It costs too much"],a:1,e:"末段 beneficial to both mind and body 是肯定态度，Nothing can replace a family's support 是让步，两者合起来才是完整态度。"}
  ]},
-{d:7,t:"Robots on the Line",zh:"汽车厂用自动设备提效，但仍有工伤；批评者担心岗位减少、虚拟培训替代不了真实经验；经理承诺升级安全系统。",w:["be known as","automobile","innovation","be based on","automatic","update","be accustomed to","be exposed to","injury","shift","be worth doing","inequality","be opposed to","concern","diminish","virtual","be committed to","address","upgrade","remove","fluctuate","compete","matter","insomnia","innocent"],
+{d:6,k:'d6-2',t:"A New Menu",zh:"医院餐厅菜便宜但菜单从不换，护士说营养也是治疗；经理不宣传，只在每桌放卡片让病人自己调盐；厨房员工反而成了支持者。",w:["recipe","remedy","nutrition","reform","advertise","adjust","prevent","achieve","benefit","support"],
+ p:`The hospital restaurant had a problem: the food was cheap, but the recipe never changed. A nurse said that nutrition was part of the remedy, not an extra.
+
+The manager decided to reform the menu. He did not advertise it; he simply put a card on each table and asked patients to adjust the salt themselves. We must prevent a second illness, he said, and we cannot achieve that with sugar.
+
+The change was small, but the benefit was real. A patient who eats a fresh meal sleeps better, and a family that learns one recipe takes it home. Support came from an unexpected place: the kitchen staff, who said the work was finally interesting.`,
+ q:[
+  {s:"What did the nurse say about nutrition?",o:["It is part of the remedy","It is too expensive","It is not important","It is a kind of medicine"],a:0,e:"首段 nutrition was part of the remedy, not an extra。"},
+  {s:"How did the manager introduce the change?",o:["With a large advertisement","With a card on each table","With a new building","With a long lecture"],a:1,e:"第二段 He did not advertise it; he simply put a card on each table。"},
+  {s:"Where did support come from?",o:["The patients families","The kitchen staff","The city office","The doctors"],a:1,e:"末段 Support came from an unexpected place: the kitchen staff。"}
+ ]},
+{d:7,k:'d7-1',t:"Robots on the Line",zh:"汽车厂用自动设备提效，但仍有工伤；批评者担心岗位减少、虚拟培训替代不了真实经验；经理承诺升级安全系统。",w:["be known as","automobile","innovation","be based on","automatic","update","be accustomed to","be exposed to","injury","shift","be worth doing","inequality","be opposed to","concern","diminish","virtual","be committed to","address","upgrade","remove","fluctuate","compete","matter","insomnia","innocent"],
  p:`The new factory is known as a leader in automobile innovation. Its system is based on automatic control, and every machine is updated twice a year. Workers are accustomed to working with robots, but they are exposed to danger every day: last month one man suffered an injury when a heavy arm shifted suddenly. Night workers also report insomnia, and no one is innocent when safety rules are ignored.
 The company says the risk is worth taking, because the new line has reduced inequality between day and night shifts. Critics are opposed to the plan. They are concerned that the number of jobs will diminish and that virtual training cannot replace real experience. Some of them are committed to fighting the change.
 The manager agrees that the problem must be addressed. He has promised to upgrade the safety system and to remove the old machines. Prices fluctuate, and the market is hard to compete in, but he believes the innovation will pay off. What matters, he says, is not speed but safety.`,
@@ -6289,7 +6357,18 @@ The manager agrees that the problem must be addressed. He has promised to upgrad
   {s:"Why are critics opposed to the plan?",o:["They want higher pay","They fear fewer jobs and that virtual training is not enough","They dislike the manager","They want to sell the factory"],a:1,e:"concerned that the number of jobs will diminish and that virtual training cannot replace real experience，两点并列。"},
   {s:"What does the manager say matters most?",o:["Speed","Profit","Safety","Price"],a:2,e:"末句 What matters, he says, is not speed but safety。not … but … 结构，重点在后半句。"}
  ]},
-{d:8,t:"The Interview",zh:"面试考的是能力不是记忆：除了简历要带成果清单，被问住别编；诚实比背答案更能打动人。",w:["in general","ability","in terms of","market","content","in addition to","resume","achievement","in case of","accuse","experience","complain","cite","clarify","in charge of","appreciate","in spite of","salary","in the long run","accelerate","abuse","condemn","contend","commit","error","absorb","in favor of","subject"],
+{d:7,k:'d7-2',t:"The Night Shift",zh:"夜班工人失眠、出错、质量波动；经理没取消夜班，而是改灯光和排班；医生说身体不容易倒时差；最后设了一间安静休息室。",w:["insomnia","fluctuate","remove","upgrade","update","shift","matter","concern","inequality","innovation","seem","deteriorate"],
+ p:`The night shift at the plant had a new problem: insomnia. Workers who could not sleep began to make small errors, and the quality of the product began to fluctuate.
+
+The manager did not remove the night shift; he decided to upgrade the lighting and to update the schedule. A doctor explained that the body does not shift easily, and that twenty minutes of rest can matter more than a bonus.
+
+Critics said the real concern was inequality: the night workers earned less and slept worse. The company answered with an innovation — a quiet room where a worker can rest. It seemed a small thing. But a plant that ignores sleep will watch its product deteriorate.`,
+ q:[
+  {s:"What problem appeared on the night shift?",o:["Workers could not sleep and made errors","The machines were too old","The pay was too high","The lights were too bright"],a:0,e:"首段 insomnia … make small errors … the quality of the product began to fluctuate。"},
+  {s:"What did the doctor say about the body?",o:["It shifts easily","It does not shift easily to a new schedule","It needs more money","It cannot rest at night"],a:1,e:"第二段 the body does not shift easily。"},
+  {s:"What was the company innovation?",o:["A bonus for night workers","A quiet room for a short rest","A new factory","A longer shift"],a:1,e:"末段 an innovation — a quiet room where a worker can rest。"}
+ ]},
+{d:8,k:'d8-1',t:"The Interview",zh:"面试考的是能力不是记忆：除了简历要带成果清单，被问住别编；诚实比背答案更能打动人。",w:["in general","ability","in terms of","market","content","in addition to","resume","achievement","in case of","accuse","experience","complain","cite","clarify","in charge of","appreciate","in spite of","salary","in the long run","accelerate","abuse","condemn","contend","commit","error","absorb","in favor of","subject"],
  p:`In general, a job interview is not a test of memory but of ability. In terms of preparation, you should know the company's market and the content of the position. In addition to your resume, bring a short list of your achievements. In case of a question you cannot answer, do not invent facts. The subject of the interview matters far less than the way you answer.
 A friend of mine was once accused of exaggerating her experience. She did not complain; instead, she cited a small project she had really finished and clarified her exact role. The manager, who was in charge of hiring, appreciated her honesty. In spite of a weak salary offer, she accepted the job, because in the long run the position would accelerate her growth.
 Some people abuse the interview by memorizing answers. Employers condemn this, and most of them contend that a candidate who commits an error and admits it is better than one who hides it. Nobody expects you to absorb everything on the first day. What they want is someone who is in favor of learning.`,
@@ -6298,7 +6377,18 @@ Some people abuse the interview by memorizing answers. Employers condemn this, a
   {s:"Why did the manager appreciate the writer's friend?",o:["She had a long resume","She was honest about her experience","She accepted a low salary at once","She knew the market well"],a:1,e:"appreciated her honesty；诚实来自前句 she cited a small project she had really finished，没有编造。"},
   {s:"What do most employers contend?",o:["Candidates should memorize answers","Admitting an error is better than hiding it","Experience is not important","Salary is the first question"],a:1,e:"most of them contend that a candidate who commits an error and admits it is better than one who hides it。contend＝主张。"}
  ]},
-{d:9,t:"The Platform and the Manager",zh:"新平台最大的风险不是技术而是管理：数据再好，没人用也只是纸；好经理先帮同事再表态。",w:["opinion","risk","platform","management","in other words","in contrast to","process","manager","in detail","in response to","in advance","in vain","admire","summarize","advocate","illustrate","trend","anticipate","criticize","assist","declare","appoint","emphasize","standard","pattern","challenge","inform","manage","information","in particular","in the face of","appeal"],
+{d:8,k:'d8-2',t:"A Letter of Complaint",zh:"招聘会后学生写信投诉：公司滥用\"经验\"一词，要求刚毕业的人有三年工龄；老师让她写下日期和证据再指控；两天后工资上调、广告删词。",w:["complain","abuse","condemn","accuse","commit","absorb","salary","achievement","error","market"],
+ p:`After the job fair, a student wrote an email to complain about a company. The company, she said, had abused the word "experience": it asked for three years of work from a person who had just finished school.
+
+Her teacher did not condemn the company at once. He asked her to accuse nobody without evidence and to commit her complaint to paper with dates. A letter that is only angry is easy to absorb and easy to forget.
+
+The company answered in two days. The salary was raised, and the word "experience" was removed from the advertisement. The student's achievement was not the money; it was the habit of writing an error down. A market improves when a customer is willing to complain.`,
+ q:[
+  {s:"What did the student complain about?",o:["The salary was too low","The company asked for experience from new graduates","The office was too far","The interview was too short"],a:1,e:"首段 had abused the word \"experience\": it asked for three years of work from a person who had just finished school。"},
+  {s:"What did the teacher tell her to do?",o:["Forget the company","Write the complaint down with dates and evidence","Call the police","Ask for more money"],a:1,e:"第二段 accuse nobody without evidence and to commit her complaint to paper with dates。"},
+  {s:"What was the result?",o:["The company closed","The salary was raised and the advertisement changed","The student lost her job","Nothing changed"],a:1,e:"末段 The salary was raised, and the word \"experience\" was removed from the advertisement。"}
+ ]},
+{d:9,k:'d9-1',t:"The Platform and the Manager",zh:"新平台最大的风险不是技术而是管理：数据再好，没人用也只是纸；好经理先帮同事再表态。",w:["opinion","risk","platform","management","in other words","in contrast to","process","manager","in detail","in response to","in advance","in vain","admire","summarize","advocate","illustrate","trend","anticipate","criticize","assist","declare","appoint","emphasize","standard","pattern","challenge","inform","manage","information","in particular","in the face of","appeal"],
  p:`In my opinion, the biggest risk in a new platform is not technology but management. In other words, the problem is people.
 In contrast to older systems, a modern platform records every step of the process, so a manager can see in detail where the work slows down. In response to a complaint, the company can act in advance instead of waiting. But a plan made in vain is worse than no plan: if nobody uses the data, the report is only paper.
 We admire a leader who can summarize a long meeting in three lines, and we advocate one who can illustrate a trend with a single chart. Such people anticipate problems. They do not criticize a member of the team in public; they assist him first, and then they declare what must change. They appoint the right person, and they emphasize the standard, not the speed.
@@ -6308,7 +6398,18 @@ One case in particular shows this. In the face of a sudden failure, a good manag
   {s:"What does \"a plan made in vain is worse than no plan\" mean?",o:["Plans are useless","A plan nobody uses wastes effort","Plans should be long","No plan is always better"],a:1,e:"冒号后 if nobody uses the data, the report is only paper 就是解释：没人用，白做。in vain＝徒劳。"},
   {s:"How does a good leader treat a colleague who made a mistake?",o:["Criticize him in public","Assist him first, then declare what must change","Fire him at once","Ignore him"],a:1,e:"They do not criticize a member of the team in public; they assist him first, and then they declare what must change。"}
  ]},
-{d:10,t:"The Rumor on Campus",zh:"一则\"取消奖学金\"的谣言在校园炸开，院长当面澄清；真正的毛病是沟通，后来师生每月见一次。",w:["rumor","campus","scholarship","argument","be prone to","persuasive","tone","be likely to","quarrel","insult","statement","lecture","confront","assure","compensate","shortage","conceal","paragraph","apologize","drawback","opportunity","graduate","academic","be supposed to","be bound to","be engaged in","be involved in","associate","collapse","be attributed to"],
+{d:9,k:'d9-2',t:"The Launch Meeting",zh:"发布会准备了幻灯片，遇到难题经理只会\"总结\"；记者追问一个数字，会议白开；公司换了发言人——能先说清问题、再举小例子。",w:["in advance","in detail","in the face of","summarize","criticize","appeal","in vain","appoint","declare","illustrate","anticipate","emphasize","admire","opinion"],
+ p:`The team prepared the launch in advance and wrote every slide in detail. In the face of a difficult question, however, the manager began to summarize instead of answering.
+
+A journalist criticized him at once. She did not appeal to emotion; she asked for one number. The manager could not give it, and the meeting ended in vain.
+
+Later the company appointed a new speaker. She was not a famous person, but she could declare a problem in one sentence and then illustrate the solution with a small example. We must anticipate the hard question, she said, and we must emphasize what we do not know. I admire that opinion more than any slogan.`,
+ q:[
+  {s:"What did the manager do when asked a difficult question?",o:["He answered with a number","He summarized instead of answering","He left the room","He called a journalist"],a:1,e:"首段 began to summarize instead of answering。"},
+  {s:"Why did the meeting end in vain?",o:["Nobody came","The manager could not give the number","The slides were missing","The room was too small"],a:1,e:"第二段 She asked for one number. The manager could not give it, and the meeting ended in vain。"},
+  {s:"What did the new speaker emphasize?",o:["What the company does not know","How famous she was","The price of the product","The number of employees"],a:0,e:"末段 we must emphasize what we do not know。"}
+ ]},
+{d:10,k:'d10-1',t:"The Rumor on Campus",zh:"一则\"取消奖学金\"的谣言在校园炸开，院长当面澄清；真正的毛病是沟通，后来师生每月见一次。",w:["rumor","campus","scholarship","argument","be prone to","persuasive","tone","be likely to","quarrel","insult","statement","lecture","confront","assure","compensate","shortage","conceal","paragraph","apologize","drawback","opportunity","graduate","academic","be supposed to","be bound to","be engaged in","be involved in","associate","collapse","be attributed to"],
  p:`A rumor began on campus last month: the university was going to cut its scholarships. Nobody knew where the story came from, but it spread fast, and by Friday a serious argument had broken out in the dining hall.
 The trouble was easy to explain. Students under exam pressure are prone to worry, and a short message with a persuasive tone is likely to be believed. People associate silence with agreement, though here it meant fear. Two students who had never met began to quarrel; one used an insult, and the other answered with a statement that made the whole room silent.
 The next morning the dean held a lecture to confront the problem. She assured everyone that the rumor was false, and that the shortage of money would be compensated by a new fund. Do not conceal bad news, she said; bring it to us before the whole plan collapses. Her paragraph on the school website asked both sides to apologize for the quarrel.
@@ -6318,7 +6419,18 @@ Looking back, the drawback was communication, and it can be attributed to a syst
   {s:"What did the dean ask the students to do?",o:["Stop using the dining hall","Bring bad news to her instead of hiding it","Pay for the new fund","Leave the campus"],a:1,e:"Do not conceal bad news, she said; bring it to us。conceal＝隐瞒，与 bring 形成对比。"},
   {s:"What does the writer think was the real drawback?",o:["The false rumor itself","The way the school communicated","The shortage of money","The students' quarrel"],a:1,e:"末段 the drawback was communication，argue 之后补充 can be attributed to a system that talks only downward，说明问题在沟通方式。"}
  ]},
-{d:11,t:"After the Storm",zh:"一场暴雨让污染成了全国议题，科学家评估损失、设计方案；有人反对、有人造假，但数据说服了大多数人。",w:["with regard to","climate","obvious","severe","lead to","pollution","assess","devise","prior to","demonstrate","waste","specific","classify","confirm","efficient","attribute","contribute to","live up to","object to","deceive","convince","dedicate","positive","adapt to","derive","constitute","environment","typical","energy"],
+{d:10,k:'d10-2',t:"The Broken Pipe",zh:"宿舍半夜水管爆了，没人知道报修电话；第二天学生当面质问，维修单显示管子二十年了；经理道歉并赔食物，还让学生进检查委员会。",w:["collapse","be supposed to","confront","assure","statement","be likely to","apologize","compensate","opportunity","be bound to","quarrel"],
+ p:`The water pipe in our dormitory collapsed at midnight. We were supposed to call the office, but nobody knew the number.
+
+The next morning we confronted the manager. He tried to assure us that the problem was small, but a statement from the repair team showed that the pipe was twenty years old. A student who is likely to be angry is not easy to calm.
+
+The manager apologized and promised to compensate every room for the lost food. He also gave us an opportunity: a place on the committee that checks the building twice a year. We are bound to disagree sometimes, but a quarrel in a meeting is better than a flood at midnight.`,
+ q:[
+  {s:"What happened at midnight?",o:["A water pipe collapsed","The office called","A student quarrelled","The building was checked"],a:0,e:"首句 The water pipe in our dormitory collapsed at midnight。"},
+  {s:"What did the statement from the repair team show?",o:["The pipe was new","The pipe was twenty years old","The students were wrong","The office had no money"],a:1,e:"第二段 a statement from the repair team showed that the pipe was twenty years old。"},
+  {s:"What did the manager offer the students?",o:["A new dormitory","A place on the committee that checks the building","Free food for a year","A letter of apology only"],a:1,e:"末段 He also gave us an opportunity: a place on the committee that checks the building twice a year。"}
+ ]},
+{d:11,k:'d11-1',t:"After the Storm",zh:"一场暴雨让污染成了全国议题，科学家评估损失、设计方案；有人反对、有人造假，但数据说服了大多数人。",w:["with regard to","climate","obvious","severe","lead to","pollution","assess","devise","prior to","demonstrate","waste","specific","classify","confirm","efficient","attribute","contribute to","live up to","object to","deceive","convince","dedicate","positive","adapt to","derive","constitute","environment","typical","energy"],
  p:`With regard to climate change, the evidence is now obvious. A severe storm last summer led to floods in three towns, and the pollution of the river became a national issue. Scientists were asked to assess the damage and to devise a plan.
 Prior to the report, few people could demonstrate how much waste a single factory produced. The team spent two years collecting data and used a specific method to classify it. They confirmed that the old plants were less efficient than new ones, and they attributed most of the smoke to coal. One conclusion was hard for the local government to accept: the plan would not live up to its promise unless every family took part.
 Some shop owners object to the new rules, and a few tried to deceive the inspectors. But most people were convinced by the figures. Students were encouraged to dedicate one hour a week to cleaning the river bank, and their positive attitude contributed to a real change. A typical day in the city now looks different: the environment is cleaner, and energy from coal is falling. To adapt to the new situation, the city has begun to derive more of its power from the sun. What we do now constitutes the future we get.`,
@@ -6327,7 +6439,7 @@ Some shop owners object to the new rules, and a few tried to deceive the inspect
   {s:"According to the report, what would the plan need in order to live up to its promise?",o:["Every family to take part","More money from the government","A second report","A new team of scientists"],a:0,e:"原文 the plan would not live up to its promise unless every family took part，unless＝除非。注意这是对结果的条件判断，不是已经发生的事。"},
   {s:"Which statement is true about the shop owners?",o:["All of them supported the rules","Some objected and a few tried to deceive the inspectors","They paid for the report","They cleaned the river themselves"],a:1,e:"Some … object to the new rules, and a few tried to deceive the inspectors。but 之后的 most people were convinced 才是主流。"}
  ]},
-{d:12,t:"Can a Machine Teach?",zh:"教学软件能看懂你的错、给出评估，但它替代不了努力、判断和独立思维；屏幕不能挤掉读书的习惯。",w:["software","theory","make sense of","make a difference","grasp","application","make out","network","make full use of","assessment","make up for","reasonable","criteria","intelligence","minor","independent","robot","dominate","embrace","suitable","disturb","screen","donate","engage","deserve","estimate","unique","negative"],
+{d:12,k:'d12-1',t:"Can a Machine Teach?",zh:"教学软件能看懂你的错、给出评估，但它替代不了努力、判断和独立思维；屏幕不能挤掉读书的习惯。",w:["software","theory","make sense of","make a difference","grasp","application","make out","network","make full use of","assessment","make up for","reasonable","criteria","intelligence","minor","independent","robot","dominate","embrace","suitable","disturb","screen","donate","engage","deserve","estimate","unique","negative"],
  p:`Can a machine teach? That is the question behind every new piece of educational software. The theory is simple: if a program can make sense of your mistakes, it can make a difference to your progress.
 Some systems are impressive. A student who cannot grasp a rule can watch a short video, and the application will make out which step he missed. The network behind it makes full use of thousands of answers, and the assessment is often more detailed than a teacher's note. But no program can make up for a lack of effort. Nor can it judge whether an answer is reasonable, because the criteria of a good essay are not numbers.
 Critics say that intelligence of this kind is a minor skill; what matters is the ability to think independently. A robot may dominate a game of chess, yet it cannot grasp why a poem moves us. Still, the technology is here, and to embrace it seems suitable.
@@ -6337,7 +6449,7 @@ The estimate is that half of the students engage with the software for less than
   {s:"\"No program can make up for a lack of effort\" means ______.",o:["Effort is not important","A program cannot replace effort","Programs are too expensive","Students should not use programs"],a:1,e:"make up for＝弥补。整句意思是没有程序能弥补不努力，即努力无法被替代。"},
   {s:"What is the writer's main worry?",o:["Robots will beat humans at chess","The screen will take time away from reading","Software is too expensive","Teachers will lose their jobs"],a:1,e:"末句 let the screen disturb the hours we donate to reading 才是作者真正的担心；chess 只是举例。"}
  ]},
-{d:13,t:"How a Thesis Is Built",zh:"论文从假设开始：方法、框架、定义缺一不可；教授强调别推得比数据多，研究是慢功夫。",w:["put forward","hypothesis","conclusion","put off","method","framework","formulate","definition","put emphasis on","infer","imply","purpose","fascinate","generate","put aside","carbon","emission","natural","ecosystem","damage","industrious","guarantee","cultivate","put out","fulfill","sustainable","put up with","concept","mainly"],
+{d:13,k:'d13-1',t:"How a Thesis Is Built",zh:"论文从假设开始：方法、框架、定义缺一不可；教授强调别推得比数据多，研究是慢功夫。",w:["put forward","hypothesis","conclusion","put off","method","framework","formulate","definition","put emphasis on","infer","imply","purpose","fascinate","generate","put aside","carbon","emission","natural","ecosystem","damage","industrious","guarantee","cultivate","put out","fulfill","sustainable","put up with","concept","mainly"],
  p:`Every thesis begins with a question. A student must put forward a hypothesis, test it, and draw a conclusion, and none of these steps can be put off until the last week.
 The method matters as much as the idea. A clear framework helps you formulate the question; a strict definition keeps you from guessing. In our lab the professor puts emphasis on evidence. Do not infer more than the data can support, she says. What your results imply is usually less than what you hope.
 The purpose of the work is not to fascinate readers but to generate knowledge that lasts. One student studies how to put aside old habits. Another looks at carbon emission and the natural ecosystem, and asks whether the damage can be repaired. Such work is not easy: you must be industrious, you must put up with many failed trials, and nobody can guarantee a result.
@@ -6347,7 +6459,7 @@ Yet the habit is worth cultivating. When you put out a report that is honest abo
   {s:"\"Do not infer more than the data can support\" means a researcher should ______.",o:["Collect no data","Not go beyond what the data show","Use only old data","Avoid drawing any conclusion"],a:1,e:"infer＝推断。整句要求结论不能超出数据支持的范围，不是不要结论（「不做任何结论」属于过度推断）。"},
   {s:"Why does the writer compare research to a forest?",o:["Both are green","Both grow slowly and cannot be rushed","Both need water","Both are easy to destroy"],a:1,e:"Sustainable research, like a forest, cannot be rushed；上句 grows slowly 已经点明。比喻题要找本体和喻体的共同点。"}
  ]},
-{d:14,t:"Four Hours a Week in Front of a Screen",zh:"在线学习好用，但设备只是工具：专注力比访问权更重要，一天留一小时不看屏幕。",w:["on the whole","on average","install","enroll","data","on the basis of","digest","imagination","distinguish","on the contrary","on purpose","investigate","on behalf of","device","awareness","require","acquire","devote","diversity","divorce","aware","online","digital","logic","choice","aspect","inspire","integrate","inherit"],
+{d:14,k:'d14-1',t:"Four Hours a Week in Front of a Screen",zh:"在线学习好用，但设备只是工具：专注力比访问权更重要，一天留一小时不看屏幕。",w:["on the whole","on average","install","enroll","data","on the basis of","digest","imagination","distinguish","on the contrary","on purpose","investigate","on behalf of","device","awareness","require","acquire","devote","diversity","divorce","aware","online","digital","logic","choice","aspect","inspire","integrate","inherit"],
  p:`On the whole, learning online has been good for us, but not for the reasons the advertisements give. On average, a student in our program spends four hours a week in front of a screen.
 The technology itself is simple. You install an application, enroll with your student number, and the data begins to collect. On the basis of that data, the platform can show which part you have not digested. It cannot, however, give you imagination, and it cannot distinguish effort from luck.
 On the contrary, some students lose the ability to concentrate. They open an app on purpose and then forget why. To investigate this, our teacher asked us to keep a diary, and her conclusion, presented on behalf of the whole class, was that a device is only a tool: awareness matters more than access.
@@ -6357,7 +6469,7 @@ We still require face-to-face contact. We need to acquire the habit of reading a
   {s:"What did the teacher's diary study conclude?",o:["Devices should be banned","Awareness matters more than access","Students study better at night","Online courses are useless"],a:1,e:"a device is only a tool: awareness matters more than access。冒号后的部分就是结论。"},
   {s:"What does the writer suggest at the end?",o:["Giving up online courses","Combining books and online learning","Reading only paper books","Studying without any teacher"],a:1,e:"integrate what we inherit from books with what we find online＝把书上学到的和网上找到的结合起来。"}
  ]},
-{d:15,t:"Thirty Minutes Before the Shift",zh:"医院调查发现员工普遍缺运动、睡不好，于是用\"上班前运动半小时\"替代开药，缺席率下降。",w:["regardless of","survey","staff","fall short of","for the sake of","workforce","by means of","exercise","prescribe","medicine","patient","reward","punishment","disease","treatment","presentation","contrast","labor","health","meet the needs of","raise awareness of","prestige","qualification","fail","adept","adapt","adopt","colleague","vacancy","prejudice"],
+{d:15,k:'d15-1',t:"Thirty Minutes Before the Shift",zh:"医院调查发现员工普遍缺运动、睡不好，于是用\"上班前运动半小时\"替代开药，缺席率下降。",w:["regardless of","survey","staff","fall short of","for the sake of","workforce","by means of","exercise","prescribe","medicine","patient","reward","punishment","disease","treatment","presentation","contrast","labor","health","meet the needs of","raise awareness of","prestige","qualification","fail","adept","adapt","adopt","colleague","vacancy","prejudice"],
  p:`Regardless of age, most workers say they are tired. A survey of two thousand staff in one hospital found that half of them fall short of the exercise they need, and that one in three has trouble sleeping.
 The hospital decided to act for the sake of its workforce. By means of a simple program, it now offers thirty minutes of exercise before every shift. Doctors prescribe walking rather than medicine for mild cases, and patients are encouraged to join. Attendance is a kind of reward; there is no punishment for those who cannot come.
 The results are easy to see. The number of people absent because of disease has fallen, and the treatment of stress has improved. A presentation by the head of staff compared the figures with last year: by contrast, the old system produced more labor and less health.
@@ -6367,7 +6479,7 @@ None of this meets the needs of every worker, and the program is far from perfec
   {s:"What does the hospital give instead of medicine for mild cases?",o:["A warning","Walking","Extra money","A longer holiday"],a:1,e:"Doctors prescribe walking rather than medicine for mild cases，rather than＝而不是。"},
   {s:"What is the writer's attitude toward the program?",o:["Completely negative","Positive but aware of its limits","Completely supportive","Not interested"],a:1,e:"None of this meets the needs of every worker, and the program is far from perfect 是让步；但 raises awareness of a simple truth 是肯定。两个合起来才是态度。"}
  ]},
-{d:16,t:"What Sleep Buys",zh:"睡眠影响免疫、体重和情绪；公司给弹性早晨和健身补贴，比警告更能激励人。",w:["play a role in","apart from","so far","diet","sleep","immune","considerable","obesity","depression","mental","stress","for instance","rather than","by contrast","considerate","handle","bonus","allowance","motivate","candidate","succeed","applicant","cheat","plagiarize","descendant","decay","virus","processor","wage","pension"],
+{d:16,k:'d16-1',t:"What Sleep Buys",zh:"睡眠影响免疫、体重和情绪；公司给弹性早晨和健身补贴，比警告更能激励人。",w:["play a role in","apart from","so far","diet","sleep","immune","considerable","obesity","depression","mental","stress","for instance","rather than","by contrast","considerate","handle","bonus","allowance","motivate","candidate","succeed","applicant","cheat","plagiarize","descendant","decay","virus","processor","wage","pension"],
  p:`Sleep plays a role in almost everything we do. Apart from its effect on memory, it protects the immune system. So far, most studies suggest that a regular diet and enough sleep matter more than any single medicine.
 The evidence is considerable. A survey of five thousand office workers found that those who sleep less than six hours are more likely to suffer from obesity and depression. Mental stress, for instance, is often a result of poor sleep rather than a cause of it. By contrast, people who exercise daily report fewer symptoms and a better mood.
 What can an employer do? A considerate company can handle the problem by offering a flexible morning. A small bonus for healthy habits, or an allowance for a gym, may motivate more than a warning. A candidate who sleeps well is likely to succeed in an interview; an applicant who is always tired will not.
@@ -6377,7 +6489,7 @@ We should not cheat ourselves with coffee. Nor should we plagiarize the habits o
   {s:"Which of the following may motivate employees more?",o:["A warning letter","A bonus for healthy habits","A longer meeting","A higher pension"],a:1,e:"A small bonus for healthy habits … may motivate more than a warning，比较结构指向 bonus。"},
   {s:"What does the last paragraph suggest?",o:["Coffee is a good solution","Health cannot be bought back with money","Older workers sleep better","Laptops cause disease"],a:1,e:"A higher wage cannot pay for lost sleep, and no pension can buy back a healthy year，两句同义反复，指向\"钱买不回健康\"。"}
  ]},
-{d:17,t:"The Launch That Failed",zh:"新产品上线当天服务器崩了，公司让员工加班却不沟通，朋友丢了工作、换了小公司，学到\"别瞒坏消息\"。",w:["to sum up","what is more","depend on","under no circumstances","account for","keep in mind","communicate","mislead","crash","launch","search","insurance","overtime","workload","efficiency","productivity","cooperation","job","career","employee","employer","company","industry","business","define","decision","detail","economical","economic"],
+{d:17,k:'d17-1',t:"The Launch That Failed",zh:"新产品上线当天服务器崩了，公司让员工加班却不沟通，朋友丢了工作、换了小公司，学到\"别瞒坏消息\"。",w:["to sum up","what is more","depend on","under no circumstances","account for","keep in mind","communicate","mislead","crash","launch","search","insurance","overtime","workload","efficiency","productivity","cooperation","job","career","employee","employer","company","industry","business","define","decision","detail","economical","economic"],
  p:`A friend of mine lost her job last spring. The company had launched a new product, the server crashed on the first day, and the loss was hard to account for. To cut costs the employer asked every employee to work overtime, and the workload doubled.
 What is more, nobody communicated. A misleading email told the staff that their jobs were safe, and a search for the truth found nothing. To sum up, the business had made a decision without looking at the details.
 Her career changed after that. She moved to a smaller firm in the same industry, where the rules are simple, and where efficiency is defined by output rather than by hours. Productivity depends on cooperation, and cooperation depends on trust. Keep in mind that a cheap plan is not always an economical one; the economic cost of a bad launch can be higher than any saving.
@@ -6387,7 +6499,7 @@ There is no insurance for a bad decision, and no harvest without patience. Under
   {s:"What did the misleading email do?",o:["It told the staff their jobs were safe","It explained the crash","It offered overtime pay","It asked for new ideas"],a:0,e:"A misleading email told the staff that their jobs were safe，与事实相反，所以是 misleading。"},
   {s:"What does the writer mean by \"a cheap plan is not always an economical one\"?",o:["Cheap things are always bad","A low cost today may bring a higher cost later","Economy is not important","Plans should be expensive"],a:1,e:"紧接的 the economic cost of a bad launch can be higher than any saving 就是解释：省下的钱可能抵不过后来的损失。"}
  ]},
-{d:18,t:"The Village and the Forest",zh:"禁伐令保护老树，但靠林子吃饭的家庭怎么办？政策要给出替代生计，社会得按自己的速度改变。",w:["look forward to","generation","look up to","look after","balance","government","look into","deforestation","monitor","detect","basis","ban","intention","deprive","essence","perspective","sensible","culture","structure","background","sensitive","tolerate","society","migrate","purify","principal","principle","community","population"],
+{d:18,k:'d18-1',t:"The Village and the Forest",zh:"禁伐令保护老树，但靠林子吃饭的家庭怎么办？政策要给出替代生计，社会得按自己的速度改变。",w:["look forward to","generation","look up to","look after","balance","government","look into","deforestation","monitor","detect","basis","ban","intention","deprive","essence","perspective","sensible","culture","structure","background","sensitive","tolerate","society","migrate","purify","principal","principle","community","population"],
  p:`Every generation looks forward to a better life, and most of us look up to those who look after the land. But the balance between growth and nature is hard to keep. The population of the town has doubled in ten years, and the forest has paid for it.
 Last year the government promised to look into the problem of deforestation. A team was sent to monitor the river and to detect any change in the water. On the basis of their report, the province decided to ban the cutting of old trees. The intention was clear, though the policy was not easy to carry out: many families depend on the forest, and a ban can deprive them of work.
 The essence of the problem is not the trees but the people. From the perspective of a farmer, a sensible plan must offer another way to earn a living. The local culture, the structure of the village, and the background of each family all matter. A sensitive leader will tolerate slow progress, because a society changes at its own speed.
@@ -6397,7 +6509,7 @@ Some birds migrate, and some fish need clean water to survive. It is our duty to
   {s:"What is the essence of the problem according to the writer?",o:["The trees","The people","The report","The government"],a:1,e:"The essence of the problem is not the trees but the people，not … but … 结构，重点在后半句。"},
   {s:"What does the last sentence suggest?",o:["We should leave the village","We are only temporary keepers of the land","The forest belongs to the government","Nobody cares about the community"],a:1,e:"we do not own the community, we only look after it for a while＝我们并不拥有它，只是照看一阵子。"}
  ]},
-{d:19,t:"A Market Becomes a Park",zh:"城市想把老市场改成公园，会上没人来、方案被否；一桩食品安全案把它变成公共讨论，最后靠设计和公平规则才成。",w:["turn out","policy","turn into","public","turn up","turn down","legislate","deliver","respectable","supervise","authority","client","evidence","tendency","urban","rural","poverty","arrest","punish","sue","turn to","duty","equality","agreement","factor","imaginative","phenomenon","forgive","vote","citizen"],
+{d:19,k:'d19-1',t:"A Market Becomes a Park",zh:"城市想把老市场改成公园，会上没人来、方案被否；一桩食品安全案把它变成公共讨论，最后靠设计和公平规则才成。",w:["turn out","policy","turn into","public","turn up","turn down","legislate","deliver","respectable","supervise","authority","client","evidence","tendency","urban","rural","poverty","arrest","punish","sue","turn to","duty","equality","agreement","factor","imaginative","phenomenon","forgive","vote","citizen"],
  p:`The new policy did not turn out as planned. The city wanted to turn the old market into a public park, but few citizens turned up at the meeting, and the plan was turned down by the council.
 It is easy to legislate and hard to deliver. A respectable officer was sent to supervise the work, and a local authority was asked to look at the evidence. The tendency was clear: in urban areas the problem is noise, and in rural areas it is poverty. Neither can be solved by a single rule.
 When a client of the market was arrested for selling unsafe food, the story turned into a public debate. Should the city punish him, or sue the company that supplied the goods? Many people turned to the mayor for an answer. His duty, he said, was to protect equality before the law, and an agreement was reached after three meetings.
@@ -6407,7 +6519,7 @@ Two factors made the difference: an imaginative design and a fair rule. Citizens
   {s:"What did the mayor say his duty was?",o:["To sell the market","To protect equality before the law","To punish the client only","To close the park"],a:1,e:"His duty, he said, was to protect equality before the law，直接引用。"},
   {s:"What made the difference in the end?",o:["More meetings","An imaginative design and a fair rule","A new mayor","The arrest"],a:1,e:"Two factors made the difference: an imaginative design and a fair rule。factor＝因素，冒号后是具体内容。"}
  ]},
-{d:20,t:"Two Million Records",zh:"黑客用一个弱密码打开数据库，两百万条记录外泄；公司没放弃，重建系统，也终于公开解释。",w:["recent","major","corporation","sector","give away","hacker","password","database","firm","give up","system","algorithm","give off","essential","server","give rise to","belong","enterprise","locate","remain","complex","appear","give in","venture","potential","significant","rapid","contain"],
+{d:20,k:'d20-1',t:"Two Million Records",zh:"黑客用一个弱密码打开数据库，两百万条记录外泄；公司没放弃，重建系统，也终于公开解释。",w:["recent","major","corporation","sector","give away","hacker","password","database","firm","give up","system","algorithm","give off","essential","server","give rise to","belong","enterprise","locate","remain","complex","appear","give in","venture","potential","significant","rapid","contain"],
  p:`A recent case shows how fragile a company can be. A major corporation in the tech sector gave away more than it knew: a hacker found a weak password, opened the database, and copied the records of two million users.
 The firm did not give up. Its engineers rebuilt the system, and the new algorithm gives off far less heat, which is essential in a large server room. But the incident gave rise to a serious question: who does the data belong to? The enterprise is located in a city where the rules remain unclear, and the situation is more complex than it appears.
 Some managers wanted to give in and pay quietly. Others refused. A joint venture partner insisted that the potential loss was significant, and that rapid growth had hidden the problem for years. In the end the corporation published a full report, which did not contain a single word of apology but did list every step it would take.
@@ -6417,7 +6529,7 @@ The lesson is simple: a factory can replace a machine, but trust is harder to re
   {s:"What question did the incident give rise to?",o:["How much the fine would be","Who the data belongs to","Who would be fired","How to sell the company"],a:1,e:"gave rise to a serious question: who does the data belong to。give rise to＝引起。"},
   {s:"What did the corporation finally do?",o:["It gave in and paid quietly","It published a full report of its next steps","It closed the company","It sued the users"],a:1,e:"published a full report … list every step it would take；Some managers wanted to give in 只是部分人的想法，不是结果。"}
  ]},
-{d:21,t:"Sensors in the Dust",zh:"公司在小城开分公司，第一年线被风刮断、信号又弱，靠一款耐热耐尘的芯片活下来；最后立了条规矩：自己不用的传感器不卖。",w:["branch","office","strategy","sensor","commercial","negotiate","meeting","agenda","cable","satellite","signal","suffer","refuse","develop","chip","invention","survive","implement","ensure","compare","explain","decrease","lay","lie","refer","prefer","different","create","consider","pursue"],
+{d:21,k:'d21-1',t:"Sensors in the Dust",zh:"公司在小城开分公司，第一年线被风刮断、信号又弱，靠一款耐热耐尘的芯片活下来；最后立了条规矩：自己不用的传感器不卖。",w:["branch","office","strategy","sensor","commercial","negotiate","meeting","agenda","cable","satellite","signal","suffer","refuse","develop","chip","invention","survive","implement","ensure","compare","explain","decrease","lay","lie","refer","prefer","different","create","consider","pursue"],
  p:`Three years ago the company opened a branch office in a small city. The strategy was simple: build cheap sensors, sell them to farms, and let the data speak.
 The first year was hard. The commercial team had to negotiate with local shops, and the meeting agenda was often rewritten at the last minute. A cable was cut by a storm, the satellite signal was weak, and the office began to suffer. But the engineers refused to give up. They developed a new chip, a small invention that could survive both heat and dust, and they implemented it in every device. To ensure the quality, each unit is compared with a standard model before it leaves the factory.
 The results are easy to explain. Sales did not decrease; they grew. Costs are far below the first plan, and the problem now lies in training, not in hardware. If you refer to the report, you will see why we prefer this way: it is different from the old one, and it creates jobs.
@@ -6427,7 +6539,7 @@ We must consider one more thing. A company that pursues profit alone will not su
   {s:"What was the new chip able to do?",o:["Survive heat and dust","Replace the satellite","Reduce the price to zero","Send data by cable"],a:0,e:"a small invention that could survive both heat and dust。"},
   {s:"Where does the problem lie now?",o:["In the hardware","In training","In the price","In the factory"],a:1,e:"the problem now lies in training, not in hardware。lie in＝在于，注意与 lay（放置）区分。"}
  ]},
-{d:22,t:"One Element at a Time",zh:"化学课不从元素表开始，而是一个元素一个元素地问\"它能做什么\"；同样的思路用于保护濒危物种。",w:["insist","semester","propose","focus","element","curriculum","relate","atomic","hydrogen","oxygen","chemical","substance","common","impress","difficult","endure","discipline","foster","tuition","diploma","reserve","expand","extend","important","preserve","endangered","enforce","possible","similar","rely"],
+{d:22,k:'d22-1',t:"One Element at a Time",zh:"化学课不从元素表开始，而是一个元素一个元素地问\"它能做什么\"；同样的思路用于保护濒危物种。",w:["insist","semester","propose","focus","element","curriculum","relate","atomic","hydrogen","oxygen","chemical","substance","common","impress","difficult","endure","discipline","foster","tuition","diploma","reserve","expand","extend","important","preserve","endangered","enforce","possible","similar","rely"],
  p:`Professor Wang insists that chemistry should be taught from the first semester. Her proposal is simple: instead of memorizing the periodic table, students should focus on one element at a time and ask what it does.
 The curriculum is built on this idea. In the first week, students relate the atomic structure of hydrogen to the water they drink; in the second, they study oxygen and the chemical reactions that keep a city alive. A common mistake is to think that a substance is either safe or dangerous. It is more impressive to see that the same element can heal and harm.
 The course is difficult, but students endure it because the discipline it fosters is useful everywhere. Tuition is high and a diploma is not cheap, but the reserve of skills they gain will expand their choices and extend their careers.
@@ -6437,7 +6549,7 @@ The same logic applies to nature. It is important to preserve what is endangered
   {s:"What is a common mistake mentioned in Paragraph 2?",o:["Thinking water has no structure","Thinking a substance is either safe or dangerous","Thinking oxygen is useless","Thinking chemistry is easy"],a:1,e:"A common mistake is to think that a substance is either safe or dangerous。"},
   {s:"What does the writer compare the protection of nature to?",o:["A periodic table","The logic of teaching chemistry","A diploma","A factory"],a:1,e:"The same logic applies to nature，上文讲的教学逻辑与下文的保护逻辑相同，是类比。"}
  ]},
-{d:23,t:"Before the Blank Page",zh:"写论文别先有观点再找证据；会读的人对作者有同情、但不放弃判断；真正限制你的是想说得太多。",w:["seminar","essay","thesis","assignment","explore","examine","identify","ignore","curious","sympathy","abandon","attitude","serious","likely","effective","supply","available","certain","demand","certificate","obtain","various","limit","appetite","assign","anxiety","affection","literacy","offer"],
+{d:23,k:'d23-1',t:"Before the Blank Page",zh:"写论文别先有观点再找证据；会读的人对作者有同情、但不放弃判断；真正限制你的是想说得太多。",w:["seminar","essay","thesis","assignment","explore","examine","identify","ignore","curious","sympathy","abandon","attitude","serious","likely","effective","supply","available","certain","demand","certificate","obtain","various","limit","appetite","assign","anxiety","affection","literacy","offer"],
  p:`Every student in the seminar must write an essay before the end of term, and a thesis is only the longer version of the same task. The assignment looks simple: explore one question, examine the evidence, and identify what is still unknown.
 Most students ignore the first step. They start with an opinion and then look for facts. A curious reader does the opposite. He reads with sympathy for the writer, but he does not abandon his own judgment. The attitude makes a serious difference: an essay written this way is more likely to be effective.
 The library can supply what you need, though not everything is available. Certain journals demand a fee, and a certificate of enrollment is required to obtain them. Various databases offer a free copy, and the library offers training every Friday. A seminar is the best place to ask which one to use.
@@ -6447,7 +6559,7 @@ What limits most writers is not knowledge but appetite: they want to say everyth
   {s:"What does the writer mean by \"what limits most writers is not knowledge but appetite\"?",o:["Writers are hungry","Writers try to say too much","Writers do not read enough","Writers need more money"],a:1,e:"冒号后 they want to say everything 直接解释 appetite，所以答案是\"想说的太多\"。"},
   {s:"Why is affection for your own sentences dangerous?",o:["It makes you write faster","It keeps you from cutting what should be cut","It helps you get a certificate","It improves your grammar"],a:1,e:"紧接着 Cut them, and the paper will breathe——舍不得删就写不干净。"}
  ]},
-{d:24,t:"A Study of Loneliness",zh:"一项研究发现大一孤独感与是否独居无关，而与参与活动的多少有关；作者说大学要能同时评估实验室和感受。",w:["faculty","announce","tutor","observe","occur","participate","measure","permit","persuade","discuss","bachelor","alumni","scholar","argue","species","conservation","value","mention","valuable","proud","ashamed","evaluate","eager","anxious","loneliness","reluctant","intellectual"],
+{d:24,k:'d24-1',t:"A Study of Loneliness",zh:"一项研究发现大一孤独感与是否独居无关，而与参与活动的多少有关；作者说大学要能同时评估实验室和感受。",w:["faculty","announce","tutor","observe","occur","participate","measure","permit","persuade","discuss","bachelor","alumni","scholar","argue","species","conservation","value","mention","valuable","proud","ashamed","evaluate","eager","anxious","loneliness","reluctant","intellectual"],
  p:`Last term the faculty announced a study on loneliness among students. The tutor who led it asked two hundred freshmen to measure how often they felt alone, and to observe their own mood for a month.
 The results were surprising. Loneliness does occur more often in the first year, but it is not limited to those who live alone. Students who participate in few activities report the same feeling as those who live far from home. Many were reluctant to join at first, and nobody wanted to admit it in public.
 We must not permit silence to become a habit, the tutor said. She persuaded the dean to open a weekly meeting where students can discuss what troubles them. Bachelor students, master students and alumni all attend; a scholar from another university comes once a month to argue with them.
@@ -6457,7 +6569,7 @@ The study also looked at nature. A scholar who studies endangered species argues
   {s:"What did the tutor persuade the dean to do?",o:["Close the study","Open a weekly meeting for students to talk","Reduce tuition","Hire more tutors"],a:1,e:"She persuaded the dean to open a weekly meeting where students can discuss what troubles them。"},
   {s:"What does the scholar say conservation is about?",o:["Only animals","Only money","The value we place on quiet places as well as animals","Only government policy"],a:2,e:"conservation is not only about animals, but about the value we place on quiet places。not only … but (also) 结构，两部分都要算。"}
  ]},
-{d:25,t:"Compulsory Attendance",zh:"第一周必须到校：到场的人更可能坚持；研究生课的任务模糊、失败正常，而职场只看结果和协作。",w:["attendance","compulsory","requirement","tend","accomplish","postgraduate","task","failure","solve","attempt","fire","feedback","intensive","extensive","employ","workplace","cooperate","assemble","connect","leadership","establish","historic","historical","qualify","teamwork","creativity","undergraduate","threaten","expect","consist","comprise"],
+{d:25,k:'d25-1',t:"Compulsory Attendance",zh:"第一周必须到校：到场的人更可能坚持；研究生课的任务模糊、失败正常，而职场只看结果和协作。",w:["attendance","compulsory","requirement","tend","accomplish","postgraduate","task","failure","solve","attempt","fire","feedback","intensive","extensive","employ","workplace","cooperate","assemble","connect","leadership","establish","historic","historical","qualify","teamwork","creativity","undergraduate","threaten","expect","consist","comprise"],
  p:`At this university, attendance at the first week is compulsory. The requirement is not popular, and low attendance can threaten a course, but the teachers expect the rule to stay. Students who come tend to stay, and those who stay tend to accomplish more.
 A postgraduate program is a good test of this. A good program consists of small tasks, and a final report may comprise three parts. The task you are given is vague, the deadline is short, and failure is normal. You must learn to solve a problem that nobody has solved before, or at least to attempt it honestly. The staff will not fire you for a wrong answer; they will ask what you learned from it. Feedback comes in writing, and an intensive course may require an extensive report.
 What employers expect is different. In the workplace, results are what count. A team must cooperate, and a project team is usually assembled from people with different skills. The best ones are not always the most creative; they are the ones who can connect one idea to another and who have the leadership to keep a group together.
@@ -6467,7 +6579,7 @@ The university was established in 1902, and its historic buildings remind us of 
   {s:"What happens if a postgraduate gives a wrong answer?",o:["He is fired","He is asked what he learned from it","He loses his degree","He must pay a fine"],a:1,e:"The staff will not fire you for a wrong answer; they will ask what you learned from it。"},
   {s:"What does the writer say a degree does?",o:["It guarantees success","It qualifies you for a job but is not enough alone","It replaces teamwork","It proves you are talented"],a:1,e:"A degree qualifies you for a job, but only teamwork and creativity keep it。but 之后是转折重点。"}
  ]},
-{d:26,t:"Eight Hundred Questionnaires",zh:"问卷能测出人说了什么，测不出人做了什么；六成学生考前有压力，三分之一学期中生病。",w:["describe","maintain","questionnaire","finding","admit","deny","statistics","figure","pressure","illness","sickness","ailment","wound","suggest","program","apply","encourage","operate","confidential","confident","continual","continuous","hardware","outline","react","express","allow","score","memorize"],
+{d:26,k:'d26-1',t:"Eight Hundred Questionnaires",zh:"问卷能测出人说了什么，测不出人做了什么；六成学生考前有压力，三分之一学期中生病。",w:["describe","maintain","questionnaire","finding","admit","deny","statistics","figure","pressure","illness","sickness","ailment","wound","suggest","program","apply","encourage","operate","confidential","confident","continual","continuous","hardware","outline","react","express","allow","score","memorize"],
  p:`The team wanted to describe how students maintain their health. They wrote a questionnaire, and the findings were clear: most students admit that they sleep badly, and few deny it.
 The statistics are easy to figure out. Of the eight hundred students, sixty percent report pressure before an exam, and a third describe an illness during the term. They express the same worry in different words: some say sickness, some say ailment, and a few mention a wound from sport. All of them say the same thing about the health center — it is too far.
 We suggest a simple program. It should allow students to apply for a later start, encourage them to operate the gym in turn, and offer a confidential line for those who feel confident enough to speak. Continual small changes are better than one continuous effort. The hardware is already there, and the outline of a plan exists.
@@ -6477,7 +6589,7 @@ What the survey cannot show is the reason. A questionnaire measures what people 
   {s:"What is the problem with the health center?",o:["It is too expensive","It is too far","It has no doctor","It is always closed"],a:1,e:"All of them say the same thing about the health center — it is too far。破折号后是答案。"},
   {s:"What does the writer say a questionnaire cannot show?",o:["How many students answered","The reason behind the answers","The age of the students","The cost of the program"],a:1,e:"末段 What the survey cannot show is the reason；紧接 To see the truth, you must react to what you observe, not to what you are told。问卷测的是说法，不是原因。"}
  ]},
-{d:27,t:"The First Chapter",zh:"写文章先想作者的处境；第三章之前别下判断，读者要宽容也要有标准；问题不是\"完美吗\"而是\"清楚吗\"。",w:["analyze","imagine","judge","justify","prove","chapter","deadline","schedule","vocabulary","grammar","guilty","generous","selfish","motive","comprehensive","familiar","impose","otherwise","moreover","import","immigrant","appropriate","whereas","while","however","therefore","grade","tired","character"],
+{d:27,k:'d27-1',t:"The First Chapter",zh:"写文章先想作者的处境；第三章之前别下判断，读者要宽容也要有标准；问题不是\"完美吗\"而是\"清楚吗\"。",w:["analyze","imagine","judge","justify","prove","chapter","deadline","schedule","vocabulary","grammar","guilty","generous","selfish","motive","comprehensive","familiar","impose","otherwise","moreover","import","immigrant","appropriate","whereas","while","however","therefore","grade","tired","character"],
  p:`Before you analyze a text, imagine the writer's situation. A judge does the same: he must justify his decision, and he must prove that the evidence is enough.
 The first chapter of any essay is the hardest. You have a deadline, a schedule, and a vocabulary that is still small. Grammar mistakes are common, and many students feel guilty about them. However, a generous reader will forgive a wrong tense; a selfish one will not. Motive matters as much as accuracy: why did the writer choose this example?
 A comprehensive plan is familiar to most teachers: read, outline, write, revise. Do not impose your own view too early. Otherwise the essay will be a list of opinions rather than an argument. Moreover, do not import ideas you cannot explain, and do not judge an immigrant's English by the standard of a native speaker.
@@ -6487,7 +6599,7 @@ Therefore, the appropriate question is not whether it is perfect, but whether it
   {s:"What happens if you impose your own view too early?",o:["The essay becomes a list of opinions","The essay becomes shorter","The reader agrees with you","The grade goes up"],a:0,e:"Otherwise the essay will be a list of opinions rather than an argument。otherwise＝否则，指代前句\"过早强加观点\"。"},
   {s:"What is the appropriate question according to the writer?",o:["Is it perfect?","Is it long enough?","Is it clear?","Is it original?"],a:2,e:"the appropriate question is not whether it is perfect, but whether it is clear。not … but … 结构。"}
  ]},
-{d:28,t:"Cure When Possible",zh:"诊所的目标不是开药而是看对病；剂量错比病更伤，隐私和自由要尊重，小步改进胜过一次大改。",w:["goal","cure","heal","objective","prescription","diagnosis","dose","rarely","hardly","scarcely","predict","prepare","privacy","freedom","present","tradition","behavior","meanwhile","transmit","transport","thus","instead","diagnose","effort"],
+{d:28,k:'d28-1',t:"Cure When Possible",zh:"诊所的目标不是开药而是看对病；剂量错比病更伤，隐私和自由要尊重，小步改进胜过一次大改。",w:["goal","cure","heal","objective","prescription","diagnosis","dose","rarely","hardly","scarcely","predict","prepare","privacy","freedom","present","tradition","behavior","meanwhile","transmit","transport","thus","instead","diagnose","effort"],
  p:`The goal of the clinic is simple: cure when possible, heal always. Its objective is not to sell a prescription but to reach a diagnosis that is right.
 A dose of the wrong medicine can do more harm than the illness. Doctors therefore rarely prescribe without a test, and a good nurse hardly ever guesses. Scarcely a week passes without a case that could have been prevented. We can predict some of them, and we prepare for the rest.
 The clinic also tries to respect privacy and freedom. A patient may refuse a treatment; the staff will present the facts and let him choose. Tradition is strong here, and behavior changes slowly. Meanwhile, a new system transmits the results to the city hospital, and a small van transports samples every morning. Thus a diagnosis that once took a week now takes a day.
@@ -6497,7 +6609,7 @@ These changes are not a cure for everything. But they show what effort can do. I
   {s:"Why do doctors rarely prescribe without a test?",o:["Tests are cheap","A wrong dose can do more harm than the illness","Patients ask for tests","The law requires it"],a:1,e:"A dose of the wrong medicine can do more harm than the illness，这是\"先检查再开药\"的原因。"},
   {s:"What changed with the new system?",o:["Treatment became free","A diagnosis now takes a day instead of a week","The clinic closed","Patients no longer see doctors"],a:1,e:"a diagnosis that once took a week now takes a day。"}
  ]},
-{d:29,t:"Two Seconds",zh:"一款语法检查工具的核心不是聪明而是快：两秒内给答案。团队差点散伙，最后靠\"有耐心\"重做。",w:["version","feature","accurate","aim","chance","come across","come up with","basic","diligent","come down to","break down","break in","break out","break up","ingredient","intelligent","come true","competition","income","comfort","comment","fluent","function","cope","status","infect"],
+{d:29,k:'d29-1',t:"Two Seconds",zh:"一款语法检查工具的核心不是聪明而是快：两秒内给答案。团队差点散伙，最后靠\"有耐心\"重做。",w:["version","feature","accurate","aim","chance","come across","come up with","basic","diligent","come down to","break down","break in","break out","break up","ingredient","intelligent","come true","competition","income","comfort","comment","fluent","function","cope","status","infect"],
  p:`The new version of the app has one feature the team is proud of: it can tell you whether your sentence is accurate. The aim was not to replace a teacher but to give a student a chance to check his own work.
 The story behind it is simple. One engineer came across an old report on how children learn grammar. She came up with a basic rule: a learner needs an answer within two seconds. The team was diligent, and in the end it all came down to speed.
 Their first design broke down under pressure. When the number of users rose, the system broke in and the screen froze. A small argument broke out in the meeting, and for a week the group almost broke up. But they found the weak ingredient: the program was intelligent but not patient. They rebuilt it, and the old dream came true.
@@ -6507,7 +6619,7 @@ Competition in this market is strong, and income is not yet enough to comfort th
   {s:"Why did the first design fail?",o:["It was too slow to build","It broke down when the number of users rose","It was too expensive","Nobody wanted it"],a:1,e:"Their first design broke down under pressure. When the number of users rose, the system broke in。break down＝出故障。"},
   {s:"What does the user comment on the wall mean?",o:["The user still cannot speak English","The user is no longer afraid although not fluent","The user wants a refund","The user is a teacher"],a:1,e:"I am not fluent, but I am no longer afraid。but 之后是重点，说明进步在心理层面。"}
  ]},
-{d:30,t:"The Pill Is Not the Answer",zh:"一位外科护士写道：药能治感染、疫苗能预防，但抗生素治不好坏习惯；医生的角色不是消除所有疼痛。",w:["headline","pill","author","article","surgery","drug","vaccine","antibiotic","take for granted","run into","trouble","run out of","quality","operation","service","rule","source","sample","personnel","get along with","get over","take after","take off","role","get rid of","identity","get used to","issue","headquarters","headache"],
+{d:30,k:'d30-1',t:"The Pill Is Not the Answer",zh:"一位外科护士写道：药能治感染、疫苗能预防，但抗生素治不好坏习惯；医生的角色不是消除所有疼痛。",w:["headline","pill","author","article","surgery","drug","vaccine","antibiotic","take for granted","run into","trouble","run out of","quality","operation","service","rule","source","sample","personnel","get along with","get over","take after","take off","role","get rid of","identity","get used to","issue","headquarters","headache"],
  p:`A headline in a medical magazine caught my eye last week: The pill is not the answer. The author of the article is a nurse who has worked in surgery for twenty years.
 Her point is simple. A drug can end an infection, and a vaccine can prevent one, but an antibiotic cannot cure a bad habit. Patients who take their health for granted often run into trouble later. They run out of patience with a long treatment and stop halfway. The quality of a hospital, she writes, is not only in its operation rooms.
 The service at her clinic has one rule: the doctor explains the source of the pain before writing anything. A small sample of blood is enough to show whether the trouble is serious. The personnel are trained to get along with anxious families, and they never say that ageing is something to get over.
@@ -6517,7 +6629,7 @@ I must add a comment of my own. We cannot get rid of every headache, and the hea
   {s:"What happens to patients who take their health for granted?",o:["They save money","They often run into trouble later","They recover faster","They stop seeing doctors"],a:1,e:"Patients who take their health for granted often run into trouble later。take for granted＝想当然。"},
   {s:"What does the last line say the doctor's role is?",o:["To remove every pain","To help a person get used to a new identity","To sell more medicine","To shorten the treatment"],a:1,e:"our role is not to remove every pain, but to help a person get used to a new identity。"}
  ]},
-{d:31,t:"One Portable Monitor",zh:"外科医生在缺床的情况下推动每个病房配一台便携监护仪；改变没牺牲安全，\"带走责任、留下功劳\"。",w:["surgeon","clinic","bring about","in light of","ward","portable","carry out","at present","sufficient","physician","bring up","bring forward","in accordance with","nurse","carry on","slight","mild","at the expense of","wireless","security","artificial","as a result of","ambulance","quantity","scarcity","as well as","carry away","bankrupt","flexible","abundant"],
+{d:31,k:'d31-1',t:"One Portable Monitor",zh:"外科医生在缺床的情况下推动每个病房配一台便携监护仪；改变没牺牲安全，\"带走责任、留下功劳\"。",w:["surgeon","clinic","bring about","in light of","ward","portable","carry out","at present","sufficient","physician","bring up","bring forward","in accordance with","nurse","carry on","slight","mild","at the expense of","wireless","security","artificial","as a result of","ambulance","quantity","scarcity","as well as","carry away","bankrupt","flexible","abundant"],
  p:`A surgeon at the city clinic has brought about a quiet change. In light of a shortage of beds, she proposed that every ward should have one portable monitor, and the plan was carried out in three months.
 At present the hospital has sufficient space but not enough nurses. The physician in charge brought the problem up at a meeting and brought the plan forward by a year. In accordance with the new rule, a nurse can now carry on a check without waking the patient. A slight change in a mild case can prevent a serious one.
 The change was not made at the expense of safety. Every device is wireless and tested for security, and the artificial light in the corridor is softer at night. As a result of the new system, the ambulance team can send a patient's data before the car arrives. The quantity of paper used has fallen, and the scarcity of old machines is no longer a problem, because they have been replaced. A flexible plan saved the hospital from going bankrupt, and the supply of clean water is abundant.
@@ -6527,7 +6639,7 @@ The surgeon herself is careful about credit. She brings her students up to speak
   {s:"What can a nurse do now?",o:["Carry on a check without waking the patient","Operate without a doctor","Close the ward at night","Refuse new patients"],a:0,e:"a nurse can now carry on a check without waking the patient。carry on＝继续进行。"},
   {s:"How does the surgeon treat credit for the change?",o:["She takes all the credit","She lets students speak first and takes the blame herself","She ignores her students","She gives the credit to the city"],a:1,e:"She brings her students up to speak first, and she carries the blame away with her when something fails。"}
  ]},
-{d:32,t:"Before the First Case",zh:"传染病不是现代病：古城的公共浴场就是卫生防线；防它靠日常习惯和提前建好的系统，不靠警报。",w:["epidemic","modern","ancient","hygiene","germ","pandemic","result from","result in","bacteria","infection","along with","keep pace with","set up","routine","set aside","gradual","frequent","fade","catch up with","set off"],
+{d:32,k:'d32-1',t:"Before the First Case",zh:"传染病不是现代病：古城的公共浴场就是卫生防线；防它靠日常习惯和提前建好的系统，不靠警报。",w:["epidemic","modern","ancient","hygiene","germ","pandemic","result from","result in","bacteria","infection","along with","keep pace with","set up","routine","set aside","gradual","frequent","fade","catch up with","set off"],
  p:`An epidemic is not a modern problem. Ancient cities were built with public baths for a reason: hygiene was a matter of life and death. A germ does not need a crowd; it needs a habit.
 A pandemic is different only in scale. It results from a virus that travels faster than our rules, and it can result in millions of lost workdays. Bacteria and infection spread along with people. To keep pace with them, a city must set up a system before the first case appears, not after.
 The routine is less exciting than the emergency. Wash your hands, open the window, and set aside ten minutes a day for exercise. A gradual change in the habit of a family is worth more than a frequent warning. Old rules fade slowly, and the new ones take time to catch up with daily life.
@@ -6537,7 +6649,7 @@ When the alarm was set off in March, the hospital was ready. It had been set up 
   {s:"What does the writer say a city must do to keep pace with bacteria?",o:["Close its borders","Set up a system before the first case appears","Wait for a vaccine","Build more hospitals after the outbreak"],a:1,e:"To keep pace with them, a city must set up a system before the first case appears, not after。"},
   {s:"What is the main lesson of the last paragraph?",o:["Alarms are useless","Preparation is the cheapest medicine","Hospitals are too expensive","Old rules should be kept"],a:1,e:"preparation is not a cost; it is the cheapest medicine we have。分号后是结论。"}
  ]},
-{d:33,t:"Two Weeks at Home",zh:"疫情来了先隔离：过敏像感冒、慢性咳嗽未必是病毒，别太早下结论；法规要稳、要能长期执行。",w:["outbreak","quarantine","instruction","fever","cough","allergy","chronic","draw a conclusion","subjective","reliable","vaccination","behave","regulation","stable","toxic","disposal","harmful","patent","storage","eventually","collaborate","sustainability","retirement","reason","attain","authentic","conclude","property","regulate","expression"],
+{d:33,k:'d33-1',t:"Two Weeks at Home",zh:"疫情来了先隔离：过敏像感冒、慢性咳嗽未必是病毒，别太早下结论；法规要稳、要能长期执行。",w:["outbreak","quarantine","instruction","fever","cough","allergy","chronic","draw a conclusion","subjective","reliable","vaccination","behave","regulation","stable","toxic","disposal","harmful","patent","storage","eventually","collaborate","sustainability","retirement","reason","attain","authentic","conclude","property","regulate","expression"],
  p:`When an outbreak began in the northern province, the first rule was quarantine. The instruction was simple: stay home for two weeks, and report any fever or cough.
 Not every case was easy to read. An allergy can look like a cold, and a chronic cough may have nothing to do with the virus. A doctor must not draw a conclusion too early, and a subjective feeling is not evidence. The reliable sign was a test, and the vaccination rate told us how the city would behave in the next month.
 The regulation that followed was strict but stable. Factories that produce toxic waste had to follow a new rule on disposal, and a chemical that is harmful to water could no longer be stored near a river. A patent for a new storage method was registered by a small team, and they eventually began to collaborate with a university. From these figures we can conclude that the rule worked, though no single property was protected for free.
@@ -6547,7 +6659,7 @@ Sustainability is not only an environmental question. A worker in retirement sti
   {s:"What was the reliable sign of the illness?",o:["A subjective feeling","A test","A cough","A high fever"],a:1,e:"The reliable sign was a test。与 subjective feeling is not evidence 形成对照。"},
   {s:"What does the writer mean by \"sustainability is not only an environmental question\"?",o:["Environment does not matter","A plan must also work for people, such as retired workers","Factories should close","Regulations are useless"],a:1,e:"紧接 A worker in retirement still needs a reason to get up，说明可持续还包括人的层面。"}
  ]},
-{d:34,t:"A Small Accident",zh:"楼梯上摔了一下：脚踝肿、背钝痛、有淤青但没出血，医生说热敷休息一周；躺在床上看街区变化，才明白速度不等于进步。",w:["pain","ache","swell","accident","bruise","bleed","sore","heat","neighborhood","stream","convert","solar","operational","foundation","dioxide","spread","tropical","polar","global","fertile","equal","organic","custom","responsibility","welfare","dream","convey","cease","reaction","speed"],
+{d:34,k:'d34-1',t:"A Small Accident",zh:"楼梯上摔了一下：脚踝肿、背钝痛、有淤青但没出血，医生说热敷休息一周；躺在床上看街区变化，才明白速度不等于进步。",w:["pain","ache","swell","accident","bruise","bleed","sore","heat","neighborhood","stream","convert","solar","operational","foundation","dioxide","spread","tropical","polar","global","fertile","equal","organic","custom","responsibility","welfare","dream","convey","cease","reaction","speed"],
  p:`Last month I had a small accident on the stairs. My ankle began to swell, and there was a dull ache in my back that would not go away. I found a bruise but saw no cut, and nothing bled. The doctor said the pain was not serious, but the muscle was sore. "Heat helps," she said. "Take it easy for a week."
 
 I stayed at home, and the neighborhood kept moving outside my window. A stream that once carried waste had been converted into a small park. The solar panels on the school roof were now operational, paid for by a foundation whose aim was to reduce carbon dioxide. People said the air felt cooler there.
@@ -6558,7 +6670,7 @@ Lying still, I began to see that the change was not only local. A tropical storm
   {s:"What was the aim of the foundation?",o:["To build a new school","To reduce carbon dioxide","To clean the stream only","To sell solar panels"],a:1,e:"The foundation … had one aim: to reduce carbon dioxide。"},
   {s:"What does the writer mean by \"speed is not the same as progress\"?",o:["Fast changes are always bad","Moving quickly does not always mean improving","Progress is impossible","Cities should not change"],a:1,e:"这是对全文的收束：设备装得快不代表生活变好，后面用孩子的画作对比说明什么才是真正的进步。"}
  ]},
-{d:35,t:"The Clinic on the Corner",zh:"大医院没时间管的病人都在街角诊所：糖尿病、癌症、无家可归的老人；合并带来的钱和人不算成功，有人回来说声\"你好\"才算。",w:["scar","disability","diabetes","acute","liver","cancer","lung","majority","elderly","homeless","minority","average","exactly","guess","tiny","massive","solution","merger","manufacture","link","worldwide","offline","exciting","preparation","whatever","feeling","alone","overweight","lonely","success"],
+{d:35,k:'d35-1',t:"The Clinic on the Corner",zh:"大医院没时间管的病人都在街角诊所：糖尿病、癌症、无家可归的老人；合并带来的钱和人不算成功，有人回来说声\"你好\"才算。",w:["scar","disability","diabetes","acute","liver","cancer","lung","majority","elderly","homeless","minority","average","exactly","guess","tiny","massive","solution","merger","manufacture","link","worldwide","offline","exciting","preparation","whatever","feeling","alone","overweight","lonely","success"],
  p:`The clinic on the corner treats the patients that a big hospital has no time for. Some have a scar from an old operation; some live with a disability. A man in his sixties has diabetes and an acute pain in his liver; a woman of forty has cancer of the lung and no family nearby.
 The majority of them are elderly, and a large minority are homeless. The average age is sixty-eight. Exactly how many they see in a year is hard to guess, but the number is not tiny: a massive effort is needed just to keep the door open.
 The solution was a merger. A local firm that manufactures medical beds linked with a charity, and the link brought both money and volunteers. Worldwide, the same model is used offline as well: a printed list on the wall, a phone number, a person who listens.
@@ -6568,7 +6680,7 @@ What makes the work exciting is not success but preparation. Whatever the illnes
   {s:"What did the merger bring?",o:["A new building","Money and volunteers","More doctors from abroad","Free medicine for all"],a:1,e:"the link brought both money and volunteers。"},
   {s:"What does the nurse consider success?",o:["Curing every patient","A patient who comes back to say hello","Opening a second clinic","Getting more money"],a:1,e:"Success, in her view, is a patient who comes back to say hello。与上句 We cannot cure everyone 呼应。"}
  ]},
-{d:36,t:"The Body Is a City",zh:"身体像城市：肾净水、肌肉运货、骨头撑墙；城市留下的也是记忆——传统歌曲、文化习惯、法律就是它的骨头；最后写到病房里护士的真诚。",w:["kidney","muscle","bone","blood","cell","narrow","infrastructure","dangerous","organ","construction","region","memory","traditional","cultural","legal","formal","expertise","practical","law","personal","grateful","loyal","faithful","sincere","crowded","pronunciation"],
+{d:36,k:'d36-1',t:"The Body Is a City",zh:"身体像城市：肾净水、肌肉运货、骨头撑墙；城市留下的也是记忆——传统歌曲、文化习惯、法律就是它的骨头；最后写到病房里护士的真诚。",w:["kidney","muscle","bone","blood","cell","narrow","infrastructure","dangerous","organ","construction","region","memory","traditional","cultural","legal","formal","expertise","practical","law","personal","grateful","loyal","faithful","sincere","crowded","pronunciation"],
  p:`A doctor once told me that the body is a city. The kidney cleans the water, the muscle moves the goods, the bone holds the walls, the blood carries the messages, and every cell has a job.
 
 The comparison is not exact, but it is useful. A city with narrow roads and old infrastructure is dangerous in an emergency. The same is true of a body: a small blockage can stop an organ, and the construction of a new line in our region began only after an accident nobody expected.
@@ -6581,7 +6693,7 @@ I am grateful to the nurses who were loyal to their work and faithful to their p
   {s:"What is the difference between a formal and a practical education?",o:["One is cheap, the other is expensive","One gives expertise, the other gives judgment","One is for children, the other for adults","There is no difference"],a:1,e:"A formal education gives you expertise; a practical one gives you judgment。分号前后对照。"},
   {s:"What does the last sentence suggest?",o:["Pronunciation is not important","Kindness can be understood without words","Nurses cannot speak well","Gestures are impolite"],a:1,e:"The pronunciation of a word may be wrong, but the meaning of a gesture is never mistaken，强调心意比语言更可靠。"}
  ]},
-{d:37,t:"The Body Is Not a Machine",zh:"外国研究发现临街噪音与心脏病相关，且影响是长期的；健康不只是多运动，还要家里住得舒服。",w:["tissue","nerve","breathe","digestion","metabolism","nowadays","national","foreign","noisy","temporary","permanent","usual","certainly","comfortable","local","private","occasional","instant","somewhere","famous","order","infectious","everywhere","everyday","anyway","fit","bright","spend","terrible","native"],
+{d:37,k:'d37-1',t:"The Body Is Not a Machine",zh:"外国研究发现临街噪音与心脏病相关，且影响是长期的；健康不只是多运动，还要家里住得舒服。",w:["tissue","nerve","breathe","digestion","metabolism","nowadays","national","foreign","noisy","temporary","permanent","usual","certainly","comfortable","local","private","occasional","instant","somewhere","famous","order","infectious","everywhere","everyday","anyway","fit","bright","spend","terrible","native"],
  p:`The body is not a machine, though we often treat it like one. Tissue and nerve work together, and every breath feeds a process that we never notice. Digestion and metabolism depend on what we eat and when we sleep.
 Nowadays, health is a national topic. A foreign study found that people who live in a noisy street have a higher risk of heart disease than those who live in a quiet one. The noise was terrible, and a native speaker of the city's old dialect told me it was once quiet. The difference is not temporary; it can be permanent. The usual advice — exercise more, sit less — is certainly right, but it is not enough. A person must also feel comfortable at home.
 In our city, the local government has opened a few private clinics that stay open at night. The service is not free, but a worker with an occasional headache can walk in and get an instant answer. Somewhere in the suburbs, a famous doctor runs a small class for young parents. Her order is simple: sleep first, food second.
@@ -6591,7 +6703,7 @@ An infectious disease can spread everywhere in a week, and an everyday habit can
   {s:"What does the writer say about the effect of noise?",o:["It is temporary","It can be permanent","It only affects old people","It is easy to cure"],a:1,e:"The difference is not temporary; it can be permanent。"},
   {s:"What is the point of staying healthy, according to the last paragraph?",o:["To run a race","To notice when something is wrong and spend less on medicine","To become famous","To open a clinic"],a:1,e:"the point is not to be fit for a race but to be bright enough to notice when something is wrong。"}
  ]},
-{d:38,t:"A Ritual, Not a Holiday",zh:"节日不只是放假：祭祖的仪式把一家绑在一起，遗产是每年重复的习惯；护鸟、护湿地缺的是钱；手机成瘾同理，靠仪式不靠法律。",w:["ceremony","ritual","ancestor","heritage","media","broadcast","publish","journal","ecology","migration","conserve","main","financial","battery","pollute","illegal","environmental","prevention","human","addict","fatigue","mood","extra","medical","harm","download","upload","nervous","festival","pollutant"],
+{d:38,k:'d38-1',t:"A Ritual, Not a Holiday",zh:"节日不只是放假：祭祖的仪式把一家绑在一起，遗产是每年重复的习惯；护鸟、护湿地缺的是钱；手机成瘾同理，靠仪式不靠法律。",w:["ceremony","ritual","ancestor","heritage","media","broadcast","publish","journal","ecology","migration","conserve","main","financial","battery","pollute","illegal","environmental","prevention","human","addict","fatigue","mood","extra","medical","harm","download","upload","nervous","festival","pollutant"],
  p:`A festival is not only a holiday. In my grandparents' town, the ceremony begins before sunrise: the family stands together, and a ritual of thanks is offered to the ancestors. Heritage, people say, is not a museum object; it is a habit repeated every year.
 
 The media has begun to notice. A local journal published a report, and a radio station broadcast it to the whole province. The subject was ecology: the migration of birds along the coast, and what it costs to conserve the wetland where they stop.
@@ -6604,7 +6716,7 @@ The cure is not a law but a ritual: put the phone in another room and let the ev
   {s:"What is the main problem with solar power?",o:["It is dirty","The battery costs too much for a family","It needs a river","Nobody wants it"],a:1,e:"Solar power needs a battery that costs more than a family can pay，这是 financial 的具体表现。"},
   {s:"What does the writer suggest at the end?",o:["Passing a new law","A ritual such as putting the phone in another room","Buying a new phone","Sleeping less"],a:1,e:"The cure is not a law but a ritual: put the phone in another room。not A but B 结构。"}
  ]},
-{d:39,t:"A Week of Weather and a Second Question",zh:"飓风、干旱、地震、洪水一周内扎堆，报道只热七天；编辑只问一句\"证据呢\"——温室效应不是信念而是测量；能问第二个问题的记者更值钱。",w:["hurricane","drought","earthquake","flood","coverage","journalist","rare","strange","unusual","opposite","normal","reporter","editor","audience","resident","position","belief","greenhouse","warming","moral","facility","suburb","downtown","passage","race","gender","faith","ethnic","capable","viewer"],
+{d:39,k:'d39-1',t:"A Week of Weather and a Second Question",zh:"飓风、干旱、地震、洪水一周内扎堆，报道只热七天；编辑只问一句\"证据呢\"——温室效应不是信念而是测量；能问第二个问题的记者更值钱。",w:["hurricane","drought","earthquake","flood","coverage","journalist","rare","strange","unusual","opposite","normal","reporter","editor","audience","resident","position","belief","greenhouse","warming","moral","facility","suburb","downtown","passage","race","gender","faith","ethnic","capable","viewer"],
  p:`In one week last summer, the country had a hurricane in the south, a drought in the north, an earthquake in the west, and a flood in the east. The coverage was heavy for seven days; then it stopped. Such a week is rare and looks strange, but the opposite of unusual is not always normal.
 
 A journalist sent the story to her editor, who asked one question: on what evidence? The audience had seen the pictures, and the residents had given their position. But a belief is not a measurement. The greenhouse effect is not a belief; it is a measurement, and warming is what the numbers show.
@@ -6615,7 +6727,7 @@ The moral is not about one storm. A new facility in a suburb and a closed school
   {s:"How does the writer describe the greenhouse effect?",o:["A belief","A moral question","A measurement","A political idea"],a:2,e:"The greenhouse effect is not a belief; it is a measurement。分号后面才是作者给它的定性。"},
   {s:"What kind of reporter is worth more, according to the passage?",o:["One who is certain of the first answer","One who asks a second question","One who writes fast","One who has a large audience"],a:1,e:"末句 A reporter who is capable of asking a second question is worth more than one who is certain of the first。记者要问第二遍：证据呢？"}
  ]},
-{d:40,t:"A Joke at Dinner",zh:"晚餐上一句关于口音的玩笑，说的人无意、听的人受伤；刻板印象形式温和、效果粗暴；新闻也一样：对事实严格、对人温和。",w:["etiquette","rude","offend","unable","stereotype","gentle","privilege","justice","willing","able","desert","disaster","soil","habitat","wildlife","budget","catastrophe","trade","cost","loss","economy","viral","celebrity","reputation","channel","subscriber","finance","strict","ethic","fame"],
+{d:40,k:'d40-1',t:"A Joke at Dinner",zh:"晚餐上一句关于口音的玩笑，说的人无意、听的人受伤；刻板印象形式温和、效果粗暴；新闻也一样：对事实严格、对人温和。",w:["etiquette","rude","offend","unable","stereotype","gentle","privilege","justice","willing","able","desert","disaster","soil","habitat","wildlife","budget","catastrophe","trade","cost","loss","economy","viral","celebrity","reputation","channel","subscriber","finance","strict","ethic","fame"],
  p:`A joke at dinner can cost more than a dinner. Last month a guest told a joke about the way a colleague spoke English. The words were rude, and they did offend the man's wife, who was unable to laugh. Nobody said anything. Good etiquette would have been to change the subject; instead, the table went quiet.
 
 A joke like that rests on a stereotype. It is gentle in form and violent in effect, because it tells a group that their place is fixed. Justice begins with small privileges refused: the privilege of laughing at someone who is not in the room. A person who is willing and able to say "not funny" does more for the table than one who laughs.
@@ -6628,7 +6740,7 @@ The media lives inside the same budget. A clip goes viral because it is funny, a
   {s:"What does the writer say about a desert?",o:["It is a disaster","It is an ecosystem with its own habitat","It should be turned into a field","It has no wildlife"],a:1,e:"A desert is not a disaster; it is an ecosystem。分号后进一步说明 soil 和 wildlife。"},
   {s:"What is the main ethic of the media?",o:["To be first","To be strict with facts and gentle with people","To get more subscribers","To avoid politics"],a:1,e:"be strict with facts and gentle with people，末句直接给出。"}
  ]},
-{d:41,t:"The Camp at the Edge",zh:"难民营不敌对也不友好，只是拥挤；等级、义务、志愿者的水，孩子从屏幕上的森林学会什么是危险。",w:["refugee","hostile","friendly","constant","volunteer","charity","hierarchy","rank","obligation","aggressive","violent","peaceful","forest","predator","prey","evolution","extinction","biodiversity","image","browse","website","blog","bias","censor","tax","investment","capital","fund","loan","debt"],
+{d:41,k:'d41-1',t:"The Camp at the Edge",zh:"难民营不敌对也不友好，只是拥挤；等级、义务、志愿者的水，孩子从屏幕上的森林学会什么是危险。",w:["refugee","hostile","friendly","constant","volunteer","charity","hierarchy","rank","obligation","aggressive","violent","peaceful","forest","predator","prey","evolution","extinction","biodiversity","image","browse","website","blog","bias","censor","tax","investment","capital","fund","loan","debt"],
  p:`The refugee camp on the edge of the city was not a hostile place, but it was not friendly either. It was simply crowded. A constant flow of volunteers worked there, and a charity paid for the water.
 The hierarchy was clear. At the top was a small office with a rank for each officer; below it, a long list of obligations. Nobody was aggressive, and there had never been a violent incident, but the place was not peaceful.
 The camp also ran a small school. A teacher showed the children a forest on a screen and asked what a predator was. One boy said it was a wolf; another said it was the government. She laughed, then explained evolution, extinction and biodiversity in simple words. A wolf without prey would not survive a winter. The lesson was about nature, but the image stayed with me: a child who has seen a wolf knows what danger is.
@@ -6638,7 +6750,7 @@ That evening I browsed a website and read a blog about the camp. The writer comp
   {s:"What did the second boy say a predator was?",o:["A wolf","The government","A teacher","A river"],a:1,e:"One boy said it was a wolf; another said it was the government。题干问 the second boy，对应 another 那一个，所以是 the government；the wolf 是第一个男孩的答案，属于干扰项。"},
   {s:"What does the writer think would help more than an article?",o:["Another photo","A tax or a small investment","A new website","A bigger school"],a:1,e:"a tax on a rich city, or a small investment of capital, would do more than any article。"}
  ]},
-{d:42,t:"More Than a Count",zh:"人口普查告诉城市有多少老人和年轻人；第一份报告讲交通：公交比四十辆车省路；第二份讲土地与生态；最后说统计之外的东西。",w:["census","household","aging","relative","youth","importance","symbol","pedestrian","safety","passenger","consumer","vehicle","traffic","route","coast","wetland","grassland","ocean","marine","jungle","competitor","monopoly","credit","purchase","customer","destination","danger","secondary","offspring","extremely"],
+{d:42,k:'d42-1',t:"More Than a Count",zh:"人口普查告诉城市有多少老人和年轻人；第一份报告讲交通：公交比四十辆车省路；第二份讲土地与生态；最后说统计之外的东西。",w:["census","household","aging","relative","youth","importance","symbol","pedestrian","safety","passenger","consumer","vehicle","traffic","route","coast","wetland","grassland","ocean","marine","jungle","competitor","monopoly","credit","purchase","customer","destination","danger","secondary","offspring","extremely"],
  p:`A census is more than a count. It tells a city how many households care for an aging relative and how many are full of youth. Its importance is easy to forget until a bus route is cut: then the numbers become a symbol of who matters.
 
 The first report is about movement. A pedestrian and a passenger are not the same user of a street, and safety is not the same for both. A customer who buys a car is not the same as a consumer who buys a ticket. A vehicle that carries forty people uses less road than forty cars, and the traffic on the main route falls by a third. In one town the bus company became a monopoly, and the price of a purchase rose.
@@ -6651,7 +6763,7 @@ Secondary numbers matter too. The destination of a family is decided less by eff
   {s:"What does the marine biologist compare a jungle and a reef to?",o:["Two deserts","Crowded markets where every species competes","A single family","An empty ocean"],a:1,e:"第三段 studies a jungle and a coral reef and finds the same rule: both are crowded markets, where every species is a competitor。"},
   {s:"What decides the destination of a family, according to the report?",o:["Effort alone","A loan more than effort","The weather","The size of the house"],a:1,e:"The destination of a family is decided less by effort than by a loan，less by A than by B＝B 影响更大。"}
  ]},
-{d:43,t:"A Field Is a Marriage",zh:"祖母说婚姻靠体谅和\"对误会记性短\"；山谷为保住风景拒绝采矿；农活急不得，还得靠铁路公路把货运进城。",w:["marriage","bond","empathy","misunderstanding","spouse","burden","island","shore","valley","landscape","scenery","mineral","wealth","journey","commute","subway","railway","highway","parking","brand","discount","warranty","package","shipment","crop","agriculture","farming","livestock","pesticide","fertilizer"],
+{d:43,k:'d43-1',t:"A Field Is a Marriage",zh:"祖母说婚姻靠体谅和\"对误会记性短\"；山谷为保住风景拒绝采矿；农活急不得，还得靠铁路公路把货运进城。",w:["marriage","bond","empathy","misunderstanding","spouse","burden","island","shore","valley","landscape","scenery","mineral","wealth","journey","commute","subway","railway","highway","parking","brand","discount","warranty","package","shipment","crop","agriculture","farming","livestock","pesticide","fertilizer"],
  p:`My grandmother said that a field is a marriage. Both need a bond that is not built in a day: empathy, and a short memory for misunderstanding. A spouse who keeps a list of old quarrels will lose the harvest, and a marriage carries a burden that a single person does not. She said this on the shore of the island where she was born, looking across at the valley.
 
 The valley has the most beautiful landscape in the province, and its scenery is the reason people come. A company once wanted to dig for mineral there; the village refused. The wealth was real, but so was the view, and the village chose the view.
@@ -6664,7 +6776,7 @@ Even the package has a story. A brand with a discount and a two-year warranty, a
   {s:"Why did the village refuse the mining company?",o:["The mineral was poor","They wanted to keep the valley","The company paid too much","The government refused"],a:1,e:"A company once wanted to dig for mineral there; the village refused，上文说 valley 的 landscape 是全胜最美，拒绝的理由就在这。"},
   {s:"What does \"a field is a marriage\" mean?",o:["Farming needs a partner","You cannot rush it or cheat it for long","Fields are expensive","Marriage is like weather"],a:1,e:"you cannot rush it, and you cannot cheat it for long，这是比喻的解释句。"}
  ]},
-{d:44,t:"What the Street Became",zh:"十年间街道变成小城：垃圾、填埋场、化石燃料；邻居医生说基因测不出习惯，生活方式不是能买来的东西，讲话的方式也不会改变谁。",w:["witness","civilization","urbanization","landfill","garbage","fossil","fuel","coal","consumption","neighbor","genetic","gene","calorie","protein","vitamin","fat","habit","lifestyle","norm","manner","polite","healthy","topic","bargain","partner","code","user","gadget","democracy","affordable"],
+{d:44,k:'d44-1',t:"What the Street Became",zh:"十年间街道变成小城：垃圾、填埋场、化石燃料；邻居医生说基因测不出习惯，生活方式不是能买来的东西，讲话的方式也不会改变谁。",w:["witness","civilization","urbanization","landfill","garbage","fossil","fuel","coal","consumption","neighbor","genetic","gene","calorie","protein","vitamin","fat","habit","lifestyle","norm","manner","polite","healthy","topic","bargain","partner","code","user","gadget","democracy","affordable"],
  p:`I have witnessed a change in my own street. Ten years ago it was a quiet place; today it is a small city. Urbanization brought shops, a clinic and a bus, but it also brought garbage and noise.
 
 A civilization is judged by how it handles waste. Our landfill is full, and the garbage of one district is now sent to another. Fossil fuel is still the main source, and coal is cheaper than the sun. Consumption grows faster than any rule. A democracy is not only a vote; it is an affordable bus and a clean street.
@@ -6677,7 +6789,7 @@ We should be polite about this. A manner that sounds like a lecture will not cha
   {s:"What does the doctor say a genetic test cannot tell you?",o:["Your genes","Your habit","Your age","Your weight"],a:1,e:"a genetic test can tell you about a gene, but not about a habit。but 之后是重点。"},
   {s:"What does the writer think will not change anyone?",o:["A law","A manner that sounds like a lecture","A doctor","A screen"],a:1,e:"A manner that sounds like a lecture will not change anyone。"}
  ]},
-{d:45,t:"A Walk Along the River",zh:"河边散步看到三层污染：水里的垃圾污水、空气里的人群、饮食里的糖盐；姐妹在实验室说\"安全\"是最危险的形容词，因为它藏着条件。",w:["trash","litter","sewage","filter","altitude","atmosphere","crowd","campaign","sugar","salt","tobacco","alcohol","caffeine","fiber","optional","sibling","chain","discovery","meaning","sentence","adjective","blind","deaf","fake","nuclear","cattle","planet","access","tolerance","illiterate"],
+{d:45,k:'d45-1',t:"A Walk Along the River",zh:"河边散步看到三层污染：水里的垃圾污水、空气里的人群、饮食里的糖盐；姐妹在实验室说\"安全\"是最危险的形容词，因为它藏着条件。",w:["trash","litter","sewage","filter","altitude","atmosphere","crowd","campaign","sugar","salt","tobacco","alcohol","caffeine","fiber","optional","sibling","chain","discovery","meaning","sentence","adjective","blind","deaf","fake","nuclear","cattle","planet","access","tolerance","illiterate"],
  p:`A walk along the river is now a lesson in waste. Trash floats near the bank, litter covers the path, and the sewage from an old pipe still reaches the water. A filter would cost less than the damage.
 
 Higher up, at this altitude, the air is thin and the atmosphere holds less oxygen. In the city the same problem takes another form: a crowd can make the air heavy, and a campaign against sugar and salt has begun. A warning on tobacco and alcohol is now required. Caffeine is not a nutrient, and fiber is not optional for a healthy diet.
@@ -6690,7 +6802,7 @@ We are not blind to the problem, and we are not deaf to the warning. Clean water
   {s:"Why is \"safe\" the most dangerous adjective in science?",o:["It is too long","It hides a condition","It is not in the dictionary","Nobody uses it"],a:1,e:"it hides a condition，因为\"安全\"总有前提条件，说成绝对就会误导。"},
   {s:"What does the last sentence mean?",o:["We need a famous person","We need one small habit repeated","We need a new planet","We need a nuclear plant"],a:1,e:"The planet does not need a hero; it needs a habit。分号后是答案，habit 指向\"小的、重复的\"。"}
  ]},
-{d:46,t:"A Thin Shield",zh:"臭氧层很薄，太阳辐射很强；一头牛的甲烷比一辆车还多；素食、零食、甜味都藏着代价；暖冬不是温柔，是季节失了序。",w:["ozone","radiation","circumstance","powerful","reveal","nature","naturally","vegetarian","snack","flavor","sweet","soft","taste","hunger","starvation","total","hire","grow","split","attend","warn","shallow","warm"],
+{d:46,k:'d46-1',t:"A Thin Shield",zh:"臭氧层很薄，太阳辐射很强；一头牛的甲烷比一辆车还多；素食、零食、甜味都藏着代价；暖冬不是温柔，是季节失了序。",w:["ozone","radiation","circumstance","powerful","reveal","nature","naturally","vegetarian","snack","flavor","sweet","soft","taste","hunger","starvation","total","hire","grow","split","attend","warn","shallow","warm"],
  p:`The ozone layer is a thin shield. Radiation from the sun is powerful, and under different circumstances it could do more harm. A report on methane released last month revealed that a single cow produces more gas than a car in a year.
 
 Nature does not work in a straight line. A vegetarian diet is not naturally better for the planet if the vegetables travel by plane. A snack with a sweet flavor can hide a large amount of sugar, and a soft drink can taste light while carrying a heavy cost. Hunger and starvation are not the same problem: one is a shortage of food, the other a failure of distribution.
@@ -6708,6 +6820,7 @@ What it reveals is not a catastrophe but a choice. A warm winter is not a soft o
 
 /* ---- 每日一读 ---- */
 RDG.sort(function(x,y){ return x.d-y.d; });   /* 按天排序，翻页才连贯 */
+RDG.forEach(function(R){ if(!R.k) R.k='d'+R.d+'-1'; });   /* 同一天可能有多篇，各自一条记录 */
 const WDEF=(function(){ const o={}; WORDS.forEach(w=>{o[w[0]]=w[1];}); return o; })();
 function defOf(w){ return WDEF[w]||''; }
 /* 词形匹配：一个词条在正文里可能有多种形态（took / are aware of / clarified / doing）
@@ -6767,25 +6880,36 @@ let RDGV=null;                       /* null = 跟随今天 */
 function rdgIdx(){
   if(RDGV!=null) return Math.max(0,Math.min(RDG.length-1,RDGV));
   const d=dayNum();
-  if(d>=1&&d<=RDG.length) return d-1;
-  /* 新词学完以后：优先推一篇没做或没全对的，轮着来 */
+  const first=RDG.findIndex(function(R){ return R.d===d; });   /* 今天的第一篇 */
+  if(first>=0) return first;
+  /* 新词学完以后（或超出 55 天）：优先推一篇没做或没全对的，轮着来 */
   const pool=[];
   RDG.forEach(function(R,i){
-    const r=(S.rdg||{})['d'+R.d];
+    const r=recOf(R);
     if(!r||(r.n||0)<R.q.length) pool.push(i);
   });
-  if(pool.length) return pool[(d-RDG.length-1)%pool.length];
+  if(pool.length) return pool[(Math.max(0,d-RDG.length)-1+pool.length)%pool.length];
   return RDG.length-1;
 }
-function rdgRec(d){
+/* 每篇一个稳定 key：同一天可以有多篇（d3-1、d3-2），记录不能互相覆盖 */
+function rkey(R){ return R.k||('d'+R.d+'-1'); }
+function recOf(R){
   S.rdg=S.rdg||{};
-  const k='d'+d;
-  const v=S.rdg[k];
+  const k=rkey(R);
+  if(!S.rdg[k] && R.k && S.rdg['d'+R.d]){        /* 老版本按天存的记录，搬过来 */
+    S.rdg[k]=S.rdg['d'+R.d]; delete S.rdg['d'+R.d];
+  }
+  return S.rdg[k];
+}
+function rdgRec(R){
+  S.rdg=S.rdg||{};
+  const k=rkey(R);
+  const v=recOf(R);
   if(!v||typeof v!=='object') return S.rdg[k]={a:{},n:0};
   v.a=v.a||{}; return v;
 }
 function readAns(qi,oi){
-  const R=RDG[rdgIdx()], r=rdgRec(R.d);
+  const R=RDG[rdgIdx()], r=rdgRec(R);
   if(r.a[qi]!=null) return;
   r.a[qi]=oi;
   if(oi===rq(R,qi)._a) r.n=(r.n||0)+1;
@@ -6805,16 +6929,23 @@ function pickRead(){
   const tw=todayNewWords(), pool=[];
   RDG.forEach(function(R,i){
     if(i===cur||R.d>lim) return;
-    const r=(S.rdg||{})['d'+R.d];
+    const r=recOf(R);
     const got=r?Object.keys(r.a).length:0;
     pool.push({i:i,R:R,
       hit:R.w.filter(function(w){ return tw[w]; }).length,
       left:R.q.length-got, right:got?(r.n||0):0});
   });
   if(!pool.length) return null;
-  /* 第一优先：和今天新词重合多的（针对性）；第二：还没做完的；第三：正确率低的 */
-  pool.sort(function(a,b){ return b.hit-a.hit || b.left-a.left || a.right-b.right; });
+  /* 第一优先：同一天的另一篇（词表完全对口）；第二：和今天新词重合多；第三：还没做完的 */
+  pool.sort(function(a,b){
+    const as=(a.R.d===d?1:0), bs=(b.R.d===d?1:0);
+    if(as!==bs) return bs-as;
+    return b.hit-a.hit || b.left-a.left || a.right-b.right;
+  });
   const topN=pool.slice(0,Math.min(12,pool.length));
+  /* 同一天还有没做过的篇目 → 只在同一天里换，词表完全对口 */
+  const sameDay=pool.filter(function(x){ return x.R.d===d && x.left>0; });
+  if(sameDay.length) return sameDay[Math.floor(Math.random()*sameDay.length)].i;
   let use=topN.filter(function(x){ return x.left>0; });
   if(!use.length){                        /* 最相关的那批都做完了，就往全部已学篇目里找没做的 */
     const anyFresh=pool.filter(function(x){ return x.left>0; });
@@ -6830,11 +6961,11 @@ function rndRead(){
 }
 function redoRead(){
   const R=RDG[rdgIdx()]; if(!R) return;
-  const r=rdgRec(R.d); r.a={}; r.n=0; save(); render();
+  const r=rdgRec(R); r.a={}; r.n=0; save(); render();
   window.scrollTo(0,0);
 }
 function viewRead(){
-  const i=rdgIdx(), R=RDG[i], r=rdgRec(R.d);
+  const i=rdgIdx(), R=RDG[i], r=rdgRec(R);
   const done=Object.keys(r.a).length, right=Object.keys(r.a).filter(function(k){ return r.a[k]===rq(R,+k)._a; }).length;
   const pct=Math.round(right/R.q.length*100);
 
@@ -6864,8 +6995,10 @@ function viewRead(){
 
   const todayFlag=(RDGV==null?'<span class="pill">今天</span>':'<span class="pill warn" style="cursor:pointer;" onclick="RDGV=null;render();">回到今天</span>');
   const isToday=(R.d===dayNum());
+  const sibs=RDG.filter(function(x){ return x.d===R.d; });
+  const which=sibs.length>1?(' · 第 '+(sibs.indexOf(R)+1)+'/'+sibs.length+' 篇'):'';
 
-  return '<div class="vhead"><h1>每日一读 '+todayFlag+' <span class="sub">第 '+R.d+' 天 · '+(isToday?'用当天新词写的':'这些词你都学过了')+'</span></h1></div>'+
+  return '<div class="vhead"><h1>每日一读 '+todayFlag+' <span class="sub">第 '+R.d+' 天 · '+(isToday?'用当天新词写的':'这些词你都学过了')+which+'</span></h1></div>'+
 
     '<div class="note" style="margin-top:0;"><b>先读，再做题，最后看词表。</b>'+
       '这篇短文只用第 '+R.d+' 天的词和前面学过的词写成，下面划线的 '+R.w.length+' 个词就是要检验的。'+
@@ -7117,7 +7250,7 @@ function viewProg(){
     (function(){
       let all=0, full=0, qs=0, ok=0;
       RDG.forEach(function(R){
-        const r=(S.rdg||{})['d'+R.d];
+        const r=recOf(R);
         if(r&&Object.keys(r.a).length){ all++; qs+=R.q.length; ok+=(r.n||0); if((r.n||0)>=R.q.length) full++; }
       });
       return '<div class="card"><h3>每日一读 <span class="sub">'+all+' / '+RDG.length+' 篇做过 · 全对 '+full+' 篇</span></h3>'+
