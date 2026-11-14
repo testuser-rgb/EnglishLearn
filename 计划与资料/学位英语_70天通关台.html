@@ -5360,7 +5360,7 @@ function todayOut(){
   const carr=weekArr.length?weekArr:ss;
   [0,1].forEach(off=>{
     const s=carr[(d+off)%carr.length];
-    if(s) items.push({tag:'课程句',zh:s.zh,en:s.en,pt:s.cut||s.pt||''});
+    if(s) items.push({tag:'课程句',zh:s.zh,en:s.en,pt:s.pt||''});
   });
   /* ② 3 句今天新学的词（今天还没背词时，退回最近 3 天学过的词） */
   const nnList=listOf(S.tn);
