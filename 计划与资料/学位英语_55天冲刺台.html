@@ -66,6 +66,9 @@
   .nav button:hover{background:#f5f8fc;}
   .nav button.on{background:var(--blue-2); color:var(--blue); font-weight:700;}
   .nav button .ic{width:16px; text-align:center; font-size:13px; opacity:.85;}
+  .navgrp{font-size:10.6px;color:var(--ink-4);letter-spacing:.05em;padding:11px 11px 3px;font-weight:700;}
+  .nav button.locked{opacity:.48;}
+  .nav .due{margin-left:auto;font-size:10.4px;color:var(--ink-4);font-weight:400;}
   .side-foot{margin-top:auto; padding:12px 10px 4px; border-top:1px solid var(--line-2); font-size:11.6px; color:var(--ink-4);}
   .side-foot b{color:var(--blue); font-size:15px;}
 
@@ -355,6 +358,7 @@
     .side{position:static; height:auto; flex-direction:row; align-items:center; gap:6px; padding:10px 12px; overflow-x:auto; border-right:0; border-bottom:1px solid var(--line);}
     .side .brand{display:none;}
     .nav{flex-direction:row; gap:2px;}
+    .navgrp{display:none;}
     .nav button{white-space:nowrap; padding:7px 10px; font-size:12.6px;}
     .nav button .ic{display:none;}
     .side-foot{display:none;}
@@ -374,15 +378,18 @@
   <aside class="side">
     <div class="brand">学位英语 · 55 天<span>江苏联盟 · 目标 60 分 · 一天约 130 分钟</span></div>
     <nav class="nav" id="nav">
+      <div class="navgrp">每天 · 按顺序做</div>
       <button data-v="today" class="on"><span class="ic">◎</span>今日</button>
-      <button data-v="read"><span class="ic">▦</span>每日一读</button>
-      <button data-v="drill"><span class="ic">✎</span>快练</button>
-      <button data-v="cloze"><span class="ic">▣</span>完形</button>
-      <button data-v="exam"><span class="ic">◐</span>实战</button>
       <button data-v="vocab"><span class="ic">▤</span>背词</button>
       <button data-v="learn"><span class="ic">◈</span>课堂</button>
+      <button data-v="read"><span class="ic">▦</span>每日一读</button>
+      <button data-v="cloze"><span class="ic">▣</span>完形</button>
+      <button data-v="drill"><span class="ic">✎</span>快练</button>
       <button data-v="book"><span class="ic">▥</span>句子本</button>
-      <button data-v="write"><span class="ic">✎</span>写作</button>
+      <div class="navgrp">第 43 天起</div>
+      <button data-v="write" data-open="43"><span class="ic">✎</span>写作<span class="due"></span></button>
+      <button data-v="exam" data-open="53"><span class="ic">◐</span>实战<span class="due"></span></button>
+      <div class="navgrp">随时可看</div>
       <button data-v="prog"><span class="ic">◔</span>进度</button>
     </nav>
     <div class="side-foot" id="sidefoot"></div>
@@ -5588,6 +5595,13 @@ function render(){
   f.innerHTML='第 <b>'+Math.min(d,TOTAL)+'</b> 天 / '+TOTAL+'<br>第 '+wk+' 周 / '+WK+' · 目标 60 分';
   document.querySelectorAll('#nav button').forEach(b=>{
     b.classList.toggle('on',b.getAttribute('data-v')===view);
+    const od=+b.getAttribute('data-open');
+    if(od){
+      const lock=d<od;
+      b.classList.toggle('locked',lock);
+      const tag=b.querySelector('.due');
+      if(tag) tag.textContent=lock?('D'+od):'';
+    }
   });
   if(view==='today') m.innerHTML=viewToday();
   else if(view==='vocab') m.innerHTML=viewVocab();
@@ -5604,6 +5618,30 @@ function render(){
 }
 
 /* ---- 今日 ---- */
+/* 55 天三阶段：让用户一眼看到"现在该做哪一步，后面的什么时候开" */
+function stageCard(d){
+  const S3=[
+    {n:'① 打底',r:'D1–42',t:'词汇 + 语法 + 阅读完形',m:'背词 → 课堂 → 每日一读 → 完形 → 快练 → 句子本',a:1,b:42},
+    {n:'② 写作',r:'D43–52',t:'4 篇范文 → 填空骨架 → 独立写',m:'写作（第 43 天自动开放）',a:43,b:52},
+    {n:'③ 模考',r:'D53–55',t:'90 分钟整卷 + 错题复盘',m:'实战（第 53 天自动开放）',a:53,b:55}
+  ];
+  const rows=S3.map(function(x){
+    const cur=(d>=x.a&&d<=x.b), done=(d>x.b);
+    const bg=cur?'var(--blue-2)':(done?'var(--ok-2)':'transparent');
+    const bd=cur?'1px solid var(--blue-3)':'1px dashed var(--line)';
+    const tag=cur?'<span class="pill">现在在这</span>':(done?'<span class="pill ok">已完成</span>':'<span class="pill warn">'+x.r+' 起</span>');
+    return '<div style="display:flex;gap:11px;align-items:flex-start;padding:9px 11px;border:'+bd+';background:'+bg+';border-radius:9px;margin-bottom:7px;flex-wrap:wrap;">'+
+      '<div style="flex:none;min-width:112px;"><b style="font-size:13px;color:var(--ink-1);">'+x.n+' '+x.t+'</b>'+
+      '<div style="font-size:11.4px;color:var(--ink-4);margin-top:2px;">'+x.r+'</div></div>'+
+      '<div style="flex:1;min-width:170px;font-size:12.2px;color:var(--ink-3);line-height:1.75;">'+esc(x.m)+'</div>'+
+      '<div style="flex:none;">'+tag+'</div></div>';
+  }).join('');
+  const order='<div style="font-size:12.4px;color:var(--ink-3);line-height:1.9;margin-top:10px;">'+
+    '<b style="color:var(--ink-2);">今天按顺序做：</b>背词 → 课堂 → 每日一读 → 完形 → 快练 → 句子本。'+
+    '左侧导航已经按这个动线排好，从上往下点即可。<br>'+
+    '<span style="color:var(--ink-4);">写作和实战先放着不用管，到日子会自动解锁；进度随时可看。</span></div>';
+  return '<div class="card"><h3>55 天流程 <span class="sub">现在第 '+Math.min(d,55)+' 天</span></h3>'+rows+order+'</div>';
+}
 function viewToday(){
   const d=dayNum(), wk=weekNum(), W=WEEKS[wk-1], rec=dayRec();
   const TDL=tasksOf(wk,dayNum());
@@ -5643,6 +5681,7 @@ function viewToday(){
   const cardTitle=wk<=6?'本周只攻这一个语法点':'本周主线：题型训练 + 整卷（语法缺口用「高频补充」补齐）';
 
   return '<div class="vhead"><h1>第 '+Math.min(d,TOTAL)+' 天 · '+esc(W.theme)+'</h1></div>'+
+    stageCard(d)+
 
     '<div class="note '+(d>TOTAL?'good':'')+'" style="margin-top:0;margin-bottom:14px;">'+
       '<b>本周验收：</b>'+esc(W.check)+'　<span class="pill '+(d>TOTAL?'ok':'')+'">第 '+wk+' 周 / '+WK+'</span>'+
@@ -7816,6 +7855,7 @@ function examPool(){
   return out;
 }
 function examStart(){
+  if(dayNum()<53) return;              /* 第 53 天前不组卷：内容先放着，等前面学完 */
   /* 组卷：20 词汇语法 + 1 完形 + 2 阅读 */
   const pool=examPool(), gq=[], used={};
   let guard=0;
@@ -7905,6 +7945,20 @@ function examTick(){
 }
 function viewExam(){
   const E=S.exam;
+  if(dayNum()<53){
+    return '<div class="vhead"><h1>整卷实战 <span class="pill warn">第 53 天开放</span></h1></div>'+
+      '<div class="note warn" style="margin-top:0;"><b>这个模块先放在这，第 53 天再回来。</b>'+
+      '90 分钟整卷模考安排在考前几天：第 53–54 天做两套，第 55 天只复盘不再开新内容。'+
+      '提前考一遍还没学完的内容，分数不准，也浪费一次完整模考的机会。</div>'+
+      '<div class="card"><h3>现在该做什么</h3>'+
+      '<div style="font-size:13px;color:var(--ink-2);line-height:2;">'+
+      '先按左侧顺序把 <b>背词 → 课堂 → 每日一读 → 完形 → 快练 → 句子本</b> 跑完；'+
+      '第 43 天写作会开放，写完 4 篇再进整卷。</div></div>'+
+      '<div class="card"><h3>第 53 天会开放什么 <span class="sub">内容已备好，现在不看</span></h3>'+
+      '<div style="font-size:12.8px;color:var(--ink-3);line-height:1.9;">'+
+      '随机组卷：词汇语法 20 题（30 分）+ 完形 1 套 20 空（20 分）+ 阅读 2 篇 8 题（20 分）＝ 70 分客观卷；'+
+      '90 分钟倒计时、到时自动交卷、分段成绩、全卷错题解析、最近 20 卷历史。</div></div>';
+  }
   const head='<div class="vhead"><h1>整卷实战 <span class="sub">词汇语法 30 分 + 完形 20 分 + 阅读 20 分 · 90 分钟</span></h1></div>';
   const note='<div class="note" style="margin-top:0;"><b>模拟考试节奏，客观题 70 分。</b>'+
     '全卷客观部分：词汇语法 20 题（每题 1.5 分）、完形 20 空（每空 1 分）、阅读 8 题（每题 2.5 分）。'+
@@ -8278,15 +8332,16 @@ function viewWrite(){
   const head='<div class="vhead"><h1>写作 <span class="sub">4 篇 · 第 43 天起，3 天一篇</span></h1></div>';
 
   if(i<0){
-    const list=WRITE.map(x=>'<details style="margin-bottom:8px;">'+
-      '<summary style="cursor:pointer;font-size:13px;font-weight:700;padding:6px 0;">第 '+x.n+' 篇 · '+esc(x.t)+
-      '　<span style="font-weight:400;color:var(--ink-4);">'+esc(x.zh)+'</span></summary>'+
-      '<div style="margin-top:6px;font-size:13.2px;line-height:1.9;color:var(--ink-2);">'+
-      x.fan.split('\n').map(pp=>'<p style="margin:0 0 8px;">'+esc(pp)+'</p>').join('')+'</div></details>').join('');
-    return head+'<div class="note"><b>写作从第 43 天（第 7 周）开始。</b>'+
-      '三段式要用到前 6 周的句型和 1000 多个词的底子，现在就写只会写出一堆错句，改起来更费时间。'+
-      '现在只做一件事：<b>读范文，混个眼熟，别动手写。</b></div>'+
-      '<div class="card"><h3>这 4 篇会考什么 <span class="sub">点标题展开范文</span></h3>'+list+'</div>';
+    return head+
+      '<div class="note warn" style="margin-top:0;"><b>这个模块先放在这，第 43 天再回来。</b>'+
+      '现在不用管里面的内容：三段式作文要用到前 6 周的句型和 1000 多个词的底子，提前动笔只会写出一堆错句，改起来更费时间。</div>'+
+      '<div class="card"><h3>现在该做什么 <span class="sub">按左侧导航，一个一个来</span></h3>'+
+      '<div style="font-size:13px;color:var(--ink-2);line-height:2;">'+
+      '<b>背词 → 课堂 → 每日一读 → 完形 → 快练 → 句子本</b><br>'+
+      '这 6 项跑到第 42 天，写作会自动开放（左侧「写作」上的 D43 标记会消失），到时再回来按 ① 读范文 → ② 填骨架 → ③ 独立写 三步走。</div></div>'+
+      '<div class="card"><h3>第 43 天会开放什么 <span class="sub">内容已备好，现在不看</span></h3>'+
+      '<div style="font-size:12.8px;color:var(--ink-3);line-height:1.9;">'+
+      '4 篇范文（逐句中文对照、积木块、填空骨架）+ 8 条自查清单；前两篇各 3 天，后两篇各 2 天，13 天写完，正好把第 53、54 天留给整卷模考。</div></div>';
   }
 
   const W=WRITE[i], r=wrec(i+1);
