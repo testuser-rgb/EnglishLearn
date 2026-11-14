@@ -247,6 +247,14 @@
   /* 课堂：本周长难句示范 */
   .demo{margin-top:18px; padding-top:14px; border-top:1px dashed var(--line);}
   .demo h4{font-size:13px; color:var(--ink-2); margin:0 0 2px;}
+  /* 每日输出 */
+  .orow{padding:13px 0; border-bottom:1px dashed var(--line-2);}
+  .orow:last-child{border-bottom:0; padding-bottom:2px;}
+  .ozh{font-size:13.3px; color:var(--ink); line-height:1.8; margin-bottom:7px;}
+  .opat{display:inline-block; font-size:11.6px; padding:2px 8px; background:var(--teal-2); color:var(--teal); border-radius:5px; margin-bottom:7px;}
+  .oref{font-size:12px; color:var(--blue); cursor:pointer;}
+  .orefv{margin-top:8px; padding:10px 12px; background:#f6fbf9; border-radius:6px; font-size:13px; color:var(--ink-2); font-family:Georgia,"Times New Roman",serif; line-height:1.8;}
+  .checkgo{float:right; font-size:12px; color:var(--blue); cursor:pointer; border-bottom:1px solid var(--blue-3);}
   .ditem{padding:13px 0; border-bottom:1px dashed var(--line-2);}
   .ditem:last-child{border-bottom:0; padding-bottom:2px;}
   .ditem .de{font-family:Georgia,"Times New Roman",serif; font-size:14.4px; line-height:1.95; color:var(--ink); margin-bottom:8px;}
@@ -3656,44 +3664,77 @@ const RSENT={"infer":["What can we infer from the second paragraph?", "从第二
    10 周计划（与文档一致）
    ========================================================= */
 const WEEKS=[
- {w:1,theme:'句子骨架：五大基本句型、词性、怎么查词',words:300,
+ {w:1,theme:'句子骨架：五大基本句型、词性、怎么查词',words:175,
   points:['先修课 L0：词性与术语入门（第一次学必看）','主+谓','主+谓+宾','主+系+表','主+谓+双宾','主+谓+宾+补','there be 与 it 句型'],
   check:'能独立画出 10 个简单句的主语和谓语'},
- {w:2,theme:'简单句扩展：定语、状语在句中的位置',words:150,
+ {w:2,theme:'简单句扩展：定语、状语在句中的位置',words:350,
   points:['形容词作定语，前置','介词短语作定语，后置','副词作状语，位置灵活','状语可句首、可句尾'],
   check:'手写译文 10 句，每句错因能说清'},
- {w:3,theme:'并列句 + 时态回顾',words:150,
+ {w:3,theme:'并列句 + 时态回顾',words:525,
   points:['and / but / or / so / for 连接','现在完成 vs 一般过去','过去完成 had done','时间状语从句"主将从现"'],
   check:'时态填空 20 题，对 14 题以上'},
- {w:4,theme:'定语从句',words:150,
+ {w:4,theme:'定语从句',words:700,
   points:['that / which 指物','who / whom / whose 指人','where / when / why 作状语','介词 + which','非限制性从句（逗号）'],
   check:'能把 10 个长句切分并译顺'},
- {w:5,theme:'状语从句',words:150,
+ {w:5,theme:'状语从句',words:875,
   points:['时间 when / while / as / until','条件 if / unless / as long as','让步 although / even if / while','原因 because / since / as','目的 so that / in order that'],
   check:'译出一整段含从句的原文（60 词）'},
- {w:6,theme:'名词性从句 + it 句型',words:150,
+ {w:6,theme:'名词性从句 + it 句型',words:1050,
   points:['that 不作成分、无词义','what 作成分','whether 与 if 的区别','it 形式主语：It is important that…','it 形式宾语：find it difficult to do'],
   check:'做一篇阅读真题，8 题对 4–5 题'},
- {w:7,theme:'非谓语动词',words:150,
+ {w:7,theme:'非谓语动词',words:1225,
   points:['to do 作目的、结果状语','doing 作主语、宾语、介词后','done 表被动、完成','doing vs done 作定语','having done 先于主句'],
   check:'阅读 8 题对 5 题'},
- {w:8,theme:'阅读四大题型 + 完形逻辑词',words:150,
+ {w:8,theme:'阅读四大题型 + 完形逻辑词',words:1279,
   points:['细节题：定位 + 同义替换','干扰项四特征','逻辑衔接词六类','完形先通读再填空','穿插补课：L8 被动语态 + 虚拟语气'],
   check:'阅读 8 题对 5–6 题，单篇限时 10 分钟'},
- {w:9,theme:'汉译英 + 写作三段式',words:150,
+ {w:9,theme:'汉译英 + 写作三段式',words:1279,
   points:['中英差异四条','保命六句','现象解释型 / 对比选择型 / 问题解决型','不少于 100 词','穿插补课：L9 倒装与强调'],
   check:'不看范文写出 3 篇 100 词作文'},
- {w:10,theme:'整套真题计时 + 错题回炉',words:0,
+ {w:10,theme:'整套真题计时 + 错题回炉',words:1279,
   points:['90 分钟整卷','顺序：阅读→语法→完形→翻译→作文','错题本回看','作文手写计时 20 分钟','穿插补课：L10 比较结构 + 主谓一致'],
   check:'模考 ≥ 60 分，且时间够用'}
 ];
 
 const TASKS=[
- {k:'t1',n:'回炉昨天的词块',m:15},
- {k:'t2',n:'新词（按今天的目标数）',m:20},
- {k:'t3',n:'课堂：学练本周知识点（第 1–7 周主线课 / 第 8–10 周高频补充课）',m:20},
- {k:'t4',n:'精读一段真题 + 手写 5 句',m:35},
- {k:'t5',n:'记句子本（原句/切分/主干/译文/错因）',m:10}
+ {k:'t1',n:'回炉到期词块',m:20},
+ {k:'t2',n:'新词（按今天的目标数）',m:15},
+ {k:'t3',n:'课堂：学练本周知识点（第 1–7 周主线课 / 第 8–10 周高频补充课）',m:30},
+ {k:'t4',n:'精读一段真题 + 手写 5 句',m:40},
+ {k:'t5',n:'汉译英 2 句 + 仿写 1 句（句子本）',m:15}
+];
+
+
+/* =========================================================
+   每日输出：汉译英 + 仿写 + 作文（对应每周语法点）
+   汉译英的题源直接复用 SENTS 真题长句和 RSENT 阅读例句——
+   同一批句子先在卡片背面见过，再反过来译一遍，才算真的会。
+   ========================================================= */
+const IMIT=[
+ {w:1,pat:'主 + 谓 + 宾',zh:'学生们每天早上读英语。',ref:'Students read English every morning.'},
+ {w:1,pat:'主 + 系 + 表',zh:'这个主意听起来不错。',ref:'The idea sounds good.'},
+ {w:2,pat:'介词短语作定语（后置）',zh:'桌上的那本书是我的。',ref:'The book on the desk is mine.'},
+ {w:2,pat:'副词作状语的位置',zh:'他昨天在图书馆认真地看书。',ref:'He read carefully in the library yesterday.'},
+ {w:3,pat:'并列句 so',zh:'他努力了，所以他通过了考试。',ref:'He worked hard, so he passed the exam.'},
+ {w:3,pat:'现在完成时',zh:'我已经在这里住了三年。',ref:'I have lived here for three years.'},
+ {w:4,pat:'定语从句 who',zh:'我认识那个教我们英语的老师。',ref:'I know the teacher who teaches us English.'},
+ {w:4,pat:'非限制性定语从句',zh:'这本书是去年出版的，很受欢迎。',ref:'The book, which was published last year, is very popular.'},
+ {w:5,pat:'时间状语从句 as soon as',zh:'他一到家就给我打了电话。',ref:'He called me as soon as he got home.'},
+ {w:5,pat:'让步状语从句 although',zh:'虽然下着大雨，他们还是继续工作。',ref:'Although it was raining heavily, they kept working.'},
+ {w:6,pat:'宾语从句 that',zh:'我认为我们应该早点出发。',ref:'I think that we should start earlier.'},
+ {w:6,pat:'it 作形式主语',zh:'学好英语很重要。',ref:'It is important to learn English well.'},
+ {w:7,pat:'doing 作主语',zh:'每天读英语很有帮助。',ref:'Reading English every day is helpful.'},
+ {w:7,pat:'done 作后置定语',zh:'被邀请的客人都到了。',ref:'The guests invited to the party have arrived.'},
+ {w:8,pat:'一般将来时的被动',zh:'这个问题将在会上讨论。',ref:'This problem will be discussed at the meeting.'},
+ {w:8,pat:'虚拟语气（与过去相反）',zh:'如果他昨天来，就会见到她。',ref:'If he had come yesterday, he would have met her.'},
+ {w:9,pat:'否定词提前的倒装',zh:'我从来没有见过这么美的风景。',ref:'Never have I seen such beautiful scenery.'},
+ {w:9,pat:'强调句型 it was … that',zh:'正是在那时我明白了他的意思。',ref:'It was then that I understood what he meant.'}
+];
+const WRITE=[
+ {w:6,t:'On the Importance of Reading',zh:'阅读的重要性',type:'现象解释型',need:'第一段点出现象或观点；第二段给两条理由并各配一个例子；第三段收束。不少于 100 词。'},
+ {w:7,t:'Living Alone or with Roommates?',zh:'独居还是合租',type:'对比选择型',need:'两方各写一条好处、一条麻烦，最后明确给出你的选择及理由。不少于 100 词。'},
+ {w:8,t:'How to Deal with Stress',zh:'如何应对压力',type:'问题解决型',need:'三个具体办法，用 First / Second / Finally 串起来，每条说清"做什么 + 有什么用"。不少于 100 词。'},
+ {w:9,t:'The Impact of Short Videos',zh:'短视频的影响',type:'现象解释型',need:'好处一条、问题一条，最后给出你的看法。不少于 100 词。'}
 ];
 
 /* =========================================================
@@ -4119,7 +4160,17 @@ const GENS={
    基础工具
    ========================================================= */
 const KEY='xwyy_plan_v1';
-const INTERVAL=[0,1,2,4,7,15,30];
+/* 考点词（R/C/B/A）走 5 档：1 → 3 → 7 → 15 → 30 天。
+   原方案最后一档是 60 天，但 70 天的备考里它永远用不上，白占复习额度。 */
+const INTERVAL=[0,1,3,7,15,30];
+/* D 层认知词只要求「认得」，不要求会写：隔天 → 5 天，认满 2 次即归档。
+   这类词后面还会在阅读例句和精读里反复撞见，不需要在卡片上耗五次。 */
+const INTERVAL_D=[0,1,5];
+const CAP=120;          /* 单轮复习卡上限：够装下一天的到期量，又不至于把一轮拖成一小时 */
+function nextGap(w,box){
+  if(w[3]==='D') return INTERVAL_D[Math.min(box,2)]||5;
+  return INTERVAL[Math.min(box,5)];
+}
 const ERRORS=['词不认识','结构看错','中文不顺'];
 
 function pad(n){return String(n).length<2?'0'+n:String(n);}
@@ -4159,9 +4210,36 @@ function dayDone(d){
   const r=S.days[d]; if(!r) return 0;
   return TASKS.filter(t=>r[t.k]).length;
 }
+/* 每日新词量不再是固定值：先看今天欠了多少复习。
+   欠账越多，新词越少；连续 3 天还不清，当天只还账不背新词。 */
+function dueCount(){
+  const t=todayISO();
+  let n=0;
+  WORDS.forEach(w=>{
+    const st=S.words[w[0]];
+    if(st&&st.seen&&!st.done&&st.due<=t) n++;
+  });
+  return n;
+}
+function checkLoad(){
+  const t=todayISO();
+  if(S.loadDay===t) return S.loadN||0;
+  const n=dueCount();
+  S.loadDay=t; S.loadN=n;
+  S.overStreak=(n>CAP)?(S.overStreak||0)+1:0;
+  save();
+  return n;
+}
 function targetNew(){
   if(weekNum()>=10) return 0;
-  return 30;
+  const remain=freshLeft();
+  if(!remain) return 0;
+  const dn=checkLoad();
+  let base=25;
+  if(dn>110) base=15;
+  else if(dn>80) base=20;
+  if((S.overStreak||0)>=3) base=0;   /* 连欠 3 天：今天只回炉 */
+  return Math.min(base,remain);
 }
 
 /* =========================================================
@@ -4202,7 +4280,7 @@ function wordStats(){
   WORDS.forEach(w=>{
     const st=S.words[w[0]];
     if(!st||!st.seen) fresh++;
-    else if(st.box>=4) mastered++;
+    else if(st.done||st.box>=4) mastered++;
     else learning++;
   });
   return {fresh:fresh,learning:learning,mastered:mastered,total:WORDS.length};
@@ -4211,6 +4289,7 @@ function wordStats(){
 let ses={queue:[],idx:0,flip:false,stat:{know:0,fuzzy:0,no:0},active:false};
 
 let LASTPLAN=null;
+let LASTDUE=0;
 function freshPool(){
   const fr={R:[],A:[],B:[],C:[],D:[]};
   WORDS.forEach(w=>{
@@ -4245,18 +4324,36 @@ function newMix(tgt){
   shuffle(pick);
   return {pick:pick,plan:plan};
 }
+function freshLeft(){
+  const fr=freshPool();
+  return LAYERS.reduce((a,k)=>a+fr[k].length,0);
+}
+/* 到期复习的取法：box 0–1 的（马上要忘）全取，剩下名额给高 box 里到期最早的。
+   以前是一刀切只取 35 张，结果一半以上的到期卡永远排不上队。 */
 function buildQueue(){
   const t=todayISO();
+  checkLoad();
   const due=[];
   WORDS.forEach(w=>{
     const st=S.words[w[0]];
-    if(st&&st.seen&&st.due<=t) due.push(w);
+    if(st&&st.seen&&!st.done&&st.due<=t) due.push(w);
   });
-  due.sort((a,b)=>(S.words[a[0]].box||0)-(S.words[b[0]].box||0));
+  const low=[],high=[];
+  due.forEach(w=>{ ((S.words[w[0]].box||0)<=1?low:high).push(w); });
+  const byDue=(a,b)=>{
+    const x=S.words[a[0]].due, y=S.words[b[0]].due;
+    return x<y?-1:(x>y?1:0);
+  };
+  low.sort(byDue);
+  high.sort((a,b)=>((S.words[a[0]].box||0)-(S.words[b[0]].box||0))||byDue(a,b));
+  let take=low.slice(0,CAP);
+  if(take.length<CAP) take=take.concat(high.slice(0,CAP-take.length));
+  shuffle(take);
   const tgt=targetNew();
   const mix=newMix(tgt);
   LASTPLAN=mix.plan;
-  return due.slice(0,35).concat(mix.pick);
+  LASTDUE=take.length;
+  return take.concat(mix.pick);
 }
 function startSession(){
   const q=buildQueue();
@@ -4269,8 +4366,11 @@ function grade(v){
   st.seen=(st.seen||0)+1;
   st.last=todayISO();
   if(v==='know'){
-    st.box=Math.min((st.box||0)+1,6);
-    st.due=addDays(todayISO(),INTERVAL[st.box]);
+    const isD=(w[3]==='D');
+    const maxBox=isD?2:5;
+    st.box=Math.min((st.box||0)+1,maxBox);
+    if(isD&&st.box>=2){ st.done=1; st.due='2099-01-01'; }   /* D 层认满 2 次归档 */
+    else st.due=addDays(todayISO(),nextGap(w,st.box));
     ses.stat.know++;
   }else if(v==='fuzzy'){
     st.due=addDays(todayISO(),1);
@@ -4278,7 +4378,9 @@ function grade(v){
   }else{
     st.box=0; st.hard=(st.hard||0)+1; st.due=todayISO();
     ses.stat.no++;
-    ses.queue.push(w);
+    const td=todayISO();
+    if(st.repDay!==td){ st.repDay=td; st.rep=0; }
+    if((st.rep||0)<1){ st.rep++; ses.queue.push(w); }   /* 当天最多再出现一次，不然队列会滚雪球 */
   }
   if(v==='know'||v==='fuzzy'){
     const r=dayRec();
@@ -4355,7 +4457,8 @@ function viewToday(){
   let tasks='';
   TASKS.forEach(t=>{
     const on=!!rec[t.k];
-    const label=t.k==='t2'?(tgt>0?('新词（今天目标 '+tgt+' 个）'):'回炉顽固词（本周不背新词）'):t.n;
+    const label=t.k==='t2'?(tgt>0?('新词（今天目标 '+tgt+' 个）'):
+      (freshLeft()?'回炉顽固词（今天先还账，不背新词）':'新词已学完 · 今天只回炉旧词')):t.n;
     tasks+='<div class="task '+(on?'done':'')+'" onclick="toggleTask(\''+t.k+'\')">'+
       '<div class="box">'+(on?'✓':'')+'</div>'+
       '<div class="tx">'+esc(label)+'</div>'+
@@ -4380,7 +4483,8 @@ function viewToday(){
   return '<div class="vhead"><h1>第 '+Math.min(d,70)+' 天 · '+esc(W.theme)+'</h1></div>'+
 
     '<div class="note '+(d>70?'good':'')+'" style="margin-top:0;margin-bottom:14px;">'+
-      '<b>本周验收：</b>'+esc(W.check)+'　<span class="pill '+(d>70?'ok':'')+'">第 '+wk+' 周 / 10</span></div>'+
+      '<b>本周验收：</b>'+esc(W.check)+'　<span class="pill '+(d>70?'ok':'')+'">第 '+wk+' 周 / 10</span>'+
+      '<span class="checkgo" onclick="'+(wk===9?'go(\'book\')':(wk>=8?'go(\'prog\')':'openLesson(\'L'+Math.min(wk,7)+'\')'))+'">去验收</span></div>'+
 
     '<div class="stat" style="margin-bottom:14px;"><div class="k">今日完成</div><div class="v">'+done+'<em>/ 5 项</em></div>'+
       '<div class="bar" style="margin-top:8px;"><i style="width:'+pct+'%"></i></div></div>'+
@@ -4789,6 +4893,66 @@ function clearAll(){
 
 /* ---- 句子本 ---- */
 let bookFilter='all';
+
+/* ---- 每日输出：汉译英 / 仿写 / 作文 ---- */
+function outRec(){
+  S.out=S.out||{};
+  const k=todayISO();
+  if(!S.out[k]) S.out[k]={};
+  return S.out[k];
+}
+function saveOut(k,v){ outRec()[k]=v; save(); }
+function toggleRef(k){ const r=outRec(); r['s_'+k]=r['s_'+k]?0:1; save(); render(); }
+function wcOf(v){ return String(v||'').trim().split(/\s+/).filter(Boolean).length; }
+/* 第 1 句取当周课本里的长难句（和这周语法点对应），第 2 句取一个阅读例句。
+   两句都按天往后轮，一周之内不重样，同一句隔周还会再撞上。 */
+function todayOut(){
+  const d=Math.max(0,dayNum()-1), wk=weekNum();
+  const ss=SENTS.filter(x=>x.zh&&x.en).map(x=>({en:x.en,zh:x.zh}));
+  const rs=Object.keys(RSENT).map(k=>({en:RSENT[k][0],zh:RSENT[k][1]}));
+  const weekArr=ss.slice((wk-1)*4, wk*4);
+  const arr=weekArr.length?weekArr:ss;
+  const a=arr[d%arr.length];
+  const b=rs[d%rs.length];
+  const im=IMIT[((wk-1)*2+(d%2))%IMIT.length];
+  return {a:a,b:b,im:im};
+}
+function saveWrite(v){
+  S.writes=S.writes||{};
+  S.writes[weekNum()]=v; save();
+}
+function writeTopic(){
+  const wk=weekNum();
+  if(wk<6) return null;
+  return WRITE[Math.min(WRITE.length-1,wk-6)];
+}
+function outCard(){
+  const o=todayOut(), r=outRec(), wt=writeTopic();
+  const line=(k,item,title)=>{
+    const shown=!!r['s_'+k];
+    return '<div class="orow">'+
+      (title?'<span class="opat">'+esc(title)+'</span>':'')+
+      '<div class="ozh">'+esc(item.zh)+'</div>'+
+      '<textarea rows="2" onblur="saveOut(\''+k+'\',this.value)" placeholder="在这里译；想不起的词先用 □ 占位，别留空">'+esc(r[k]||'')+'</textarea>'+
+      '<div style="margin-top:7px;"><span class="oref" onclick="toggleRef(\''+k+'\')">'+(shown?'收起参考':'看参考译文')+'</span></div>'+
+      (shown?'<div class="orefv">'+esc(item.en)+'</div>':'')+
+    '</div>';
+  };
+  let w='';
+  if(wt){
+    const txt=((S.writes||{})[weekNum()])||'';
+    w='<div class="orow">'+
+      '<span class="opat">作文 · '+esc(wt.type)+'</span>'+
+      '<div class="ozh"><b>'+esc(wt.t)+'</b>　'+esc(wt.zh)+'</div>'+
+      '<div style="font-size:12.2px;color:var(--ink-4);line-height:1.7;margin-bottom:7px;">'+esc(wt.need)+'</div>'+
+      '<textarea rows="7" oninput="document.getElementById(\'wc\').textContent=wcOf(this.value)" onblur="saveWrite(this.value)" placeholder="先用中文列三段的骨架，再逐句译成英文">'+esc(txt)+'</textarea>'+
+      '<div style="margin-top:7px;font-size:12px;color:var(--ink-4);">当前 <b id="wc">'+wcOf(txt)+'</b> 词 / 需 100 词以上</div>'+
+    '</div>';
+  }
+  return '<div class="card"><h3>今日输出 <span class="sub">汉译英 2 句 · 仿写 1 句'+(wt?' · 作文':'')+'</span></h3>'+
+    line('t1',o.a,'汉译英')+line('t2',o.b,'汉译英')+
+    line('im',{zh:o.im.zh,en:o.im.ref},'仿写 · '+o.im.pat)+w+'</div>';
+}
 function viewBook(){
   const head='<div class="vhead"><h1>句子本</h1></div>';
 
@@ -4866,7 +5030,7 @@ function viewBook(){
   });
   if(!shown.length) items='<div class="card"><div class="empty">还没有记录。上面粘一句真题里的话，拆一遍就存进来了。</div></div>';
 
-  return head+enter+stat+adv+filt+items;
+  return head+outCard()+enter+stat+adv+filt+items;
 }
 function setFilter(f){bookFilter=f; render();}
 
@@ -4968,7 +5132,7 @@ function viewPlan(){
     '<div class="card"><h3>10 周作战地图</h3>'+
       '<table><thead><tr><th class="c">周次</th><th>这一周只攻一个主题</th><th class="c">累计目标</th><th>周末验收</th></tr></thead><tbody>'+rows+'</tbody></table>'+
     '</div>'+
-    '<div class="card"><h3>每天的 100 分钟</h3>'+
+    '<div class="card"><h3>每天 '+TASKS.reduce((a,t)=>a+t.m,0)+' 分钟</h3>'+
       '<table><thead><tr><th class="nw">时间块</th><th>做什么</th></tr></thead><tbody>'+flow+'</tbody></table>'+
     '</div>';
 }
