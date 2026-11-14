@@ -252,6 +252,7 @@
   .orow:last-child{border-bottom:0; padding-bottom:2px;}
   .ozh{font-size:13.3px; color:var(--ink); line-height:1.8; margin-bottom:7px;}
   .opat{display:inline-block; font-size:11.6px; padding:2px 8px; background:var(--teal-2); color:var(--teal); border-radius:5px; margin-bottom:7px;}
+  .opt{font-size:11.8px; color:var(--ink-4); line-height:1.7; margin-bottom:7px;}
   .oref{font-size:12px; color:var(--blue); cursor:pointer;}
   .orefv{margin-top:8px; padding:10px 12px; background:#f6fbf9; border-radius:6px; font-size:13px; color:var(--ink-2); font-family:Georgia,"Times New Roman",serif; line-height:1.8;}
   .checkgo{float:right; font-size:12px; color:var(--blue); cursor:pointer; border-bottom:1px solid var(--blue-3);}
@@ -3699,16 +3700,16 @@ const WEEKS=[
 const TASKS=[
  {k:'t1',n:'回炉到期词块',m:20},
  {k:'t2',n:'新词（按今天的目标数）',m:15},
- {k:'t3',n:'课堂：学练本周知识点（第 1–7 周主线课 / 第 8–10 周高频补充课）',m:30},
- {k:'t4',n:'精读一段真题 + 手写 5 句',m:40},
- {k:'t5',n:'汉译英 2 句 + 仿写 1 句（句子本）',m:15}
+ {k:'t3',n:'课堂：学练本周知识点（第 1–7 周主线课 / 第 8–10 周高频补充课）',m:20},
+ {k:'t4',n:'精读一段真题 + 手写 5 句',m:30},
+ {k:'t5',n:'句子本：汉译英 8 句',m:35}
 ];
 
 
 /* =========================================================
-   每日输出：汉译英 + 仿写 + 作文（对应每周语法点）
-   汉译英的题源直接复用 SENTS 真题长句和 RSENT 阅读例句——
-   同一批句子先在卡片背面见过，再反过来译一遍，才算真的会。
+   每日输出：8 句汉译英 + 仿写 + 作文（对应每周语法点）
+   题源三条线：当周长难句（SENTS）· 今天新学/回炉的 C/B 层词（SQ）
+   · 仿写句式（IMIT），与考试的 5 句汉译英对齐并加练。
    ========================================================= */
 const IMIT=[
  {w:1,pat:'主 + 谓 + 宾',zh:'学生们每天早上读英语。',ref:'Students read English every morning.'},
@@ -3730,6 +3731,395 @@ const IMIT=[
  {w:9,pat:'否定词提前的倒装',zh:'我从来没有见过这么美的风景。',ref:'Never have I seen such beautiful scenery.'},
  {w:9,pat:'强调句型 it was … that',zh:'正是在那时我明白了他的意思。',ref:'It was then that I understood what he meant.'}
 ];
+/* 例句题库：383 条，覆盖 C 层复用词 239 + B 层主题词 144。
+   每条 = [目标词, 中文题干, 英文参考, 句式提示]，用于「今日输出」的新词线/旧词线出题。 */
+const SQ=[
+["analyze","我们必须分析数据，找出问题的原因。","We must analyze the data to find out the cause of the problem.","analyze + 具体对象"],
+["evaluate","老师每学期评估一次学生的表现。","Teachers evaluate students' performance once a term.","evaluate 评估（成果、表现）"],
+["implement","学校下个月将实施新的规定。","The school will implement the new rule next month.","implement a plan / a rule"],
+["negotiate","双方正在协商合同的细节。","The two sides are negotiating the details of the contract.","negotiate with sb about sth"],
+["cooperate","各部门必须密切合作才能完成任务。","All departments must cooperate closely to finish the task.","cooperate with sb"],
+["enhance","多读原版书能提高你的阅读能力。","Reading original books can enhance your reading ability.","enhance + 抽象名词（能力、效率）"],
+["promote","这项活动旨在促进文化交流。","This activity aims to promote cultural exchange.","promote 促进 / 推广"],
+["facilitate","网络使人们之间的交流更加便利。","The Internet facilitates communication between people.","facilitate 使便利（不接人做宾语）"],
+["ensure","请确保离开前关掉所有的灯。","Please ensure that all the lights are turned off before you leave.","ensure that + 从句"],
+["approach","我们应该换一种方法解决这个问题。","We should take a different approach to this problem.","approach to sth（to 是介词）"],
+["establish","这所大学建于一百年前。","The university was established a hundred years ago.","establish 建立（机构、关系）"],
+["obtain","你可以从图书馆获得更多信息。","You can obtain more information from the library.","obtain 比 get 正式"],
+["pursue","她决定毕业后继续深造。","She decided to pursue further study after graduation.","pursue a degree / a career"],
+["refuse","他拒绝回答记者的提问。","He refused to answer the reporter's question.","refuse to do"],
+["accept","我很高兴接受你的邀请。","I am glad to accept your invitation.","accept an invitation"],
+["admit","他承认自己犯了错误。","He admitted making a mistake.","admit doing / admit that"],
+["deny","他否认拿走了那份文件。","He denied taking the document.","deny doing"],
+["insist","她坚持要自己付账。","She insisted on paying the bill herself.","insist on doing"],
+["recommend","我强烈推荐你去听那场讲座。","I strongly recommend that you attend the lecture.","recommend that sb (should) do"],
+["propose","委员会提议把会议推迟到周五。","The committee proposed putting off the meeting until Friday.","propose doing / propose that"],
+["rely","你不能总依赖父母帮你做决定。","You can't always rely on your parents to make decisions for you.","rely on sb to do"],
+["focus","上课时你应该把注意力集中在老师身上。","You should focus your attention on the teacher in class.","focus on"],
+["relate","这次事故与司机的疲劳驾驶有关。","The accident relates to the driver's tiredness.","relate to / be related to"],
+["belong","这本书属于图书馆，不能带走。","This book belongs to the library and cannot be taken away.","belong to（无进行时、无被动）"],
+["consist","这个小组由五名学生组成。","The group consists of five students.","consist of = be made up of"],
+["result","粗心导致了这次失败。","Carelessness resulted in the failure.","result in 导致 / result from 由…引起"],
+["account","女性占员工总数的百分之六十。","Women account for sixty percent of the employees.","account for 占（比例）"],
+["refer","他提到的那个问题我们以后再谈。","We will discuss the problem he referred to later.","refer to 提到"],
+["react","他对这个坏消息反应很平静。","He reacted calmly to the bad news.","react to sth"],
+["apply","她申请了那所大学的研究生课程。","She applied for the graduate program at that university.","apply for 申请"],
+["employ","这家工厂雇了三百名工人。","The factory employs three hundred workers.","employ 雇用"],
+["impress","他流利的英语给面试官留下了深刻印象。","His fluent English impressed the interviewer.","impress sb / be impressed by"],
+["express","他不知如何表达自己的感谢。","He didn't know how to express his thanks.","express 表达（观点、感情）"],
+["expose","孩子应该多接触不同的文化。","Children should be exposed to different cultures.","be exposed to"],
+["extend","政府决定把假期延长两天。","The government decided to extend the holiday by two days.","extend 延长"],
+["expand","公司计划明年扩大业务。","The company plans to expand its business next year.","expand 扩大（规模）"],
+["explore","科学家正在探索新的能源。","Scientists are exploring new sources of energy.","explore 探索"],
+["examine","医生仔细检查了他的眼睛。","The doctor examined his eyes carefully.","examine 检查"],
+["identify","警方已经确认了事故的原因。","The police have identified the cause of the accident.","identify 确认"],
+["imagine","很难想象没有手机的生活。","It is hard to imagine life without mobile phones.","imagine doing"],
+["inform","请通知我会议时间的变化。","Please inform me of the change in the meeting time.","inform sb of sth"],
+["introduce","学校去年引进了新的教学方法。","The school introduced a new teaching method last year.","introduce 引进 / 介绍"],
+["invest","他在这家公司投了很多钱。","He has invested a lot of money in this company.","invest in"],
+["judge","不要只凭外表判断一个人。","Don't judge a person by his appearance.","judge sb by sth"],
+["justify","没有什么能证明这种行为是合理的。","Nothing can justify such behavior.","justify 证明…正当"],
+["limit","你应该限制每天玩手机的时间。","You should limit the time you spend on your phone every day.","limit 限制（及物）"],
+["locate","这所大学位于城市的中心。","The university is located in the center of the city.","be located in"],
+["manage","他终于设法按时完成了工作。","He finally managed to finish the work on time.","manage to do 设法做成"],
+["mention","她从未提过自己的家庭。","She never mentioned her family.","mention 提到（及物，不加 about）"],
+["participate","所有学生都必须参加这次讨论。","All the students must participate in the discussion.","participate in"],
+["perform","他在面试中表现得很出色。","He performed very well in the interview.","perform 表现 / 执行"],
+["permit","这里不允许吸烟。","Smoking is not permitted here.","permit doing / be permitted to do"],
+["persuade","我说服他改变了主意。","I persuaded him to change his mind.","persuade sb to do"],
+["predict","没有人能准确预测未来的房价。","No one can accurately predict future housing prices.","predict 预测"],
+["prefer","我更喜欢在家看书，而不是出去逛街。","I prefer reading at home to going shopping.","prefer doing A to doing B"],
+["prepare","她正在为明天的考试做准备。","She is preparing for tomorrow's exam.","prepare for"],
+["present","他在会上展示了自己的研究成果。","He presented his research results at the meeting.","present 呈现（及物）"],
+["preserve","我们应该保护这些古老的建筑。","We should preserve these old buildings.","preserve 保存 / 保护"],
+["produce","这家工厂每年生产大量汽车。","This factory produces a large number of cars every year.","produce 生产"],
+["prove","事实证明他的判断是正确的。","Facts have proved that his judgment was right.","prove that / prove to be"],
+["recognize","我在人群中一眼就认出了她。","I recognized her at once in the crowd.","recognize 认出"],
+["remind","这张照片让我想起了童年。","This photo reminds me of my childhood.","remind sb of sth"],
+["represent","他代表学校参加了比赛。","He represented the school in the competition.","represent 代表"],
+["solve","我们必须想办法解决这个难题。","We must find a way to solve this difficult problem.","solve a problem"],
+["supply","这家公司为我们提供办公用品。","This company supplies us with office supplies.","supply sb with sth"],
+["threaten","空气污染威胁着居民的健康。","Air pollution threatens the health of the residents.","threaten 威胁"],
+["effect","这种药对头痛有很好的效果。","This medicine has a good effect on headaches.","have an effect on"],
+["adopt","委员会最终采纳了我的建议。","The committee finally adopted my suggestion.","adopt 采纳（建议、措施）"],
+["considerate","他很体贴，总是先想到别人。","He is considerate and always thinks of others first.","considerate 体贴的（对人）"],
+["considerable","这项工程花了一笔相当大的钱。","The project cost a considerable amount of money.","considerable 相当大的"],
+["economical","这种小汽车省油，很适合家用。","This small car is economical and suitable for family use.","economical 节约的"],
+["economic","这个国家的经济增长正在放缓。","The country's economic growth is slowing down.","economic 经济的"],
+["sensible","在这种天气里待在家是最明智的做法。","Staying at home in this weather is the sensible thing to do.","sensible 明智的"],
+["sensitive","她对别人的批评非常敏感。","She is very sensitive to criticism.","be sensitive to"],
+["principal","造成事故的主要原因是他超速行驶。","The principal cause of the accident was his speeding.","principal 主要的（形）"],
+["principle","他做事一向坚持自己的原则。","He always sticks to his principles.","principle 原则（名）"],
+["raise","政府计划提高教师的工资。","The government plans to raise teachers' salaries.","raise 及物，必带宾语"],
+["rise","过去十年物价持续上涨。","Prices have kept rising over the past ten years.","rise 不及物，不带宾语"],
+["lay","她把书放在桌子上就出去了。","She laid the book on the table and went out.","lay 及物，过去式 laid"],
+["lie","他累了，躺在床上休息。","He was tired and lay on the bed to rest.","lie 不及物，过去式 lay"],
+["expect","我们预计这项工作下周完成。","We expect the work to be finished next week.","expect sb to do"],
+["acquire","孩子通过实践获得新的技能。","Children acquire new skills through practice.","acquire 靠努力学到"],
+["devote","她把一生都献给了教育事业。","She devoted her whole life to education.","devote ... to（to 是介词）"],
+["reserve","我想预订一张两个人的桌子。","I'd like to reserve a table for two.","reserve 预订"],
+["assume","我们假定他是对的，再往下推理。","Let's assume that he is right and go on.","assume 假定"],
+["consume","这台机器每小时消耗大量电力。","This machine consumes a lot of electricity every hour.","consume 消耗"],
+["personnel","公司全体人员都参加了这次培训。","All the personnel of the company attended the training.","personnel 集合名词，谓语用复数"],
+["historic","这次会议具有历史意义。","This meeting is of historic significance.","historic 有历史意义的"],
+["historical","我正在读一本关于这座城市的史书。","I am reading a historical book about this city.","historical 与历史有关的"],
+["respectable","他是一位值得尊敬的老人。","He is a respectable old man.","respectable 值得尊敬的"],
+["industrious","她是个勤奋的学生，从不迟到。","She is an industrious student and is never late.","industrious 勤奋的"],
+["imaginative","这是一篇富有想象力的作文。","This is an imaginative composition.","imaginative 有想象力的"],
+["intensive","考前他参加了为期两周的强化培训。","He took a two-week intensive training course before the exam.","intensive 强化的"],
+["extensive","他阅读广泛，知识面很宽。","He has extensive reading and a wide range of knowledge.","extensive 广泛的"],
+["continual","这些反复不断的打扰让我无法工作。","These continual interruptions made it impossible for me to work.","continual 反复有间隔"],
+["continuous","雨连续下了三天没有停。","It rained continuously for three days.","continuous 连续不停"],
+["confident","她对自己的英语口语很有信心。","She is confident about her spoken English.","be confident of / about"],
+["confidential","这份文件是机密的，不要外传。","This document is confidential and should not be passed on.","confidential 机密的"],
+["beside","他坐在我旁边，一句话也没说。","He sat beside me without saying a word.","beside 在…旁边"],
+["take measures to","政府必须采取措施保护环境。","The government must take measures to protect the environment.","take measures to do sth"],
+["play a role in","父母在孩子成长中起重要作用。","Parents play an important role in their children's growth.","play a role in"],
+["pay attention to","请注意你的发音。","Please pay attention to your pronunciation.","pay attention to（to 是介词）"],
+["make a difference","你的小小帮助也会带来改变。","Your small help can also make a difference.","make a difference"],
+["make sense","他解释了很久，但我还是不明白。","He explained for a long time, but it still didn't make sense to me.","make sense 讲得通"],
+["make up for","我要用周末补上落下的课。","I will make up for the missed lessons at the weekend.","make up for 弥补"],
+["make full use of","我们应该充分利用课余时间。","We should make full use of our spare time.","make full use of"],
+["take part in","上个月我参加了学校运动会。","I took part in the school sports meeting last month.","take part in"],
+["take advantage of","你要利用这个机会多练口语。","You should take advantage of this chance to practice speaking.","take advantage of"],
+["take into account","做决定前请考虑到成本。","Please take the cost into account before making a decision.","take sth into account"],
+["take effect","新规定将从下个月起生效。","The new rule will take effect next month.","take effect 生效"],
+["take place","会议将于周五下午举行。","The meeting will take place on Friday afternoon.","take place 无被动"],
+["take up","退休后他开始从事绘画。","After retiring, he took up painting.","take up 从事（爱好）"],
+["take over","他去年接管了这家公司。","He took over the company last year.","take over 接管"],
+["take off","飞机晚了半小时才起飞。","The plane took off half an hour late.","take off 起飞"],
+["put off","因为下雨，比赛推迟到了下周。","Because of the rain, the match was put off until next week.","put off doing"],
+["put up with","我实在无法忍受这么大的噪音。","I really can't put up with such loud noise.","put up with 忍受"],
+["put forward","他在会上提出了一个新方案。","He put forward a new plan at the meeting.","put forward 提出"],
+["put out","消防员很快扑灭了大火。","The firefighters put out the fire quickly.","put out 扑灭"],
+["come up with","他想出了一个更好的办法。","He came up with a better idea.","come up with 想出"],
+["come across","我在图书馆偶然遇到了老同学。","I came across an old classmate in the library.","come across 偶遇"],
+["come down to","问题归根到底就是缺少资金。","The problem comes down to a lack of money.","come down to 归结为"],
+["come true","他的梦想终于实现了。","His dream finally came true.","come true 无被动"],
+["look forward to","我期待着收到你的回信。","I look forward to hearing from you.","look forward to doing"],
+["look into","警方正在调查这起案件。","The police are looking into the case.","look into 调查"],
+["look up to","学生们都很敬佩这位老师。","The students all look up to this teacher.","look up to 尊敬"],
+["look after","她每天照顾生病的母亲。","She looks after her sick mother every day.","look after 照顾"],
+["look for","他正在找一份兼职工作。","He is looking for a part-time job.","look for 寻找"],
+["turn out","结果证明他是对的。","It turned out that he was right.","turn out 结果是"],
+["turn down","她拒绝了我们提供的职位。","She turned down the position we offered.","turn down 拒绝"],
+["turn to","遇到困难时你可以向我求助。","You can turn to me when you are in trouble.","turn to sb for help"],
+["turn into","几年后这座小城变成了旅游胜地。","A few years later the small town turned into a tourist attraction.","turn into 变成"],
+["break down","我的车在半路上抛锚了。","My car broke down halfway.","break down 故障"],
+["break out","战争爆发时他还是个孩子。","He was still a child when the war broke out.","break out 爆发"],
+["bring about","科技给我们的生活带来了巨大变化。","Technology has brought about great changes in our life.","bring about 引起"],
+["bring up","她独自把两个孩子抚养长大。","She brought up two children on her own.","bring up 抚养"],
+["carry out","我们必须按计划执行这项任务。","We must carry out the task as planned.","carry out 执行"],
+["carry on","请继续说下去，我在听。","Please carry on with your story; I am listening.","carry on 继续"],
+["give up","他决定戒烟。","He decided to give up smoking.","give up doing"],
+["give in","他从不向困难屈服。","He never gives in to difficulties.","give in 屈服"],
+["give off","这些花散发出一种淡淡的香味。","These flowers give off a light fragrance.","give off 发出（气味、光）"],
+["give away","他不小心泄露了我们的计划。","He gave away our plan by accident.","give away 泄露"],
+["get rid of","我们应该改掉这些坏习惯。","We should get rid of these bad habits.","get rid of 摆脱"],
+["get along with","她和同事相处得很好。","She gets along well with her colleagues.","get along with"],
+["get over","他花了一个月才从病中恢复过来。","It took him a month to get over the illness.","get over 克服、恢复"],
+["get used to","我慢慢习惯了这里的生活。","I gradually got used to the life here.","get used to + n./doing"],
+["run out of","我们的水和食物都用完了。","We have run out of water and food.","run out of + 宾语"],
+["run into","我在超市遇到了多年不见的朋友。","I ran into a friend I hadn't seen for years in the supermarket.","run into 偶遇"],
+["set up","他们去年成立了一家小公司。","They set up a small company last year.","set up 建立"],
+["set off","我们一大早就出发去机场了。","We set off for the airport early in the morning.","set off 出发"],
+["set aside","你应该每天留出半小时读书。","You should set aside half an hour a day for reading.","set aside 留出"],
+["be aware of","你应该意识到这个问题的严重性。","You should be aware of the seriousness of the problem.","be aware of"],
+["be capable of","她能独立完成这项工作。","She is capable of finishing the work on her own.","be capable of doing"],
+["be responsible for","他负责这个项目的全部工作。","He is responsible for all the work of this project.","be responsible for"],
+["be used to doing","我已经习惯了早起。","I am used to getting up early.","be used to doing 习惯于"],
+["be subject to","这个计划可能还要调整。","The plan is subject to change.","be subject to 易受…影响"],
+["be beneficial to","每天锻炼对健康有益。","Daily exercise is beneficial to your health.","be beneficial to"],
+["be harmful to","熬夜对身体健康有害。","Staying up late is harmful to your health.","be harmful to"],
+["be short of","我们目前缺少资金和人手。","We are short of money and workers at present.","be short of"],
+["be based on","这部电影改编自一个真实的故事。","The film is based on a true story.","be based on"],
+["be known as","他被称为这个领域最好的老师。","He is known as the best teacher in this field.","be known as"],
+["be worth doing","这本书值得一读。","This book is worth reading.","be worth doing（主动表被动）"],
+["in addition to","除了英语，她还会说法语。","In addition to English, she can also speak French.","in addition to + n."],
+["in terms of","就价格而言，这台电脑更合适。","In terms of price, this computer is more suitable.","in terms of"],
+["in charge of","她负责整个销售部门。","She is in charge of the whole sales department.","in charge of"],
+["in favor of","大多数员工支持这个新方案。","Most of the employees are in favor of the new plan.","in favor of 支持"],
+["in spite of","尽管下着大雨，他还是按时到了。","In spite of the heavy rain, he arrived on time.","in spite of + n."],
+["in case of","万一发生火灾，请立刻离开大楼。","In case of fire, please leave the building at once.","in case of"],
+["in the long run","从长远看，教育投资是值得的。","In the long run, investment in education is worthwhile.","in the long run"],
+["in general","总的来说，学生们对这个课程很满意。","In general, the students are satisfied with the course.","in general"],
+["in particular","我喜欢运动，尤其是游泳。","I like sports, swimming in particular.","in particular"],
+["in other words","换句话说，我们必须现在就行动。","In other words, we must act right now.","in other words"],
+["on the contrary","他并不懒，恰恰相反，他很勤奋。","He is not lazy; on the contrary, he is very hard-working.","on the contrary"],
+["on behalf of","我代表全体同学感谢您。","On behalf of all the students, I thank you.","on behalf of"],
+["on average","我平均每天读两小时书。","On average, I read for two hours a day.","on average"],
+["at present","目前我们还没有收到他的回复。","At present we have not received his reply.","at present"],
+["as a result of","由于这场大雨，航班被取消了。","As a result of the heavy rain, the flight was cancelled.","as a result of + n."],
+["due to","由于天气原因，比赛延期了。","Due to the weather, the match was put off.","due to + n."],
+["owing to","由于交通堵塞，我迟到了二十分钟。","Owing to the traffic jam, I was twenty minutes late.","owing to"],
+["thanks to","多亏你的帮助，我通过了考试。","Thanks to your help, I passed the exam.","thanks to 多亏"],
+["regardless of","不管结果如何，我们都要试一试。","Regardless of the result, we will have a try.","regardless of"],
+["rather than","我宁愿走路也不坐公交车。","I would walk rather than take a bus.","rather than 而不是"],
+["apart from","除了周末，我每天都要上班。","Apart from the weekend, I work every day.","apart from"],
+["along with","他带着他的书一起来了。","He came along with his books.","along with 连同"],
+["as well as","她会弹钢琴，也会拉小提琴。","She plays the piano as well as the violin.","as well as"],
+["so far","到目前为止，我们已经学了八百个单词。","So far we have learned eight hundred words.","so far + 现在完成时"],
+["by contrast","相比之下，农村的生活节奏慢得多。","By contrast, life in the countryside is much slower.","by contrast"],
+["for instance","很多学生，例如我弟弟，都住校。","Many students, for instance my brother, live at school.","for instance"],
+["to sum up","总之，努力和坚持是成功的关键。","To sum up, hard work and persistence are the key to success.","to sum up"],
+["what is more","而且，这种方法还能节省时间。","What is more, this method can save time.","what is more 而且"],
+["keep pace with","我们必须跟上时代的发展。","We must keep pace with the development of the times.","keep pace with"],
+["catch up with","他努力想赶上其他同学。","He tried hard to catch up with the other students.","catch up with"],
+["attach importance to","学校非常重视学生的心理健康。","The school attaches great importance to students' mental health.","attach importance to"],
+["raise awareness of","这项活动旨在提高人们的环保意识。","This activity aims to raise people's awareness of environmental protection.","raise awareness of"],
+["meet the needs of","课程设置应该满足学生的需要。","Courses should be designed to meet the needs of students.","meet the needs of"],
+["have access to","学生可以免费使用图书馆的数据库。","Students have free access to the library's databases.","have access to"],
+["lead to","长期缺乏睡眠会导致健康问题。","A long lack of sleep can lead to health problems.","lead to + 结果"],
+["adapt to","新生需要时间适应大学生活。","New students need time to adapt to college life.","adapt to 适应"],
+["object to","很多居民反对在这里建工厂。","Many residents object to building a factory here.","object to doing"],
+["depend on","能否成功取决于你是否努力。","Success depends on whether you work hard.","depend on"],
+["be rich in","这种水果富含维生素。","This kind of fruit is rich in vitamins.","be rich in"],
+["in contrast to","与去年相比，今年的人数明显增加。","In contrast to last year, the number has increased obviously this year.","in contrast to"],
+["on the whole","总的来说，这次活动很成功。","On the whole, the activity was a great success.","on the whole"],
+["at the expense of","我们不能以牺牲环境为代价发展经济。","We cannot develop the economy at the expense of the environment.","at the expense of"],
+["in response to","应学生的要求，图书馆延长了开放时间。","In response to the students' request, the library extended its opening hours.","in response to"],
+["by means of","他靠自学掌握了这门技术。","He mastered this skill by means of self-study.","by means of"],
+["in advance","请提前一周预订房间。","Please book the room a week in advance.","in advance 提前"],
+["in vain","他试图劝她留下，但白费力气。","He tried to persuade her to stay, but in vain.","in vain 徒劳"],
+["on purpose","他故意迟到，想引起注意。","He was late on purpose to attract attention.","on purpose 故意"],
+["in detail","老师详细讲解了这道题。","The teacher explained the question in detail.","in detail"],
+["under no circumstances","你决不能把密码告诉别人。","Under no circumstances should you tell others your password.","句首用倒装：should you"],
+["in the face of","面对困难，他没有放弃。","In the face of difficulties, he did not give up.","in the face of"],
+["prior to","开会之前请先看一遍材料。","Please read the materials prior to the meeting.","prior to = before"],
+["in light of","鉴于目前的情况，我们决定推迟计划。","In light of the present situation, we decided to put off the plan.","in light of 鉴于"],
+["with regard to","关于你的申请，我们下周回复。","With regard to your application, we will reply next week.","with regard to"],
+["in accordance with","一切必须依照规定办理。","Everything must be done in accordance with the rules.","in accordance with"],
+["on the basis of","我们在调查的基础上做出了判断。","We made the judgment on the basis of the investigation.","on the basis of"],
+["for the sake of","为了健康，他戒了烟。","For the sake of his health, he gave up smoking.","for the sake of"],
+["be accustomed to","她习惯了独自生活。","She is accustomed to living alone.","be accustomed to doing"],
+["be committed to","这家公司致力于改善产品质量。","This company is committed to improving the quality of its products.","be committed to doing"],
+["be exposed to","孩子应该多接触大自然。","Children should be exposed to nature more.","be exposed to"],
+["be opposed to","大多数家长反对孩子过早使用手机。","Most parents are opposed to children using phones too early.","be opposed to doing"],
+["be attributed to","这次成功归因于团队的共同努力。","The success is attributed to the joint efforts of the team.","be attributed to"],
+["be engaged in","他多年来从事教育工作。","He has been engaged in education for many years.","be engaged in"],
+["be involved in","很多志愿者参与了这次救援。","Many volunteers were involved in the rescue.","be involved in"],
+["result in","这场大雪导致多起交通事故。","The heavy snow resulted in several traffic accidents.","result in 导致"],
+["account for","请解释一下你昨天为什么缺席。","Please account for your absence yesterday.","account for 解释"],
+["contribute to","读书有助于提高写作能力。","Reading contributes to improving writing ability.","contribute to"],
+["give rise to","谣言引起了很多误解。","The rumor gave rise to a lot of misunderstanding.","give rise to 引起"],
+["make sense of","我无法理解他这段话的意思。","I can't make sense of what he said.","make sense of 理解"],
+["take for granted","不要把父母的付出当成理所当然。","Don't take your parents' efforts for granted.","take sth for granted"],
+["keep in mind","请记住，安全第一。","Please keep in mind that safety comes first.","keep in mind that"],
+["live up to","他没有辜负父母的期望。","He lived up to his parents' expectations.","live up to"],
+["fall short of","这次的结果没有达到我们的预期。","The result fell short of our expectations.","fall short of 未达到"],
+["be likely to","这种天气下很容易感冒。","You are likely to catch a cold in such weather.","be likely to do"],
+["be bound to","只要坚持，你一定会成功。","As long as you keep on, you are bound to succeed.","be bound to 必然"],
+["be supposed to","你应该在十点之前回到宿舍。","You are supposed to be back in the dormitory before ten.","be supposed to 应该"],
+["be prone to","缺乏锻炼的人容易生病。","People who lack exercise are prone to illness.","be prone to 易于（多指不好）"],
+["put emphasis on","学校把重点放在实践能力的培养上。","The school puts emphasis on practical ability.","put emphasis on"],
+["draw a conclusion","根据这些数据，我们可以得出结论。","From these data we can draw a conclusion.","draw a conclusion"],
+["education","教育是改变命运最有效的方式。","Education is the most effective way to change one's fate.","education 不可数"],
+["student","每个学生都应该有自己的学习计划。","Every student should have his own study plan.","student 可数"],
+["teacher","好老师能激发学生的学习兴趣。","A good teacher can inspire students' interest in learning.","teacher 可数"],
+["school","学校应该为学生提供更多的实践机会。","Schools should provide students with more practical opportunities.","school 可数"],
+["university","她考上了本市最好的大学。","She was admitted to the best university in this city.","university 可数"],
+["course","这学期我选了三门课程。","I have chosen three courses this term.","course 可数"],
+["degree","他三年后拿到了硕士学位。","He got his master's degree three years later.","a master's degree"],
+["knowledge","知识来自实践，也指导实践。","Knowledge comes from practice and guides practice.","knowledge 不可数"],
+["skill","沟通能力是现代职场最重要的技能之一。","Communication is one of the most important skills in the modern workplace.","skill 可数"],
+["learn","孩子通过模仿学习语言。","Children learn language by imitating.","learn by doing"],
+["study","研究表明，睡眠不足会影响记忆。","Studies show that lack of sleep affects memory.","study 可数（研究）"],
+["teach","他教我们如何写一篇好作文。","He taught us how to write a good composition.","teach sb how to do"],
+["train","公司为新员工提供三个月的培训。","The company trains new employees for three months.","train 训练"],
+["exam","他通过了入学考试。","He passed the entrance exam.","pass an exam"],
+["graduate","她去年从这所大学毕业。","She graduated from this university last year.","graduate from"],
+["academic","他的学术水平得到了同行的认可。","His academic level was recognized by his peers.","academic 学术的"],
+["research","这项研究持续了五年。","This research lasted five years.","research 不可数"],
+["lecture","我每周三下午有一场讲座。","I have a lecture every Wednesday afternoon.","lecture 可数"],
+["campus","校园里有很多绿树和花草。","There are many trees and flowers on the campus.","on campus"],
+["scholarship","她靠奖学金完成了学业。","She finished her studies on a scholarship.","scholarship 奖学金"],
+["technology","科技的发展改变了人们的生活方式。","The development of technology has changed people's way of life.","technology 不可数"],
+["digital","我们生活在一个数字时代。","We live in a digital age.","digital age"],
+["internet","互联网让信息传播得更快。","The Internet makes information spread faster.","the Internet 加 the"],
+["online","现在很多人喜欢在网上购物。","Now many people like shopping online.","online 副词，不加介词"],
+["device","这个设备可以测量你的心率。","This device can measure your heart rate.","device 可数"],
+["smartphone","几乎每个大学生都有一部智能手机。","Almost every college student has a smartphone.","smartphone 可数"],
+["data","数据显示，吸烟人数在下降。","The data show that the number of smokers is decreasing.","data 复数，谓语用 show"],
+["information","我从网上找到了很多有用的信息。","I found a lot of useful information online.","information 不可数"],
+["software","这款软件可以帮助你记单词。","This software can help you memorize words.","software 不可数"],
+["intelligence","人工智能正在改变很多行业。","Artificial intelligence is changing many industries.","artificial intelligence"],
+["robot","机器人可以代替人做危险的工作。","Robots can do dangerous work instead of humans.","robot 可数"],
+["network","网络让远距离的沟通变得容易。","The network makes long-distance communication easy.","network 可数"],
+["screen","长时间看屏幕对眼睛不好。","Looking at the screen for a long time is bad for your eyes.","screen 可数"],
+["application","这个应用可以帮助你管理时间。","This application can help you manage your time.","application 应用"],
+["innovation","创新是公司发展的动力。","Innovation is the driving force of a company's development.","innovation 不可数"],
+["automatic","这扇门是自动的，不用手推。","This door is automatic and needs no pushing.","automatic 自动的"],
+["virtual","我们上周开了一次虚拟会议。","We held a virtual meeting last week.","virtual meeting"],
+["platform","这个平台为学生提供免费的课程。","This platform provides free courses for students.","platform 可数"],
+["environment","我们应该保护我们的环境。","We should protect our environment.","the environment"],
+["pollution","空气污染已经成为严重的城市问题。","Air pollution has become a serious urban problem.","pollution 不可数"],
+["climate","气候变化影响每一个人。","Climate change affects everyone.","climate change"],
+["energy","我们应该节约能源。","We should save energy.","energy 不可数"],
+["resource","水是我们最宝贵的资源之一。","Water is one of our most precious resources.","resource 可数"],
+["waste","不要把时间浪费在无意义的事情上。","Don't waste time on meaningless things.","waste time on sth"],
+["recycle","这些瓶子可以回收利用。","These bottles can be recycled.","recycle 及物"],
+["sustainable","我们需要走可持续发展之路。","We need to take the road of sustainable development.","sustainable development"],
+["emission","汽车尾气排放是空气污染的主要原因。","Car emissions are a main cause of air pollution.","emission 常作复数"],
+["carbon","减少碳排放需要每个人的努力。","Reducing carbon emissions requires everyone's effort.","carbon emissions"],
+["ecosystem","森林生态系统需要长期保护。","The forest ecosystem needs long-term protection.","ecosystem 可数"],
+["protect","我们要保护野生动物。","We must protect wild animals.","protect sth from"],
+["damage","大火对森林造成了严重破坏。","The fire caused serious damage to the forest.","damage 不可数"],
+["natural","这个国家有丰富的自然资源。","This country is rich in natural resources.","natural resources"],
+["renewable","太阳能是一种可再生能源。","Solar energy is a renewable energy.","renewable energy"],
+["temperature","今天的气温比昨天高五度。","Today's temperature is five degrees higher than yesterday's.","temperature 可数"],
+["species","这种物种正面临灭绝的危险。","This species is in danger of dying out.","species 单复数同形"],
+["conservation","水资源的保护需要全社会的参与。","Water conservation requires the participation of the whole society.","conservation 不可数"],
+["health","健康比财富更重要。","Health is more important than wealth.","health 不可数"],
+["disease","这种疾病在老年人中很常见。","This disease is common among old people.","disease 可数"],
+["medicine","他每天按时吃药。","He takes medicine on time every day.","medicine 不可数"],
+["treatment","他正在医院接受治疗。","He is receiving treatment in hospital.","treatment 不可数"],
+["patient","医生对每个病人都很有耐心。","The doctor is patient with every patient.","be patient with"],
+["hospital","她被送到了最近的医院。","She was sent to the nearest hospital.","in hospital 住院"],
+["exercise","每天锻炼半小时对健康有益。","Half an hour of exercise a day is good for your health.","exercise 不可数"],
+["diet","均衡的饮食能让你保持健康。","A balanced diet can keep you healthy.","a balanced diet"],
+["mental","心理健康和身体健康同样重要。","Mental health is as important as physical health.","mental health"],
+["stress","考试前的压力让她睡不着。","The stress before exams kept her awake.","stress 不可数"],
+["sleep","充足的睡眠能提高学习效率。","Enough sleep can improve learning efficiency.","sleep 不可数"],
+["obesity","儿童肥胖已经成为一个社会问题。","Childhood obesity has become a social problem.","obesity 不可数"],
+["virus","这种病毒通过空气传播。","This virus spreads through the air.","virus 可数"],
+["immune","锻炼能增强免疫力。","Exercise can strengthen the immune system.","immune system"],
+["therapy","他每周做两次物理治疗。","He has physical therapy twice a week.","therapy 可数/不可数"],
+["symptom","发烧是这种病的常见症状。","A fever is a common symptom of this disease.","symptom 可数"],
+["nutrition","良好的营养对孩子成长很重要。","Good nutrition is important for children's growth.","nutrition 不可数"],
+["physical","规律的体育锻炼能减轻压力。","Regular physical exercise can reduce stress.","physical 身体的"],
+["job","毕业后他找到了一份好工作。","He found a good job after graduation.","job 可数"],
+["career","她的事业在三十岁时开始起步。","Her career took off when she was thirty.","career 可数"],
+["employee","公司为员工提供免费午餐。","The company provides free lunch for its employees.","employee 可数"],
+["employer","雇主应该尊重员工的权益。","Employers should respect the rights of employees.","employer 雇主"],
+["company","他在一家外资公司工作。","He works in a foreign company.","company 可数"],
+["industry","旅游业是这里的主要产业。","Tourism is the main industry here.","industry 可数"],
+["business","做生意需要诚信。","Doing business requires honesty.","do business"],
+["market","这种产品在市场上很受欢迎。","This product is very popular in the market.","on the market"],
+["management","良好的管理是成功的关键。","Good management is the key to success.","management 不可数"],
+["manager","经理要求我们周五前交报告。","The manager asked us to hand in the report before Friday.","manager 可数"],
+["salary","这份工作的薪水比我预期的高。","The salary of this job is higher than I expected.","salary 可数"],
+["interview","他明天上午有一场面试。","He has an interview tomorrow morning.","interview 可数"],
+["resume","请把简历发到我的邮箱。","Please send your resume to my email.","resume 简历"],
+["professional","我们需要专业的人员来处理这件事。","We need professional people to deal with it.","professional 专业的"],
+["productive","早上的工作效率最高。","We are most productive in the morning.","productive 高效的"],
+["teamwork","这个项目成功靠的是团队合作。","The success of the project depends on teamwork.","teamwork 不可数"],
+["leadership","好的领导力能带动整个团队。","Good leadership can motivate the whole team.","leadership 不可数"],
+["workplace","安全的工作环境是员工的基本权利。","A safe workplace is a basic right of employees.","workplace 可数"],
+["society","教育对社会发展有重要作用。","Education plays an important role in the development of society.","society 不可数"],
+["culture","了解不同的文化能开阔眼界。","Learning about different cultures can broaden your horizons.","culture 可数/不可数"],
+["community","社区居民一起清理了公园。","The community cleaned the park together.","community 可数"],
+["population","这个城市的人口超过一千万。","The population of this city is over ten million.","population 单数谓语"],
+["generation","年轻一代更愿意接受新事物。","The younger generation is more willing to accept new things.","generation 可数"],
+["family","家庭是孩子成长的第一所学校。","The family is the first school for a child's growth.","family 可数"],
+["government","政府应该加大对教育的投入。","The government should increase investment in education.","government 可数"],
+["policy","这项政策对农民很有帮助。","This policy is very helpful to farmers.","policy 可数"],
+["citizen","每个公民都有受教育的权利。","Every citizen has the right to education.","citizen 可数"],
+["public","公众对这件事非常关注。","The public is very concerned about this matter.","the public 谓语用单数"],
+["urban","城市人口正在快速增长。","The urban population is growing rapidly.","urban 城市的"],
+["rural","农村地区的医疗条件正在改善。","Medical conditions in rural areas are improving.","rural 农村的"],
+["poverty","教育是摆脱贫困的最好办法。","Education is the best way to get out of poverty.","poverty 不可数"],
+["equality","男女平等是社会进步的表现。","Equality between men and women shows social progress.","equality 不可数"],
+["tradition","春节是中国最重要的传统。","The Spring Festival is the most important tradition in China.","tradition 可数"],
+["behavior","他的行为让所有人感到惊讶。","His behavior surprised everyone.","behavior 不可数"],
+["individual","每个人都有自己的责任。","Every individual has his own responsibility.","individual 可数"],
+["value","这本书对年轻人很有价值。","This book is of great value to young people.","be of value"],
+["decrease","过去五年这个数字减少了百分之二十。","The number has decreased by twenty percent in the past five years.","decrease by 减少了"],
+["develop","读书能培养孩子的思维能力。","Reading can develop children's thinking ability.","develop 培养"],
+["include","价格包括早餐和无线网络。","The price includes breakfast and Wi-Fi.","include 包括"],
+["create","这次活动为学生创造了交流的机会。","This activity created chances for students to communicate.","create 创造"],
+["consider","做决定前你应该考虑所有的可能。","You should consider all the possibilities before making a decision.","consider doing"],
+["explain","请你解释一下这句话的意思。","Please explain the meaning of this sentence to me.","explain sth to sb"],
+["compare","不要总拿自己的孩子和别人比。","Don't always compare your child with others.","compare A with B"],
+["suggest","医生建议他多休息。","The doctor suggested that he (should) rest more.","suggest that sb (should) do"],
+["allow","这里不允许拍照。","Taking photos is not allowed here.","allow doing / allow sb to do"],
+["encourage","老师鼓励我们多提问。","The teacher encouraged us to ask more questions.","encourage sb to do"],
+["important","保持好奇心对学习非常重要。","Keeping curiosity is very important for learning.","be important for"],
+["necessary","有必要在出发前确认一下时间。","It is necessary to confirm the time before leaving.","It is necessary to do"],
+["possible","请尽快给我一个可能的答复。","Please give me a possible answer as soon as you can.","as ... as possible"],
+["difficult","对他来说，早起是一件困难的事。","Getting up early is difficult for him.","It is difficult for sb to do"],
+["similar","这两所大学的课程设置很相似。","The courses of the two universities are very similar.","be similar to"],
+["different","每个人的学习方法都不相同。","Everyone's way of learning is different.","be different from"],
+["common","感冒是冬季最常见的疾病。","A cold is the most common disease in winter.","common 常见的"],
+["serious","空气污染已经成为一个严重的问题。","Air pollution has become a serious problem.","serious 严重的"],
+["effective","这是一种有效的学习方法。","This is an effective way of learning.","effective 有效的"],
+["available","这本书在图书馆可以借到。","This book is available in the library.","be available"],
+["valuable","这次实习给了我宝贵的经验。","This internship gave me valuable experience.","valuable 宝贵的"],
+["various","书店里有各种各样的书。","There are various kinds of books in the bookstore.","various + 复数名词"],
+["certain","我确信他会来。","I am certain that he will come.","be certain that"],
+["likely","他很可能明天到。","He is likely to arrive tomorrow.","be likely to do"],
+["major","这是这次失败的主要原因。","This is the major cause of the failure.","major 主要的"],
+["recent","最近的研究表明，这个方法有效。","Recent research shows that this method works.","recent 最近的"],
+["rapid","这个城市经历了快速的发展。","The city has experienced rapid development.","rapid development"],
+["significant","这项发现具有重大意义。","This discovery is of significant importance.","significant 重大的"],
+["essential","水是生命必不可少的。","Water is essential to life.","be essential to"],
+["complex","这个问题比我们想的复杂。","This problem is more complex than we thought.","complex 复杂的"],
+["potential","每个学生都有潜在的创造力。","Every student has potential creativity.","potential 潜在的"],
+["appropriate","我们应该用合适的方式表达意见。","We should express our opinions in an appropriate way.","appropriate 合适的"],
+["comprehensive","这本书对语法做了全面的讲解。","This book gives a comprehensive explanation of grammar.","comprehensive 全面的"],
+["familiar","我对这个单词很熟悉，但不会拼。","I am familiar with this word, but I can't spell it.","be familiar with"]
+];
+const SQIDX={}; SQ.forEach(x=>{SQIDX[x[0]]=x;});
+
 const WRITE=[
  {w:6,t:'On the Importance of Reading',zh:'阅读的重要性',type:'现象解释型',need:'第一段点出现象或观点；第二段给两条理由并各配一个例子；第三段收束。不少于 100 词。'},
  {w:7,t:'Living Alone or with Roommates?',zh:'独居还是合租',type:'对比选择型',need:'两方各写一条好处、一条麻烦，最后明确给出你的选择及理由。不少于 100 词。'},
@@ -4190,7 +4580,7 @@ function initState(){
     S={start:todayISO(),words:{},sentences:[],days:{},exams:[],mile:{}};
     save();
   }
-  S.words=S.words||{}; S.sentences=S.sentences||[]; S.days=S.days||{}; S.exams=S.exams||[]; S.mile=S.mile||{}; S.custom=S.custom||[]; S.memo=S.memo||{}; S.learn=S.learn||{};
+  S.words=S.words||{}; S.sentences=S.sentences||[]; S.days=S.days||{}; S.exams=S.exams||[]; S.mile=S.mile||{}; S.custom=S.custom||[]; S.memo=S.memo||{}; S.learn=S.learn||{}; S.tn=S.tn||{d:null,list:[]}; S.tr=S.tr||{d:null,list:[]};
   if(!S.start) S.start=todayISO();
   if(S.custom.length){
     S.custom.forEach(r=>{
@@ -4248,6 +4638,14 @@ function targetNew(){
 function wstate(word){
   if(!S.words[word]) S.words[word]={box:0,due:todayISO(),hard:0,seen:0};
   return S.words[word];
+}
+/* 记录今天碰过的词：seens 首次出现进 tn（新学），否则进 tr（回炉） */
+function markToday(word,first){
+  const t=todayISO();
+  if(!S.tn||S.tn.d!==t) S.tn={d:t,list:[]};
+  if(!S.tr||S.tr.d!==t) S.tr={d:t,list:[]};
+  const box=first?S.tn:S.tr;
+  if(box.list.indexOf(word)<0) box.list.push(word);
 }
 /* 每天背完：把今天学过的词对应的阅读句连起来读一遍 */
 function todayRead(){
@@ -4376,6 +4774,7 @@ function grade(v){
   const st=wstate(w[0]);
   st.seen=(st.seen||0)+1;
   st.last=todayISO();
+  markToday(w[0], st.seen===1);
   if(v==='know'){
     const isD=(w[3]==='D');
     const maxBox=isD?2:5;
@@ -4923,16 +5322,68 @@ function toggleRef(k){ const r=outRec(); r['s_'+k]=r['s_'+k]?0:1; save(); render
 function wcOf(v){ return String(v||'').trim().split(/\s+/).filter(Boolean).length; }
 /* 第 1 句取当周课本里的长难句（和这周语法点对应），第 2 句取一个阅读例句。
    两句都按天往后轮，一周之内不重样，同一句隔周还会再撞上。 */
+/* 今日输出的题源三条线：
+   ① 当周长难句（贴本周语法点，来自 SENTS）
+   ② 今天刚背的 C/B 层词（来自 SQ，复用词优先）
+   ③ 今天回炉的 C/B 层旧词（来自 SQ）
+   另加 1 句仿写（IMIT）。共 8 句。 */
+function lcg(seed){ let s=seed%2147483647; if(s<=0) s+=2147483646;
+  return function(){ s=s*16807%2147483647; return (s-1)/2147483646; }; }
+function pickBySeed(pool,n,seed,used){
+  const rnd=lcg(seed*7919+13), arr=pool.slice();
+  for(let i=arr.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); const t=arr[i]; arr[i]=arr[j]; arr[j]=t; }
+  const out=[];
+  for(const x of arr){ if(out.length>=n) break; if(!used.has(x[0])){ out.push(x); used.add(x[0]); } }
+  return out;
+}
+function listOf(box){ const t=todayISO(); return (box&&box.d===t)?box.list:[]; }
+function recentWords(days){
+  const t=todayISO(), out=[];
+  WORDS.forEach(w=>{
+    const st=S.words[w[0]];
+    if(st&&st.seen&&st.last&&diffDays(st.last,t)<=days) out.push(w);
+  });
+  return out;
+}
+function sqWordsOf(words){
+  const arr=words.filter(w=>SQIDX[w[0]]);
+  arr.sort((a,b)=>{ const ra=(a[3]==='C'?0:(a[3]==='B'?1:9)), rb=(b[3]==='C'?0:(b[3]==='B'?1:9)); return ra-rb; });
+  return arr;
+}
+function sqItem(tag,w){ const it=SQIDX[w[0]]; return {tag:tag,zh:it[1],en:it[2],pt:it[3]}; }
 function todayOut(){
-  const d=Math.max(0,dayNum()-1), wk=weekNum();
-  const ss=SENTS.filter(x=>x.zh&&x.en).map(x=>({en:x.en,zh:x.zh}));
-  const rs=Object.keys(RSENT).map(k=>({en:RSENT[k][0],zh:RSENT[k][1]}));
+  const d=Math.max(0,dayNum()-1), wk=weekNum(), seed=dayNum();
+  const items=[], used=new Set();
+  /* ① 2 句当周长难句 */
+  const ss=SENTS.filter(x=>x.zh&&x.en);
   const weekArr=ss.slice((wk-1)*4, wk*4);
-  const arr=weekArr.length?weekArr:ss;
-  const a=arr[d%arr.length];
-  const b=rs[d%rs.length];
+  const carr=weekArr.length?weekArr:ss;
+  [0,1].forEach(off=>{
+    const s=carr[(d+off)%carr.length];
+    if(s) items.push({tag:'课程句',zh:s.zh,en:s.en,pt:s.cut||s.pt||''});
+  });
+  /* ② 3 句今天新学的词（今天还没背词时，退回最近 3 天学过的词） */
+  const nnList=listOf(S.tn);
+  const nn=sqWordsOf(WORDS.filter(w=>nnList.indexOf(w[0])>=0)).map(w=>({w:w,tag:'今天新词'}))
+    .concat(sqWordsOf(recentWords(3).filter(w=>nnList.indexOf(w[0])<0)).map(w=>({w:w,tag:'最近学过'})));
+  nn.filter(x=>!used.has(x.w[0])).slice(0,3).forEach(x=>{ items.push(sqItem(x.tag,x.w)); used.add(x.w[0]); });
+  /* ③ 2 句今天回炉的旧词（没有到期词时，退回最近 7 天碰过的词） */
+  const rrList=listOf(S.tr);
+  const rr=sqWordsOf(WORDS.filter(w=>rrList.indexOf(w[0])>=0)).map(w=>({w:w,tag:'今天复习'}))
+    .concat(sqWordsOf(recentWords(7).filter(w=>rrList.indexOf(w[0])<0)).map(w=>({w:w,tag:'最近学过'})));
+  rr.filter(x=>!used.has(x.w[0])).slice(0,2).forEach(x=>{ items.push(sqItem(x.tag,x.w)); used.add(x.w[0]); });
+  /* 不足的用题库补（按日固定抽样，当天不变、隔天换） */
+  const need=7-items.length;
+  if(need>0){
+    const pool=SQ.filter(x=>!used.has(x[0]));
+    pickBySeed(pool,need,seed,used).forEach(x=>{
+      items.push({tag:'加练',zh:x[1],en:x[2],pt:x[3]});
+    });
+  }
+  /* ④ 1 句仿写 */
   const im=IMIT[((wk-1)*2+(d%2))%IMIT.length];
-  return {a:a,b:b,im:im};
+  items.push({tag:'仿写 · '+im.pat,zh:im.zh,en:im.ref,pt:''});
+  return {items:items,im:im};
 }
 function saveWrite(v){
   S.writes=S.writes||{};
@@ -4945,30 +5396,34 @@ function writeTopic(){
 }
 function outCard(){
   const o=todayOut(), r=outRec(), wt=writeTopic();
-  const line=(k,item,title)=>{
-    const shown=!!r['s_'+k];
+  const rows=o.items.map((it,i)=>{
+    const k='q'+(i+1), shown=!!r['s_'+k], v=r[k]||'';
     return '<div class="orow">'+
-      (title?'<span class="opat">'+esc(title)+'</span>':'')+
-      '<div class="ozh">'+esc(item.zh)+'</div>'+
-      '<textarea rows="2" onblur="saveOut(\''+k+'\',this.value)" placeholder="在这里译；想不起的词先用 □ 占位，别留空">'+esc(r[k]||'')+'</textarea>'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;">'+
+        '<span class="opat">'+esc(it.tag)+'</span>'+
+        '<span style="font-size:12px;color:var(--ink-4);">第 '+(i+1)+' 句</span></div>'+
+      '<div class="ozh">'+esc(it.zh)+'</div>'+
+      (it.pt?'<div class="opt">'+esc(it.pt)+'</div>':'')+
+      '<textarea rows="2" onblur="saveOut(\''+k+'\',this.value)" placeholder="在这里译；想不起的词先用 □ 占位，别留空">'+esc(v)+'</textarea>'+
       '<div style="margin-top:7px;"><span class="oref" onclick="toggleRef(\''+k+'\')">'+(shown?'收起参考':'看参考译文')+'</span></div>'+
-      (shown?'<div class="orefv">'+esc(item.en)+'</div>':'')+
+      (shown?'<div class="orefv">'+esc(it.en)+'</div>':'')+
     '</div>';
-  };
+  }).join('');
   let w='';
   if(wt){
     const txt=((S.writes||{})[weekNum()])||'';
     w='<div class="orow">'+
       '<span class="opat">作文 · '+esc(wt.type)+'</span>'+
-      '<div class="ozh"><b>'+esc(wt.t)+'</b>　'+esc(wt.zh)+'</div>'+
+      '<div class="ozh" style="margin-top:7px;"><b>'+esc(wt.t)+'</b>　'+esc(wt.zh)+'</div>'+
       '<div style="font-size:12.2px;color:var(--ink-4);line-height:1.7;margin-bottom:7px;">'+esc(wt.need)+'</div>'+
       '<textarea rows="7" oninput="document.getElementById(\'wc\').textContent=wcOf(this.value)" onblur="saveWrite(this.value)" placeholder="先用中文列三段的骨架，再逐句译成英文">'+esc(txt)+'</textarea>'+
       '<div style="margin-top:7px;font-size:12px;color:var(--ink-4);">当前 <b id="wc">'+wcOf(txt)+'</b> 词 / 需 100 词以上</div>'+
     '</div>';
   }
-  return '<div class="card"><h3>今日输出 <span class="sub">汉译英 2 句 · 仿写 1 句'+(wt?' · 作文':'')+'</span></h3>'+
-    line('t1',o.a,'汉译英')+line('t2',o.b,'汉译英')+
-    line('im',{zh:o.im.zh,en:o.im.ref},'仿写 · '+o.im.pat)+w+'</div>';
+  const cnt={}; o.items.forEach(x=>{ const k=x.tag.split(' · ')[0]; cnt[k]=(cnt[k]||0)+1; });
+  const sub=o.items.length+' 句 · '+Object.keys(cnt).map(k=>k+' '+cnt[k]).join(' · ');
+  return '<div class="card"><h3>今日输出 <span class="sub">'+sub+'</span></h3>'+
+    rows+w+'</div>';
 }
 function viewBook(){
   const head='<div class="vhead"><h1>句子本</h1></div>';
