@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>学位英语 · 70天通关台</title>
+<title>学位英语 · 55天冲刺台</title>
 <style>
   :root{
     --ink:#16202e; --ink-2:#3d4c60; --ink-3:#77869a; --ink-4:#9aa8ba;
@@ -343,7 +343,7 @@
 <body>
 <div class="app">
   <aside class="side">
-    <div class="brand">学位英语 · 70 天<span>江苏联盟 · 目标 60 分</span></div>
+    <div class="brand">学位英语 · 55 天<span>江苏联盟 · 目标 60 分 · 一天约 130 分钟</span></div>
     <nav class="nav" id="nav">
       <button data-v="today" class="on"><span class="ic">◎</span>今日</button>
       <button data-v="vocab"><span class="ic">▤</span>背词</button>
@@ -4142,45 +4142,39 @@ const RSENT={"infer":["What can we infer from the second paragraph?", "从第二
 };
 
 /* =========================================================
-   10 周计划（与文档一致）
+   8 周计划（55 天 · 与文档一致）
    ========================================================= */
 const WEEKS=[
- {w:1,theme:'句子骨架：五大基本句型、词性、怎么查词',words:175,
-  points:['先修课 L0：词性与术语入门（第一次学必看）','主+谓','主+谓+宾','主+系+表','主+谓+双宾','主+谓+宾+补','there be 与 it 句型'],
+ {w:1,theme:'句子骨架 + 定语状语的位置',words:210,
+  points:['先修课 L0：词性与术语入门（第一次学必看）','主+谓 / 主+谓+宾 / 主+系+表','主+谓+双宾 / 主+谓+宾+补 / there be','形容词作定语前置、介词短语作定语后置','副词作状语，位置灵活'],
   check:'能独立画出 10 个简单句的主语和谓语'},
- {w:2,theme:'简单句扩展：定语、状语在句中的位置',words:350,
-  points:['形容词作定语，前置','介词短语作定语，后置','副词作状语，位置灵活','状语可句首、可句尾'],
-  check:'手写译文 10 句，每句错因能说清'},
- {w:3,theme:'并列句 + 时态回顾',words:525,
+ {w:2,theme:'并列句 + 时态回顾',words:420,
   points:['and / but / or / so / for 连接','现在完成 vs 一般过去','过去完成 had done','时间状语从句"主将从现"'],
   check:'时态填空 20 题，对 14 题以上'},
- {w:4,theme:'定语从句',words:700,
+ {w:3,theme:'定语从句',words:630,
   points:['that / which 指物','who / whom / whose 指人','where / when / why 作状语','介词 + which','非限制性从句（逗号）'],
   check:'能把 10 个长句切分并译顺'},
- {w:5,theme:'状语从句',words:875,
+ {w:4,theme:'状语从句',words:840,
   points:['时间 when / while / as / until','条件 if / unless / as long as','让步 although / even if / while','原因 because / since / as','目的 so that / in order that'],
   check:'译出一整段含从句的原文（60 词）'},
- {w:6,theme:'名词性从句 + it 句型',words:1050,
+ {w:5,theme:'名词性从句 + it 句型',words:1050,
   points:['that 不作成分、无词义','what 作成分','whether 与 if 的区别','it 形式主语：It is important that…','it 形式宾语：find it difficult to do'],
   check:'做一篇阅读真题，8 题对 4–5 题'},
- {w:7,theme:'非谓语动词',words:1225,
+ {w:6,theme:'非谓语动词',words:1260,
   points:['to do 作目的、结果状语','doing 作主语、宾语、介词后','done 表被动、完成','doing vs done 作定语','having done 先于主句'],
   check:'阅读 8 题对 5 题'},
- {w:8,theme:'阅读四大题型 + 完形逻辑词',words:1364,
-  points:['细节题：定位 + 同义替换','干扰项四特征','逻辑衔接词六类','完形先通读再填空','穿插补课：L8 被动语态 + 虚拟语气'],
+ {w:7,theme:'阅读四大题型 + 完形逻辑词',words:1364,
+  points:['细节题：定位 + 同义替换','干扰项四特征','逻辑衔接词六类','完形先通读再填空','穿插补课：L8 被动语态 + 虚拟语气；L9 倒装与强调'],
   check:'阅读 8 题对 5–6 题，单篇限时 10 分钟'},
- {w:9,theme:'汉译英 + 写作三段式',words:1364,
-  points:['中英差异四条','保命六句','现象解释型 / 对比选择型 / 问题解决型','不少于 100 词','穿插补课：L9 倒装与强调'],
-  check:'不看范文写出 3 篇 100 词作文'},
- {w:10,theme:'整套真题计时 + 错题回炉',words:1364,
-  points:['90 分钟整卷','顺序：阅读→语法→完形→翻译→作文','错题本回看','作文手写计时 20 分钟','穿插补课：L10 比较结构 + 主谓一致'],
+ {w:8,theme:'汉译英 + 作文定型 + 整卷模考',words:1364,
+  points:['中英差异四条 / 保命六句','现象解释型 / 对比选择型 / 问题解决型，不少于 100 词','90 分钟整卷：阅读→语法→完形→翻译→作文','错题本回看，作文手写计时 20 分钟','穿插补课：L10 比较结构 + 主谓一致'],
   check:'模考 ≥ 60 分，且时间够用'}
 ];
 
 const TASKS=[
- {k:'t1',n:'回炉到期词块',m:20},
- {k:'t2',n:'新词（按今天的目标数）',m:15},
- {k:'t3',n:'课堂：学练本周知识点（第 1–7 周主线课 / 第 8–10 周高频补充课）',m:20},
+ {k:'t1',n:'回炉到期词块',m:25},
+ {k:'t2',n:'新词（按今天的目标数）',m:18},
+ {k:'t3',n:'课堂：学练本周知识点（第 1–6 周主线课 / 第 7–8 周高频补充课）',m:20},
  {k:'t4',n:'精读一段真题 + 手写 5 句',m:30},
  {k:'t5',n:'句子本：汉译英 8 句',m:35}
 ];
@@ -4194,22 +4188,22 @@ const TASKS=[
 const IMIT=[
  {w:1,pat:'主 + 谓 + 宾',zh:'学生们每天早上读英语。',ref:'Students read English every morning.'},
  {w:1,pat:'主 + 系 + 表',zh:'这个主意听起来不错。',ref:'The idea sounds good.'},
- {w:2,pat:'介词短语作定语（后置）',zh:'桌上的那本书是我的。',ref:'The book on the desk is mine.'},
- {w:2,pat:'副词作状语的位置',zh:'他昨天在图书馆认真地看书。',ref:'He read carefully in the library yesterday.'},
- {w:3,pat:'并列句 so',zh:'他努力了，所以他通过了考试。',ref:'He worked hard, so he passed the exam.'},
- {w:3,pat:'现在完成时',zh:'我已经在这里住了三年。',ref:'I have lived here for three years.'},
- {w:4,pat:'定语从句 who',zh:'我认识那个教我们英语的老师。',ref:'I know the teacher who teaches us English.'},
- {w:4,pat:'非限制性定语从句',zh:'这本书是去年出版的，很受欢迎。',ref:'The book, which was published last year, is very popular.'},
- {w:5,pat:'时间状语从句 as soon as',zh:'他一到家就给我打了电话。',ref:'He called me as soon as he got home.'},
- {w:5,pat:'让步状语从句 although',zh:'虽然下着大雨，他们还是继续工作。',ref:'Although it was raining heavily, they kept working.'},
- {w:6,pat:'宾语从句 that',zh:'我认为我们应该早点出发。',ref:'I think that we should start earlier.'},
- {w:6,pat:'it 作形式主语',zh:'学好英语很重要。',ref:'It is important to learn English well.'},
- {w:7,pat:'doing 作主语',zh:'每天读英语很有帮助。',ref:'Reading English every day is helpful.'},
- {w:7,pat:'done 作后置定语',zh:'被邀请的客人都到了。',ref:'The guests invited to the party have arrived.'},
- {w:8,pat:'一般将来时的被动',zh:'这个问题将在会上讨论。',ref:'This problem will be discussed at the meeting.'},
- {w:8,pat:'虚拟语气（与过去相反）',zh:'如果他昨天来，就会见到她。',ref:'If he had come yesterday, he would have met her.'},
- {w:9,pat:'否定词提前的倒装',zh:'我从来没有见过这么美的风景。',ref:'Never have I seen such beautiful scenery.'},
- {w:9,pat:'强调句型 it was … that',zh:'正是在那时我明白了他的意思。',ref:'It was then that I understood what he meant.'}
+ {w:1,pat:'介词短语作定语（后置）',zh:'桌上的那本书是我的。',ref:'The book on the desk is mine.'},
+ {w:1,pat:'副词作状语的位置',zh:'他昨天在图书馆认真地看书。',ref:'He read carefully in the library yesterday.'},
+ {w:2,pat:'并列句 so',zh:'他努力了，所以他通过了考试。',ref:'He worked hard, so he passed the exam.'},
+ {w:2,pat:'现在完成时',zh:'我已经在这里住了三年。',ref:'I have lived here for three years.'},
+ {w:3,pat:'定语从句 who',zh:'我认识那个教我们英语的老师。',ref:'I know the teacher who teaches us English.'},
+ {w:3,pat:'非限制性定语从句',zh:'这本书是去年出版的，很受欢迎。',ref:'The book, which was published last year, is very popular.'},
+ {w:4,pat:'时间状语从句 as soon as',zh:'他一到家就给我打了电话。',ref:'He called me as soon as he got home.'},
+ {w:4,pat:'让步状语从句 although',zh:'虽然下着大雨，他们还是继续工作。',ref:'Although it was raining heavily, they kept working.'},
+ {w:5,pat:'宾语从句 that',zh:'我认为我们应该早点出发。',ref:'I think that we should start earlier.'},
+ {w:5,pat:'it 作形式主语',zh:'学好英语很重要。',ref:'It is important to learn English well.'},
+ {w:6,pat:'doing 作主语',zh:'每天读英语很有帮助。',ref:'Reading English every day is helpful.'},
+ {w:6,pat:'done 作后置定语',zh:'被邀请的客人都到了。',ref:'The guests invited to the party have arrived.'},
+ {w:7,pat:'一般将来时的被动',zh:'这个问题将在会上讨论。',ref:'This problem will be discussed at the meeting.'},
+ {w:7,pat:'虚拟语气（与过去相反）',zh:'如果他昨天来，就会见到她。',ref:'If he had come yesterday, he would have met her.'},
+ {w:8,pat:'否定词提前的倒装',zh:'我从来没有见过这么美的风景。',ref:'Never have I seen such beautiful scenery.'},
+ {w:8,pat:'强调句型 it was … that',zh:'正是在那时我明白了他的意思。',ref:'It was then that I understood what he meant.'}
 ];
 /* 例句题库：383 条，覆盖 C 层复用词 239 + B 层主题词 144。
    每条 = [目标词, 中文题干, 英文参考, 句式提示]，用于「今日输出」的新词线/旧词线出题。 */
@@ -4622,14 +4616,14 @@ const SQ=[
 const SQIDX={}; SQ.forEach(x=>{SQIDX[x[0]]=x;});
 
 const WRITE=[
- {w:6,t:'On the Importance of Reading',zh:'阅读的重要性',type:'现象解释型',need:'第一段点出现象或观点；第二段给两条理由并各配一个例子；第三段收束。不少于 100 词。'},
- {w:7,t:'Living Alone or with Roommates?',zh:'独居还是合租',type:'对比选择型',need:'两方各写一条好处、一条麻烦，最后明确给出你的选择及理由。不少于 100 词。'},
- {w:8,t:'How to Deal with Stress',zh:'如何应对压力',type:'问题解决型',need:'三个具体办法，用 First / Second / Finally 串起来，每条说清"做什么 + 有什么用"。不少于 100 词。'},
- {w:9,t:'The Impact of Short Videos',zh:'短视频的影响',type:'现象解释型',need:'好处一条、问题一条，最后给出你的看法。不少于 100 词。'}
+ {w:5,t:'On the Importance of Reading',zh:'阅读的重要性',type:'现象解释型',need:'第一段点出现象或观点；第二段给两条理由并各配一个例子；第三段收束。不少于 100 词。'},
+ {w:6,t:'Living Alone or with Roommates?',zh:'独居还是合租',type:'对比选择型',need:'两方各写一条好处、一条麻烦，最后明确给出你的选择及理由。不少于 100 词。'},
+ {w:7,t:'How to Deal with Stress',zh:'如何应对压力',type:'问题解决型',need:'三个具体办法，用 First / Second / Finally 串起来，每条说清"做什么 + 有什么用"。不少于 100 词。'},
+ {w:8,t:'The Impact of Short Videos',zh:'短视频的影响',type:'现象解释型',need:'好处一条、问题一条，最后给出你的看法。不少于 100 词。'}
 ];
 
 /* =========================================================
-   课堂：知识点课文 + 练习题库（对应 10 周计划）
+   课堂：知识点课文 + 练习题库（对应 8 周计划）
    ========================================================= */
 const LESSONS=[
 {id:'L0',wk:'先修课',t:'先看懂这些词：语法术语入门',sub:'名词动词形容词 / 主谓宾定状补 / 介词到底是什么 —— 后面所有课文都建立在这节上',
@@ -5051,8 +5045,10 @@ const GENS={
    基础工具
    ========================================================= */
 const KEY='xwyy_plan_v1';
+const TOTAL=55;         /* 备考总天数：8 周（56 天）压到 55 天，第 55 天是考前最后一天 */
+const WK=8;             /* 周数：1–6 周语法主线 / 第 7 周阅读完形 / 第 8 周翻译写作 + 整卷 */
 /* 考点词（R/C/B/A）走 5 档：1 → 3 → 7 → 15 → 30 天。
-   原方案最后一档是 60 天，但 70 天的备考里它永远用不上，白占复习额度。 */
+   原方案最后一档是 60 天，但 55 天的备考里它永远用不上，白占复习额度。 */
 const INTERVAL=[0,1,3,7,15,30];
 /* D 层认知词只要求「认得」，不要求会写：隔天 → 5 天，认满 2 次即归档。
    这类词后面还会在阅读例句和精读里反复撞见，不需要在卡片上耗五次。 */
@@ -5094,7 +5090,7 @@ function dayNum(){
   const n=diffDays(S.start,todayISO())+1;
   return n<1?1:n;
 }
-function weekNum(){return Math.min(10,Math.max(1,Math.ceil(dayNum()/7)));}
+function weekNum(){return Math.min(WK,Math.max(1,Math.ceil(dayNum()/7)));}
 function dayRec(d){d=d||todayISO(); if(!S.days[d]) S.days[d]={}; return S.days[d];}
 function dayDone(d){
   d=d||todayISO();
@@ -5124,12 +5120,12 @@ function checkLoad(){
 function targetNew(){
   const remain=freshLeft();
   if(!remain) return 0;
-  if(weekNum()>=10) return Math.min(20,remain);   /* 第 10 周不再铺新面，但把词库尾巴清完 */
+  if(weekNum()>=WK) return Math.min(22,remain);   /* 最后一周不再铺新面，把词库尾巴清完 */
 
   const dn=checkLoad();
-  let base=25;
-  if(dn>110) base=15;
-  else if(dn>80) base=20;
+  let base=30;                       /* 55 天跑完 1364 词：日均 25 个，起步给 30，靠复习日摊平 */
+  if(dn>110) base=22;
+  else if(dn>80) base=26;
   if((S.overStreak||0)>=3) base=0;   /* 连欠 3 天：今天只回炉 */
   return Math.min(base,remain);
 }
@@ -5396,7 +5392,7 @@ function render(){
   const m=document.getElementById('main');
   const f=document.getElementById('sidefoot');
   const d=dayNum(), wk=weekNum();
-  f.innerHTML='第 <b>'+Math.min(d,70)+'</b> 天 / 70<br>第 '+wk+' 周 · 目标 60 分';
+  f.innerHTML='第 <b>'+Math.min(d,TOTAL)+'</b> 天 / '+TOTAL+'<br>第 '+wk+' 周 / '+WK+' · 目标 60 分';
   document.querySelectorAll('#nav button').forEach(b=>{
     b.classList.toggle('on',b.getAttribute('data-v')===view);
   });
@@ -5431,22 +5427,25 @@ function viewToday(){
 
 
   const l0st=lstate('L0');
-  let lessonBtns;
-  if(wk<=7){
-    lessonBtns=(wk===1&&!l0st.learned?
-        '<button class="btn pri" onclick="openLesson(\'L0\')">① 先修课：术语入门（先学这个）</button>'+
-        '<button class="btn" onclick="openLesson(\'L1\')">② 进入课堂：句子骨架</button>'
-      :'<button class="btn pri" onclick="openLesson(\'L'+wk+'\')">进入课堂（学知识点）</button>');
-  }else{
-    lessonBtns='<button class="btn pri" onclick="go(\'learn\')">课堂：高频补充三课（被动·虚拟 / 倒装·强调 / 比较·一致）</button>';
+  /* 8 周里每周主攻哪几课：第 1 周连上 L1+L2（骨架 + 扩展），第 2–6 周一周一课，
+     第 7 周阅读完形 + 补课 L8/L9，第 8 周翻译写作 + 补课 L10。 */
+  const WL={1:['L1','L2'],2:['L3'],3:['L4'],4:['L5'],5:['L6'],6:['L7'],7:['L8','L9'],8:['L10']};
+  const lidTitle=id=>{const L=LESSONS.find(x=>x.id===id); return L?L.t:id;};
+  let lessonBtns='';
+  if(wk===1&&!l0st.learned){
+    lessonBtns+='<button class="btn pri" onclick="openLesson(\'L0\')">① 先修课：术语入门（先学这个）</button>';
   }
-  const cardTitle=wk<=7?'本周只攻这一个语法点':'本周主线：题型训练 + 整卷（语法缺口用「高频补充」补齐）';
+  (WL[wk]||[]).forEach((id,i)=>{
+    lessonBtns+='<button class="btn '+((i===0&&wk>1)||(i===0&&l0st.learned)?'pri':'')+'" onclick="openLesson(\''+id+'\')">'+
+      '进入课堂：'+esc(lidTitle(id))+'</button>';
+  });
+  const cardTitle=wk<=6?'本周只攻这一个语法点':'本周主线：题型训练 + 整卷（语法缺口用「高频补充」补齐）';
 
-  return '<div class="vhead"><h1>第 '+Math.min(d,70)+' 天 · '+esc(W.theme)+'</h1></div>'+
+  return '<div class="vhead"><h1>第 '+Math.min(d,TOTAL)+' 天 · '+esc(W.theme)+'</h1></div>'+
 
-    '<div class="note '+(d>70?'good':'')+'" style="margin-top:0;margin-bottom:14px;">'+
-      '<b>本周验收：</b>'+esc(W.check)+'　<span class="pill '+(d>70?'ok':'')+'">第 '+wk+' 周 / 10</span>'+
-      '<span class="checkgo" onclick="'+(wk===9?'go(\'book\')':(wk>=8?'go(\'prog\')':'openLesson(\'L'+Math.min(wk,7)+'\')'))+'">去验收</span></div>'+
+    '<div class="note '+(d>TOTAL?'good':'')+'" style="margin-top:0;margin-bottom:14px;">'+
+      '<b>本周验收：</b>'+esc(W.check)+'　<span class="pill '+(d>TOTAL?'ok':'')+'">第 '+wk+' 周 / '+WK+'</span>'+
+      '<span class="checkgo" onclick="'+(wk>=7?'go(\'prog\')':'openLesson(\''+(WL[wk]||['L1'])[0]+'\')')+'">去验收</span></div>'+
 
     '<div class="stat" style="margin-bottom:14px;"><div class="k">今日完成</div><div class="v">'+done+'<em>/ 5 项</em></div>'+
       '<div class="bar" style="margin-top:8px;"><i style="width:'+pct+'%"></i></div></div>'+
@@ -6006,7 +6005,8 @@ function todayOut(){
     });
   }
   /* ④ 1 句仿写 */
-  const im=IMIT[((wk-1)*2+(d%2))%IMIT.length];
+  const imArr=IMIT.filter(x=>x.w===wk);
+  const im=imArr.length?imArr[d%imArr.length]:IMIT[IMIT.length-1];
   items.push({tag:'仿写 · '+im.pat,zh:im.zh,en:im.ref,pt:''});
   return {items:items,im:im};
 }
@@ -6016,8 +6016,8 @@ function saveWrite(v){
 }
 function writeTopic(){
   const wk=weekNum();
-  if(wk<6) return null;
-  return WRITE[Math.min(WRITE.length-1,wk-6)];
+  if(wk<5) return null;
+  return WRITE[Math.min(WRITE.length-1,wk-5)];
 }
 function outCard(){
   const o=todayOut(), r=outRec(), wt=writeTopic();
@@ -6135,17 +6135,17 @@ function setFilter(f){bookFilter=f; render();}
 function viewProg(){
   const d=dayNum();
   let cells='';
-  for(let i=1;i<=70;i++){
+  for(let i=1;i<=TOTAL;i++){
     const dt=addDays(S.start,i-1);
     const n=dayDone(dt);
     let cls='';
     if(n>=5) cls='d4'; else if(n>=3) cls='d3'; else if(n>=1) cls='d2';
     if(n===0&&S.days[dt]&&S.days[dt].sent) cls='d1';
-    cells+='<div class="'+cls+(i===Math.min(d,70)?' now':'')+'" title="'+dt+' · 完成 '+n+'/5">'+i+'</div>';
+    cells+='<div class="'+cls+(i===Math.min(d,TOTAL)?' now':'')+'" title="'+dt+' · 完成 '+n+'/5">'+i+'</div>';
   }
   const ws=wordStats();
   let streak=0;
-  for(let i=Math.min(d,70);i>=1;i--){
+  for(let i=Math.min(d,TOTAL);i>=1;i--){
     const dt=addDays(S.start,i-1);
     if(dayDone(dt)>0) streak++; else break;
   }
@@ -6160,7 +6160,7 @@ function viewProg(){
 
   let miles='';
   WEEKS.forEach(w=>{
-    if(w.w!==2&&w.w!==4&&w.w!==6&&w.w!==8&&w.w!==9&&w.w!==10) return;
+    if(w.w!==2&&w.w!==4&&w.w!==6&&w.w!==8) return;
     const on=!!S.mile[w.w];
     miles+='<div class="task '+(on?'done':'')+'" onclick="toggleMile('+w.w+')">'+
       '<div class="box">'+(on?'✓':'')+'</div>'+
@@ -6173,7 +6173,7 @@ function viewProg(){
       '<div class="stat"><div class="k">累计学习</div><div class="v">'+totalDone+'<em>天</em></div></div>'+
       '<div class="stat"><div class="k">已练句子</div><div class="v">'+S.sentences.length+'<em>句</em></div></div>'+
     '</div>'+
-    '<div class="card"><h3>70 天打卡 <span class="sub">颜色越深＝当天完成度越高，橙框是今天</span></h3><div class="cal">'+cells+'</div></div>'+
+    '<div class="card"><h3>'+TOTAL+' 天打卡 <span class="sub">颜色越深＝当天完成度越高，橙框是今天</span></h3><div class="cal">'+cells+'</div></div>'+
     '<div class="card"><h3>词库掌握情况</h3>'+
       '<div class="row3">'+
       '<div class="stat" style="border:0;padding:0;"><div class="k">未学</div><div class="v" style="font-size:17px;">'+ws.fresh+'</div></div>'+
@@ -6216,7 +6216,7 @@ function setStart(){
   S.start=v; save(); render();
 }
 
-/* ---- 10 周地图（并进进度页） ---- */
+/* ---- 8 周地图（并进进度页） ---- */
 function planMap(){
   let rows='';
   WEEKS.forEach(w=>{
@@ -6227,7 +6227,7 @@ function planMap(){
       '<td class="c">'+w.words+'</td>'+
       '<td>'+esc(w.check)+'</td></tr>';
   });
-  return '<div class="card"><h3>10 周地图 <span class="sub">第 '+weekNum()+' 周</span></h3>'+
+  return '<div class="card"><h3>'+WK+' 周地图 <span class="sub">第 '+weekNum()+' 周（共 '+TOTAL+' 天）</span></h3>'+
     '<table><thead><tr><th class="c">周</th><th>这一周只攻一个主题</th><th class="c">累计词量</th><th>周末验收</th></tr></thead><tbody>'+rows+'</tbody></table>'+
     '<div style="margin-top:12px;font-size:12px;color:var(--ink-4);">每天 '+TASKS.reduce((a,t)=>a+t.m,0)+' 分钟：'+TASKS.map(t=>t.m+'′ '+t.n.replace(/（.*?）/g,'')).join('　')+'</div></div>';
 }
