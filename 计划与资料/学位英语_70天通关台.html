@@ -253,6 +253,19 @@
   .ozh{font-size:13.3px; color:var(--ink); line-height:1.8; margin-bottom:7px;}
   .opat{display:inline-block; font-size:11.6px; padding:2px 8px; background:var(--teal-2); color:var(--teal); border-radius:5px; margin-bottom:7px;}
   .opt{font-size:11.8px; color:var(--ink-4); line-height:1.7; margin-bottom:7px;}
+  .optbox{display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:16px;}
+  .opt{display:flex; align-items:center; gap:8px; text-align:left; font-size:13.4px; line-height:1.5;
+       padding:11px 12px; border:1px solid var(--line); background:#fff; border-radius:8px; cursor:pointer;
+       color:var(--ink-1); font-family:inherit;}
+  .opt:hover{border-color:var(--blue-3); background:#f7faff;}
+  .opt .oi{flex:0 0 20px; height:20px; line-height:20px; text-align:center; font-size:11.5px;
+       border-radius:5px; background:var(--line-2); color:var(--ink-3);}
+  .opt.ok{border-color:#9ed4b2; background:#eef8f1; color:#1f6b41;}
+  .opt.ok .oi{background:#2f8f5b; color:#fff;}
+  .opt.bad{border-color:#e9b7c3; background:#fdf1f4; color:#a8324a;}
+  .opt.bad .oi{background:#c24363; color:#fff;}
+  .opt.dim{opacity:.45;}
+  @media(max-width:520px){.optbox{grid-template-columns:1fr;}}
   .oref{font-size:12px; color:var(--blue); cursor:pointer;}
   .orefv{margin-top:8px; padding:10px 12px; background:#f6fbf9; border-radius:6px; font-size:13px; color:var(--ink-2); font-family:Georgia,"Times New Roman",serif; line-height:1.8;}
   .checkgo{float:right; font-size:12px; color:var(--blue); cursor:pointer; border-bottom:1px solid var(--blue-3);}
@@ -354,12 +367,12 @@ const WORDS=[
 ["those", "pron. 那些；替代前文复数", "those who… 那些……的人", "A"],
 ["one", "pron. 一个；替代前文单数名词", "the one on the desk", "A"],
 ["ones", "pron. 替代前文复数名词", "the ones who…", "A"],
-["could", "modal 能（过去）；可能", "could have done 本可以做", "A"],
-["may", "modal 可能；可以", "may well 很可能", "A"],
-["might", "modal 也许", "might have done 本可能", "A"],
-["must", "modal 必须；一定", "must have done 一定做过", "A"],
-["should", "modal 应该", "should have done 本应该", "A"],
-["would", "modal 将会；愿意", "would rather 宁愿", "A"],
+["could", "能（过去）；可能", "could have done 本可以做", "A"],
+["may", "可能；可以", "may well 很可能", "A"],
+["might", "也许", "might have done 本可能", "A"],
+["must", "必须；一定", "must have done 一定做过", "A"],
+["should", "应该", "should have done 本应该", "A"],
+["would", "将会；愿意", "would rather 宁愿", "A"],
 ["education", "n. 教育", "receive education 接受教育", "B"],
 ["student", "n. 学生", "college students", "B"],
 ["teacher", "n. 教师", "a teacher's supervision 老师监督", "B"],
@@ -4795,11 +4808,11 @@ function grade(v){
     r.wcount=(r.wcount||0)+1;
   }
   save();
-  ses.idx++; ses.flip=false;
+  ses.idx++; ses.flip=false; ses.ans=null; ses.opts=null;
   render();
 }
 function gradeAgain(){
-  ses.idx=0; ses.flip=false; ses.stat={know:0,fuzzy:0,no:0};
+  ses.idx=0; ses.flip=false; ses.ans=null; ses.opts=null; ses.stat={know:0,fuzzy:0,no:0};
   render();
 }
 
@@ -5164,7 +5177,7 @@ function viewVocab(){
       ('明天到期 '+tom+' 张');
     return head+bar+'<div class="card"><div class="empty" style="padding:44px 20px;">'+
       '<div style="font-size:26px;margin-bottom:10px;">本轮结束</div>'+
-      '一眼就懂 '+st.know+'　有点模糊 '+st.fuzzy+'　跟它不熟 '+st.no+
+      '答对 '+st.know+'　答错 '+st.no+(st.know+st.no?'　正确率 '+Math.round(st.know/Math.max(1,st.know+st.no)*100)+'%':'')+
       '<div style="font-size:12.5px;color:var(--ink-3);margin-top:12px;">'+nxt+'</div>'+
       '<div style="margin-top:18px;display:flex;gap:9px;justify-content:center;">'+
       '<button class="btn pri" onclick="again()">再来一轮</button></div></div></div>'+
@@ -5198,21 +5211,38 @@ function viewVocab(){
     ? '<div class="story"><span class="stag">这样记</span><span class="q">”</span><p>'+hlStory(st,word)+'</p></div>'
     : '<div class="story none"><span class="stag">这样记</span><p>（暂无故事，看搭配和例句记）</p></div>';
 
-  const card='<div class="flash wcard">'+
-      '<div class="wtop">'+lb+'<span class="widx">第 '+(ses.idx+1)+' / '+ses.queue.length+' 张</span></div>'+
-      '<div class="whead"><span class="w">'+esc(word)+'</span>'+
-        '<button class="saybtn" onclick="say(curWord())">🔊 听读音</button></div>'+
-      '<div class="zh">'+esc(w[1])+'</div>'+
+  const wst=S.words[word];
+  const isTest=!!(wst&&wst.seen>0);
+  if(isTest&&(!ses.opts||ses.opts.idx!==ses.idx)) ses.opts=Object.assign({idx:ses.idx},pickOpts(w));
+  const top='<div class="wtop">'+lb+'<span class="widx">第 '+(ses.idx+1)+' / '+ses.queue.length+' 张'+
+      (isTest?' · 检验':'')+'</span></div>';
+  const whead='<div class="whead"><span class="w">'+esc(word)+'</span>'+
+      '<button class="saybtn" onclick="say(curWord())">🔊 听读音</button></div>';
+  const detail='<div class="zh">'+esc(w[1])+'</div>'+
       story+rows.join('')+
       '<div class="bkadd" onclick="addMemo()">'+(mine?'✎ 改我的记忆':'＋ 记我的')+'</div>'+
-      (layer==='D'?'':'<div class="poslegend">词性：n.=名词　v.=动词　adj.=形容词　adv.=副词　prep.=介词　conj.=连词　pron.=代词　art.=冠词</div>')+
-    '</div>';
+      (layer==='D'?'':'<div class="poslegend">词性：n.=名词　v.=动词　adj.=形容词　adv.=副词　prep.=介词　conj.=连词　pron.=代词　art.=冠词</div>');
 
-  const gb='<div class="gradebar">'+
+  let card='', gb='';
+  if(!isTest){
+    card='<div class="flash wcard">'+top+whead+detail+'</div>';
+    gb='<div class="gradebar">'+
       '<button class="btn" style="border-color:#f0cfd7;color:var(--rose);" onclick="grade(\'no\')">跟它不熟</button>'+
       '<button class="btn" style="border-color:#f5dfc0;color:var(--amber);" onclick="grade(\'fuzzy\')">有点模糊</button>'+
-      '<button class="btn pri" onclick="grade(\'know\')">一眼就懂</button>'+
+      '<button class="btn pri" onclick="grade(\'know\')">记住了</button>'+
     '</div>';
+  }else{
+    const o=ses.opts, ch=ses.ans;
+    const optsHtml=o.opts.map(function(t,i){
+      let cls='opt';
+      if(ch!=null){ if(i===o.ai) cls+=' ok'; else if(i===ch) cls+=' bad'; else cls+=' dim'; }
+      return '<button class="'+cls+'" onclick="answer('+i+')">'+
+        '<span class="oi">'+String.fromCharCode(65+i)+'</span><span>'+esc(t)+'</span></button>';
+    }).join('');
+    card='<div class="flash wcard">'+top+whead+'<div class="optbox">'+optsHtml+'</div>'+
+      (ch!=null&&ch!==o.ai?detail:'')+'</div>';
+    if(ch!=null&&ch!==o.ai) gb='<div class="gradebar"><button class="btn pri" onclick="grade(\'no\')">下一张</button></div>';
+  }
 
   const prog=Math.round(ses.idx/Math.max(1,ses.queue.length)*100);
 
@@ -5220,10 +5250,31 @@ function viewVocab(){
     '<div class="card" style="padding:14px 16px 18px;">'+
       '<div style="display:flex;justify-content:space-between;font-size:11.8px;color:var(--ink-4);margin-bottom:9px;">'+
         '<span>复习 '+ses.due+' 张 · 新词 '+ses.newN+' 个</span>'+
-        '<span>一眼就懂 '+ses.stat.know+' · 模糊 '+ses.stat.fuzzy+' · 不熟 '+ses.stat.no+'</span></div>'+
+        '<span>答对 '+ses.stat.know+' · 答错 '+ses.stat.no+(ses.stat.fuzzy?' · 模糊 '+ses.stat.fuzzy:'')+'</span></div>'+
       '<div class="bar" style="margin-bottom:14px;"><i style="width:'+prog+'%"></i></div>'+
       card+gb+
     '</div>';
+}
+/* 复习检验：给 4 个中文选项，1 对 3 错。干扰项取同层其他词，中文不重复。 */
+function pickOpts(word){
+  const zh=word[1], lay=word[3]||'C', used=[zh], opts=[];
+  const same=WORDS.filter(w=>w[0]!==word[0] && w[1]!==zh && (w[3]||'C')===lay);
+  const all=WORDS.filter(w=>w[0]!==word[0] && w[1]!==zh);
+  shuffle(same); shuffle(all);
+  same.concat(all).forEach(w=>{
+    if(opts.length>=3) return;
+    if(used.indexOf(w[1])<0){ opts.push(w[1]); used.push(w[1]); }
+  });
+  const arr=opts.concat([zh]);
+  shuffle(arr);
+  return {opts:arr, ai:arr.indexOf(zh)};
+}
+function answer(i){
+  if(ses.ans!=null || !ses.opts) return;
+  ses.ans=i;
+  const right=(i===ses.opts.ai);
+  render();
+  if(right) setTimeout(function(){ if(ses.ans!=null) grade('know'); },650);
 }
 /* 故事里出现的目标词加粗（含词形变化），让人一眼看到「就是它」 */
 function hlStory(t, word){
@@ -5657,7 +5708,7 @@ function viewRef(){
    ========================================================= */
 function go(v){view=v; if(v==='vocab'&&!ses.active) startSession(); if(v==='learn') LV=null; render(); window.scrollTo(0,0);}
 function go_(v){go(v);}
-window.say=say; window.go=go; window.flip=flip; window.grade=grade; window.again=again; window.addMemo=addMemo; window.delMemo=delMemo;
+window.say=say; window.answer=answer; window.go=go; window.flip=flip; window.grade=grade; window.again=again; window.addMemo=addMemo; window.delMemo=delMemo;
 window.openLesson=openLesson; window.startQuiz=startQuiz; window.startReview=startReview; window.quizPick=quizPick; window.quizNext=quizNext; window.exitLesson=exitLesson;
 window.studyFam=studyFam;
 window.toggleTask=toggleTask; window.toggleErr=toggleErr;
