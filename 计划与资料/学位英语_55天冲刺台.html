@@ -5525,6 +5525,7 @@ function render(){
   else if(view==='book') m.innerHTML=viewBook();
   else if(view==='write') m.innerHTML=viewWrite();
   else if(view==='read') m.innerHTML=viewRead();
+  else if(view==='readlist') m.innerHTML=viewReadList();
   else if(view==='prog') m.innerHTML=viewProg();
   else m.innerHTML=viewRef();
 }
@@ -5592,29 +5593,32 @@ function viewToday(){
 function readCard(d){
   const i=rdgIdx(), R=RDG[i]; if(!R) return '';
   const r=rdgRec(R), n=Object.keys(r.a).length, right=n?r.n:0;
-  const isToday=(R.d===d);
+  const dv=diffOf(R), L=levelOf(dv), tgt=targetDiff();
+  const wc=R.p.replace(/\s+/g,' ').split(' ').filter(Boolean).length;
   let all=0, full=0;
   RDG.forEach(function(RR){
     const rr=recOf(RR);
     if(rr&&Object.keys(rr.a).length){ all++; if((rr.n||0)>=RR.q.length) full++; }
   });
+  const poolN=readPool().length;
   return '<div class="card" style="border-left:3px solid var(--blue);">'+
     '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;">'+
       '<div style="flex:1;min-width:240px;">'+
-        '<h3 style="margin-bottom:6px;">每日一读 <span class="sub">第 '+R.d+' 天 · '+esc(R.t)+'</span>'+
-          (isToday?'<span class="pill ok" style="margin-left:6px;">今天这篇</span>':'')+'</h3>'+
+        '<h3 style="margin-bottom:6px;">每日一读 <span class="sub">'+esc(R.t)+'</span>'+
+          '<span class="pill ok" style="margin-left:6px;font-size:11.4px;">难度 '+dv+' · '+L.name+'</span></h3>'+
         '<div style="font-size:12.9px;color:var(--ink-3);line-height:1.8;">'+
-          (isToday?'只用今天新学的词和之前学过的词写成，':'今天的新词额度用完了，回炉第 '+R.d+' 天这篇，')+
-          '<b style="color:var(--ink-1);">'+R.w.length+'</b> 个词划线、<b style="color:var(--ink-1);">'+R.q.length+'</b> 道题。'+
-          '先读、不许查词、卡住靠上下文猜，做完题再看词表。'+
+          '随时能读，不占配额，想读几篇读几篇。只用你<b style="color:var(--ink-1);">学过</b>的词写，'+
+          '这篇 '+wc+' 词 / '+R.q.length+' 题 / 划线 '+R.w.length+' 个词。'+
+          '你现在该读的难度约 <b style="color:var(--ink-1);">'+tgt+' 分</b>。'+
           (n?'<br><span style="color:var(--ok);font-weight:700;">已答 '+n+'/'+R.q.length+' · 对 '+right+(right===R.q.length?'（全对）':'')+'</span>':'')+
         '</div>'+
-        '<div style="font-size:11.8px;color:var(--ink-4);margin-top:7px;">累计：'+all+' / '+RDG.length+' 篇做过 · '+full+' 篇全对</div>'+
+        '<div style="font-size:11.8px;color:var(--ink-4);margin-top:7px;">累计 '+all+' / '+RDG.length+' 篇做过 · '+full+' 篇全对 · 现在可读 '+poolN+' 篇</div>'+
       '</div>'+
       '<div style="flex:none;display:flex;flex-direction:column;gap:7px;">'+
         '<button class="btn pri" style="padding:10px 20px;font-size:13.4px;" onclick="openRead(null)">'+
-          (n?'再看一遍':'读这一篇')+'</button>'+
-        '<button class="btn" style="padding:7px 14px;font-size:12.6px;" onclick="rndRead()">↻ 换一篇</button></div>'+
+          (n?'再看一遍':'读这篇')+'</button>'+
+        '<button class="btn" style="padding:7px 14px;font-size:12.6px;" onclick="rndRead()">↻ 再来一篇</button>'+
+        '<button class="btn" style="padding:7px 14px;font-size:12.6px;" onclick="openReadList()">篇目库</button></div>'+
     '</div></div>';
 }
 function reviewCard(){
@@ -6226,6 +6230,114 @@ function writeTopic(){ const i=writeIdx(); return i<0?null:WRITE[i]; }
    d=第几天  w=本篇要复现的目标词  q=题（a=正确项下标）
    ========================================================= */
 const RDG=[
+{d:48,k:'d48-1',t:'The Debt Students Never Repay',
+ zh:'学生把睡眠当成可以借的债：周二熬夜写论文，指望周末还上，却不知道利息算在记忆上。实验证明睡过的那组第二天多记住约五分之一；补觉只能补情绪和反应，补不回学习当晚的记忆归档；咖啡只是遮住疲劳。真正有效的方法很枯燥：固定作息、睡前少看屏幕、房间凉而暗。睡眠不是懒，是学习的一部分。',
+ p:`Most students treat sleep as a loan. They borrow two hours on Tuesday to finish an essay, plan to pay it back at the weekend, and forget that the interest is charged to their memory. A week of five-hour nights does not simply make a student tired; it affects what the brain is able to keep.
+
+The evidence comes from experiments that are almost cruel in their simplicity. In one, students learn a list of words in the evening. Half of them sleep for eight hours; the other half stay awake until morning. Both groups are tested the next day. The sleepers remember about a fifth more on average, and the gap is significant for the words that carry meaning rather than sound. Sleep, it seems, is when the day is filed.
+
+Can the debt be repaid later? Only partly. A long Saturday morning restores mood and improves reaction time, but the deeper work of storing what was learned depends on the night after learning, and that night cannot be replaced. Caffeine makes the problem worse, because it reduces the feeling of fatigue without restoring the ability to react. A student who drinks coffee at midnight feels awake and remembers less.
+
+What doctors recommend is dull. Go to bed and get up at the same time, including at the weekend, so that the body knows when to expect rest. Limit screens for the last hour, because light delays the signal that sleep is coming. Keep the room cool and dark. A fixed routine beats a heroic weekend. None of this is a technique, and none of it can be bought.
+
+The habit is hard to change because the culture rewards the wrong thing. A student who sleeps eight hours is often seen as less serious than one who works until three in the morning. But the evidence is clear: sleep is not a luxury that weak students need and strong students can skip. It is a health question, not a moral one, and the mental cost of ignoring it is paid in the exam hall.`,
+ w:['student','sleep','memory','affect','evidence','experiment','average','significant','improve','depend','caffeine','reduce','fatigue','react','recommend','limit','routine','habit','health','mental'],
+ q:[
+  {s:"What does the word experiment in paragraph 2 show?",o:["Sleeping after learning helps memory","Students learn faster in the evening","Coffee improves test scores","Eight hours of sleep is always enough"],a:0,e:"两组人晚上学同一份词表，一组睡八小时一组不睡，第二天 sleepers remember about a fifth more on average——睡过的那组记得更多。"},
+  {s:"Why can the debt not be fully repaid at the weekend?",o:["Because memory work happens on the night after learning","Because students forget the words by Saturday","Because coffee makes people sleep less","Because weekends are too short"],a:0,e:"the deeper work of storing what was learned depends on the night after learning, and that night cannot be replaced——归档发生在学习当晚，过了就补不回来。"},
+  {s:"What does caffeine do, according to the writer?",o:["It hides fatigue without restoring performance","It improves memory during the night","It helps students fall asleep faster","It replaces the need for sleep"],a:0,e:"it reduces the feeling of fatigue without restoring performance——遮住疲劳感，但没把状态还给你。"},
+  {s:"What is the writer's attitude towards sleep advice?",o:["It is simple but effective","It is too expensive for students","It only works for weak students","It has been proved wrong"],a:0,e:"What doctors recommend is dull … A fixed routine beats a heroic weekend——方法很枯燥，但有效。"}
+ ]},
+{d:50,k:'d50-1',t:'The Village That Shared Its Water',
+ zh:'干旱季节，山上的农户有充分理由把水全抽走，四十年他们确实这么干。后来村里定了一条工程师不会设计的规矩：生活用水不限，浇地用水轮流，由七人议事会每天早上定顺序。经济学家会说这必然失败，但他们忽略了同村人每天见面、名声比一季的水更值钱。这套办法不完美，穷人声音小、旱年破过两次例；可比起二十公里外人人有泵却无规矩的镇子，这里的水位还在。技术能计量，泵能输水，但“谁该得水”是政治决定，只能由明天还要见面的人来做。',
+ p:`In the dry season, the wells of Rampur run low, and the farmers who own the land at the top of the hill have every reason to take what they can. For forty years they did. Then the community wrote a policy that no engineer would have designed, and the wells have not run dry since. Agriculture uses more water than all the households together, so the rule that matters is the rule about crops.
+
+The rule is simple: every household has free access to the well for its own use, without limit, but the supply for crops is shared. The amount is set each morning by a council of seven, half of them women, and the gate that controls the channel is opened for one section at a time. A farmer who breaks the order loses his turn for a week. There is no police, and no one remembers the last fine.
+
+Economists might call this a common-pool resource problem, and they would expect it to fail. The theory says that each farmer has an interest in taking more than his share, so the resource should be used up. What the theory misses is that the same farmers meet every morning, and that a reputation for cheating is worth less than a field that gets water next week. They cooperate because they will meet again tomorrow.
+
+How water is distributed is not perfect. The poorest families, who own no land, have little voice in the council, and in a drought year the rule has twice been broken. But compare the village with the town twenty kilometres away, where every farmer has a pump and no one has a rule: the water table there has fallen by ten metres, and the small farms have been sold.
+
+Modern technology can measure every litre, and a more efficient pump can move it faster, but neither can decide who should get it. That decision is political, and it is usually made locally, by people who will pay the cost of a bad choice themselves. The village did not solve the problem of scarcity. It solved the problem of trust, which is the part that no pipe can carry. A tradition of sharing is never imported; it is built slowly by people who expect to meet again.`,
+ w:['community','policy','household','limit','supply','crop','resource','theory','cooperate','distribute','drought','technology','efficient','cost','scarcity','tradition','agriculture','access'],
+ q:[
+  {s:"What is the village rule about water?",o:["Household use is unlimited but irrigation water is shared","Every family gets the same amount of water","Only landowners may use the wells","The council sells water to the highest bidder"],a:0,e:"every household may take water for its own use without limit, but the supply for crops is shared——生活用水不限，浇地用水大家分。"},
+  {s:"Why do the farmers keep the rule without police?",o:["Because they will meet again and reputation matters","Because the fine is very high","Because the government sends inspectors","Because they have no other source of water"],a:0,e:"They cooperate because they will meet again tomorrow… a reputation for cheating is worth less than a field that gets water next week——靠的是明天还要见面。"},
+  {s:"What happened in the town twenty kilometres away?",o:["The water table fell and small farms were sold","The farmers wrote a better rule","The wells became deeper","Everyone switched to pumps and prospered"],a:0,e:"the water table there has fallen by ten metres, and the small farms have been sold——有泵没规矩，水位掉了十米，小农场被卖掉。"},
+  {s:"What does the writer say technology cannot do?",o:["Decide who should get the water","Measure how much water is used","Move water from one place to another","Make a pump work faster"],a:0,e:"neither can decide who should get it. That decision is political——技术能计量能输水，但“谁该得水”是政治决定。"}
+ ]},
+{d:52,k:'d52-1',t:'When a Machine Reads Your Interview',
+ zh:'投简历的人太多，雇主用软件给候选人打分，已经不再是未来的故事。支持者说算法不会累、对每个人用同一把尺，能去掉面试官的主观。但记录并不乐观：用过去十年的录用数据训练，模型会学到“以前录什么样的人，以后就偏好什么样的人”，歧视不是写进代码的，是从现实里学来又带着数学的权威还给现实。分数很少被质疑，被拒的人问不出理由。稳妥的做法是既不封禁也不盲信：用机器筛选、人做最后决定、每年用人被拒的样本来检验模型。机器一秒能比一千份文件，但它不能被追责，而录用恰恰是个追责的决定。',
+ p:`A candidate sends a video, an algorithm watches it, and a score decides whether a human ever sees the file. This is no longer a story about the future. Large employers receive far more applications than they can read, and software that ranks candidates is cheaper than a team of recruiters.
+
+The promise is fairness. A person who conducts the tenth interview of the day is tired, may prefer someone who reminds him of himself, and cannot remember exactly why he refused the last candidate. An algorithm does not get tired and applies the same standard to every file. In theory it removes the subjective part of the decision.
+
+The record is less encouraging. Several systems have been shown to learn the wrong lesson: trained on ten years of past hires, a model learns to favour the kind of person who was hired before. If most engineers in the data were men, the model treats a man's application as slightly better evidence of success. The bias is not written into the code; it is learned from the world, and then returned to it with the authority of mathematics.
+
+Defenders answer that humans are biased too, and that a measured bias can at least be seen and corrected, while a human prejudice cannot. There is truth in this. But a score is rarely questioned. A candidate who is refused cannot ask why, because the reason is hidden in thousands of weights. The right to an explanation is lost at the moment the decision becomes automatic.
+
+A sensible approach is neither to ban the tools nor to trust them. Use them to evaluate and sort, not to decide; keep a human in the last step; test the model every year on the people it rejected. Hire for what the job needs, not for what the past looked like. A machine can compare a thousand files in a second, but it cannot be held responsible, and responsibility is what a hiring decision finally is.`,
+ w:['candidate','algorithm','application','employer','recruit','interview','standard','subjective','bias','prejudice','evidence','refuse','authority','automatic','data','evaluate','responsibility'],
+ q:[
+  {s:"Why do employers use software to rank candidates?",o:["There are far more applications than they can read","Software is more accurate than any human","Candidates prefer to be judged by machines","The law requires it"],a:0,e:"Large employers receive far more applications than they can read, and software … is cheaper than a team of recruiters——量大、便宜。"},
+  {s:"How does a model become biased?",o:["It learns the pattern of past hires from the data","A programmer writes the bias into the code","Candidates give false information","The interview room is too small"],a:0,e:"trained on ten years of past hires, a model learns to favour the kind of person who was hired before… The bias is not written into the code——不是写进代码，是从数据里学来的。"},
+  {s:"What does the writer see as the main loss?",o:["A refused candidate cannot ask why","Companies save too much money","Interviews take longer","Fewer people apply for jobs"],a:0,e:"A candidate who is refused cannot ask why… The right to an explanation is lost——被拒的人问不出理由，解释权丢了。"},
+  {s:"What does the writer recommend?",o:["Use the tools to sort, but keep a human decision","Ban all hiring algorithms","Trust the score completely","Let candidates score themselves"],a:0,e:"Use them to evaluate and sort, not to decide; keep a human in the last step——机器筛选、人做决定。"}
+ ]},
+{d:54,k:'d54-1',t:'A Bottle That Outlives Its Owner',
+ zh:'一个塑料瓶做出来三秒、喝完十分钟、消失要四百年——这个算术就是全部论点：我们生产的速度超过任何系统能吸收的速度。瓶子被丢下、冲进下水道、随河入海，被浪打成比指甲还小的碎片，鱼吃碎片、人吃鱼；对野生动物的伤害是直接的，对人的伤害不确定，所以容易被忽略。回收被当成答案，但只有一小部分真被回收，因为分拣贵、新料便宜。真正有效的是押金、薄袋禁令、要求包装可回收这类“把处理成本退回给制造者”的规矩，不需要改变人性，只需要改价格。',
+ p:`A plastic bottle takes about three seconds to make, ten minutes to drink and four hundred years to disappear. That arithmetic is the whole argument. We produce the material faster than any system can absorb it, and every year a little more of it reaches the marine environment.
+
+The path is easy to trace. A bottle bought on a hot street is dropped, washed into a drain, carried by a river and broken by waves into pieces smaller than a fingernail. Plastic pollution now reaches places that no ship can clean. Fish eat the pieces, and the fish are eaten. The harm to wildlife is direct: birds feed their young with bottle caps, and turtles mistake bags for food. The harm to people is less certain, which is exactly why it is easy to ignore.
+
+Recycling was sold as the answer, and it is part of one. But only a small share of plastic is ever recycled, because sorting is expensive and new plastic is cheap. A town that collects bottles still has to find someone willing to buy them, and when the price of oil falls, the buyer disappears.
+
+What works is duller and more political. A small tax on every bottle gives the person who picks it up a reason to do so; several countries now collect more than ninety percent of what they sell. A ban on thin bags costs shoppers almost nothing and reduces the material used for minutes that lasts for centuries. Regulations that require packaging to be recyclable push the cost back to the industry that chose the material.
+
+Environmental groups have run a long campaign to raise awareness, and that has changed behaviour at the edges. But awareness alone cannot compete with a price. The measures that work require no change in human nature; they require a change in price, so that the cost of disposal is paid by the person who creates the waste rather than by the ocean. The bottle is not evil. The mistake is a system in which it is cheaper to throw something away than to keep it.`,
+ w:['waste','dispose','recycle','harm','wildlife','ocean','marine','pollution','tax','ban','industry','cost','campaign','awareness','reduce','environmental','regulation'],
+ q:[
+  {s:"What is the writer's point about the bottle's lifetime?",o:["Production is far faster than the waste can break down","Bottles are useful for four hundred years","Bottles are hard to manufacture","The material is too expensive"],a:0,e:"three seconds to make, ten minutes to drink and four hundred years to disappear… produce the material faster than any system can absorb it——生产快、消失慢。"},
+  {s:"Why is recycling only a partial answer?",o:["Sorting is expensive and new plastic is cheap","Nobody wants to collect bottles","Recycled plastic is dangerous","Governments forbid recycling"],a:0,e:"only a small share of plastic is ever recycled, because sorting is expensive and new plastic is cheap——分拣贵、新料便宜。"},
+  {s:"What do the measures that work have in common?",o:["They change the price rather than human nature","They ask people to be more careful","They rely on volunteers","They ban all plastic products"],a:0,e:"The measures that work require no change in human nature; they require a change in price——不改人性，只改价格。"},
+  {s:"What does the writer say is the real mistake?",o:["A system where throwing things away is cheaper than keeping them","Using plastic for bottles","Drinking from plastic bottles","Living near the sea"],a:0,e:"The mistake is a system in which it is cheaper to throw something away than to keep it——错的是“丢掉比留着便宜”这套规则。"}
+ ]},
+{d:46,k:'d46-3',t:'The Quiet Revolution in City Streets',
+ zh:'城市噪音从“繁荣的标志”变成要治理的问题：调查显示交通噪音是居民最常抱怨的事，研究证明它影响睡眠、加重压力；巴塞罗那降速、柏林限制夜间卡车，几乎不花钱就见效；批评者说安静是富人特权，所以标准必须由城市统一设定；真正的难点是观念转变——把安静当成需要保护的公共品。',
+ p:`Fifty years ago, a noisy street was a sign of a healthy economy. Today, many city residents are not so sure. A survey of 4,000 households in three cities found that traffic noise was the complaint people made most often, ahead of parking and rubbish.
+
+The evidence that noise affects health is now hard to ignore. People who live beside a highway report more stress and sleep less. A study that monitored 1,200 residents for five years found that those on the noisiest streets were twenty percent more likely to report poor sleep. The link does not prove that noise is the only cause, but it is strong enough to change policy.
+
+Some cities have taken measures that cost very little. Barcelona reduced the speed limit on main roads from fifty to thirty kilometres an hour; noise fell by a third and crashes by a quarter. Berlin restricted heavy trucks at night and cut the tax of shop owners who switch off their outdoor lights after ten. In both cases the economy did not collapse. Shops stayed open; deliveries simply moved to a different hour.
+
+Critics argue that quiet is a luxury for rich neighbourhoods. There is some truth in this. A poor family on a main road cannot afford thick windows, and it is usually the cheapest housing that suffers most from noise. That is exactly why the standard should be set by the city, not left to each household.
+
+The deeper challenge is a change of attitude. For a century, planners treated silence as empty space — something to be filled with roads, markets and machines. The new approach treats quiet as a public benefit, like clean water, which needs to be protected by rules and measured by facts. A city that monitors its noise is not against growth. It has simply learned that growth which damages the people who produce it is not worth having.`,
+ w:['survey','household','complain','traffic','highway','evidence','affect','stress','monitor','link','policy','measure','reduce','restrict','economy','argue','challenge','approach','benefit','standard','suffer','resident','attitude'],
+ q:[
+  {s:"What did the survey of 4,000 households find?",o:["Traffic noise was the complaint people made most often","Parking was the biggest problem","Most residents wanted to move away","Rubbish collection had improved"],a:0,e:"原文 a survey … found that traffic noise was the complaint people made most often，后面紧跟 ahead of parking and rubbish——噪音排在停车和垃圾之前。"},
+  {s:"What happened after Barcelona lowered its speed limit?",o:["Noise and crashes both fell","Traffic stopped completely","Shops were forced to close early","The city economy collapsed"],a:0,e:"noise fell by a third and crashes by a quarter；同一段又说 the economy did not collapse，所以经济没有垮。"},
+  {s:"Why does the writer mention thick windows?",o:["To show that quiet costs money and the poor suffer most","To recommend a product to readers","To explain how noise is measured","To prove that old houses are dangerous"],a:0,e:"A poor family on a main road cannot afford thick windows, and it is usually the cheapest housing that suffers most from noise——安静要花钱，穷人受害最深。"},
+  {s:"How does the new approach treat quiet?",o:["As a public benefit that needs protection","As empty space waiting to be filled","As a luxury only the rich deserve","As a sign of slow economic growth"],a:0,e:"The new approach treats quiet as a public benefit, like clean water, which needs to be protected by rules——把安静当成像干净水一样需要保护的公共品。"}
+ ]},
+{d:46,k:'d46-4',t:'The True Price of a Cheap T-shirt',
+ zh:'一件四美元 T 恤的账：规模、低工资、快节奏让低价成为可能；顾客只看到折扣，看不到染色用水、运输燃料和被丢弃的衣物；这不等于别买衣服，而是标签上的价格不是真实成本；一些品牌开始公开工厂、提供维修；真正的压力来自消费者、记者和法律，而不是行业自己。',
+ p:`A T-shirt that costs four dollars is a small miracle of modern industry. It is also a puzzle: someone grew the cotton, spun the thread, cut and sewed the cloth, shipped it across an ocean and put it on a shelf — and still made a profit. How?
+
+Part of the answer is scale. A single factory may produce forty thousand shirts a day, and a large brand can order a million at once. Part of it is the wage: the worker who sews the shirt may earn less in a day than the customer pays for a coffee. Part of it is speed. A trend that appears on a screen on Monday can be in the shops on Friday, and a design that fails is replaced before anyone notices.
+
+The customer sees none of this. What the customer sees is a discount, and a discount feels like a gift. Advertising does not lie about the price; it simply refuses to mention the other costs — the water used to dye the cloth, the fuel burned to move it, the shirt that will be worn ten times and then thrown away. Every year the world disposes of millions of tonnes of clothing, and much of this waste ends in a landfill in a country that never wore it.
+
+None of this means that buying clothes is wrong. It means that the price on the label is not the true cost. Some brands have begun to publish the names of their factories and to pay for repairs, which is a real change rather than an advertisement. Some customers now choose fewer, better shirts and keep them for years. Repair, which almost disappeared, is slowly returning.
+
+The pressure for change rarely comes from the industry itself. It comes from consumers who ask questions, from journalists who visit factories, and from laws that give a company responsibility for what it produces. A cheap shirt is not a crime. But a market in which nobody pays for the damage is not really cheap: the bill is simply sent to someone else.`,
+ w:['industry','profit','factory','brand','wage','customer','trend','discount','advertise','cost','dispose','waste','landfill','publish','pressure','consumer','responsibility','damage'],
+ q:[
+  {s:"Why can a four-dollar shirt still make a profit?",o:["Because of large scale, low wages and fast production","Because the cotton is given away free","Because the government pays part of the cost","Because customers never return a shirt"],a:0,e:"第二段三个 Part：scale（一次生产几十万件）、wage（缝衣工一天挣的比一杯咖啡少）、speed（周一流行周五上架）——三条合起来才压出低价。"},
+  {s:"What does advertising leave out?",o:["The other costs behind the price","The size of the shirt","The name of the brand","The day the shirt goes on sale"],a:0,e:"it simply refuses to mention the other costs——广告不说价格背后的其他代价：染色用水、运输燃料、扔掉的衣服。"},
+  {s:"What are some brands doing differently?",o:["Publishing their factory names and paying for repairs","Closing down all their factories","Raising wages to Western levels","Stopping all advertising"],a:0,e:"Some brands have begun to publish the names of their factories and to pay for repairs——公开工厂名单、为维修付费。"},
+  {s:"What is the writer's main point?",o:["The price on the label is not the true cost","Cheap clothes should be completely banned","Consumers are always selfish","Repair is no longer possible today"],a:0,e:"the price on the label is not the true cost… the bill is simply sent to someone else——标签价不是真实成本，账单只是转给了别人。"}
+ ]},
 {d:1,k:'d1-1',t:"An Emergency by the River",zh:"暴雨冲坏了河岸，社区靠调研和分工渡过难关，事后人们反思并改进了防范。",w:["emergency","respond","erosion","elect","remind","research","resource","result","eliminate","replace","reflect","enormous","evolve","receive","accept","emotion"],
  p:`Last month our city had an emergency. Heavy rain caused serious erosion along the river, and several roads were closed. Our community had to respond quickly.
 The local government elected a small team to lead the work. They reminded every family to store water and food, and they did a lot of research on what resource could still be used. The result was clear: volunteers were sent to eliminate the biggest danger first, and the oldest pipes were replaced with new ones.
@@ -6876,20 +6988,45 @@ function rq(R,qi){
   q._a=idx.indexOf(q.a);
   return q;
 }
-let RDGV=null;                       /* null = 跟随今天 */
+let RDGV=null;                       /* null = 跟随今天（自动挑一篇）；否则 = RDG 下标 */
+
+/* ---------- 难度：篇幅 + 平均句长 + 目标词密度，算出 0-100 分 ---------- */
+function diffOf(R){
+  if(R.dv!=null) return R.dv;
+  const t=String(R.p||'').replace(/\s+/g,' ').trim();
+  const wc=t.split(' ').filter(Boolean).length||1;
+  const sn=(t.match(/[.!?]+(?=\s|$)/g)||[]).length||1;
+  const avg=wc/sn;
+  const wn=(R.w?R.w.length:0);
+  let s=100*Math.pow(wc/420,0.9)+1.0*(avg-11)+0.4*(wn-18);
+  s=Math.max(8,Math.min(100,Math.round(s)));
+  return (R.dv=s);
+}
+const LEVELS=[
+  {n:1,name:'入门',max:42,  desc:'短句、常用词，先把"看到词能反应"练熟'},
+  {n:2,name:'基础',max:56,  desc:'句子变长，开始出现从句和转折'},
+  {n:3,name:'进阶',max:70,  desc:'说明文：有数据、有观点、有对比'},
+  {n:4,name:'真题级',max:999,desc:'长度和信息密度对标江苏联盟阅读真题'}
+];
+function levelOf(dv){ for(let i=0;i<LEVELS.length;i++){ if(dv<LEVELS[i].max) return LEVELS[i]; } return LEVELS[3]; }
+/* 你的词量现在该读多难的：D1≈29 分，D20≈50 分，D40≈71 分，D55≈87 分 */
+function targetDiff(){ return Math.round(28+Math.min(dayNum(),TOTAL)*1.08); }
+/* 能读的篇目 = 用的词你已经学过（R.d ≤ 今天）。不限篇数、不限次数。 */
+function readPool(){
+  const d=dayNum(), out=[];
+  RDG.forEach(function(R,i){ if(R.d<=d) out.push({i:i,R:R,dv:diffOf(R)}); });
+  return out;
+}
+/* 今天推荐：难度最接近你当前水平的那篇（确定性，答题时不会跳篇） */
+function recTodayIdx(){
+  const pool=readPool(); if(!pool.length) return 0;
+  const t=targetDiff();
+  pool.sort(function(a,b){ return Math.abs(a.dv-t)-Math.abs(b.dv-t) || b.R.d-a.R.d; });
+  return pool[0].i;
+}
 function rdgIdx(){
   if(RDGV!=null) return Math.max(0,Math.min(RDG.length-1,RDGV));
-  const d=dayNum();
-  const first=RDG.findIndex(function(R){ return R.d===d; });   /* 今天的第一篇 */
-  if(first>=0) return first;
-  /* 新词学完以后（或超出 55 天）：优先推一篇没做或没全对的，轮着来 */
-  const pool=[];
-  RDG.forEach(function(R,i){
-    const r=recOf(R);
-    if(!r||(r.n||0)<R.q.length) pool.push(i);
-  });
-  if(pool.length) return pool[(Math.max(0,d-RDG.length)-1+pool.length)%pool.length];
-  return RDG.length-1;
+  return recTodayIdx();
 }
 /* 每篇一个稳定 key：同一天可以有多篇（d3-1、d3-2），记录不能互相覆盖 */
 function rkey(R){ return R.k||('d'+R.d+'-1'); }
@@ -6915,7 +7052,20 @@ function readAns(qi,oi){
   if(oi===rq(R,qi)._a) r.n=(r.n||0)+1;
   save(); render();
 }
-function openRead(i){ RDGV=i; go('read'); }
+function openRead(i){
+  RDGV=(i==null?null:Math.max(0,Math.min(RDG.length-1,i)));
+  const R=RDG[rdgIdx()];
+  if(R){
+    S.rhist=S.rhist||[];
+    const k=rkey(R);
+    S.rhist=S.rhist.filter(function(x){ return x!==k; });
+    S.rhist.push(k);
+    if(S.rhist.length>10) S.rhist=S.rhist.slice(-10);
+    save();
+  }
+  go('read');
+}
+function openReadList(){ go('readlist'); }
 
 /* 换一篇：只在"已学过的词"范围内抽，优先与今天新词重合最多的篇目，
    其次是还没做完的。这样不会抽到没背过的词，也不会老是重复同一篇。 */
@@ -6925,39 +7075,28 @@ function todayNewWords(){
   return m;
 }
 function pickRead(){
-  const cur=rdgIdx(), d=dayNum(), lim=Math.min(d,RDG.length);
-  const tw=todayNewWords(), pool=[];
-  RDG.forEach(function(R,i){
-    if(i===cur||R.d>lim) return;
-    const r=recOf(R);
-    const got=r?Object.keys(r.a).length:0;
-    pool.push({i:i,R:R,
-      hit:R.w.filter(function(w){ return tw[w]; }).length,
-      left:R.q.length-got, right:got?(r.n||0):0});
-  });
-  if(!pool.length) return null;
-  /* 第一优先：同一天的另一篇（词表完全对口）；第二：和今天新词重合多；第三：还没做完的 */
-  pool.sort(function(a,b){
-    const as=(a.R.d===d?1:0), bs=(b.R.d===d?1:0);
-    if(as!==bs) return bs-as;
-    return b.hit-a.hit || b.left-a.left || a.right-b.right;
-  });
-  const topN=pool.slice(0,Math.min(12,pool.length));
-  /* 同一天还有没做过的篇目 → 只在同一天里换，词表完全对口 */
-  const sameDay=pool.filter(function(x){ return x.R.d===d && x.left>0; });
-  if(sameDay.length) return sameDay[Math.floor(Math.random()*sameDay.length)].i;
-  let use=topN.filter(function(x){ return x.left>0; });
-  if(!use.length){                        /* 最相关的那批都做完了，就往全部已学篇目里找没做的 */
-    const anyFresh=pool.filter(function(x){ return x.left>0; });
-    use=anyFresh.length?anyFresh.slice(0,20):topN;
-  }
-  return use[Math.floor(Math.random()*use.length)].i;
+  const t=targetDiff(), hist={};
+  (S.rhist||[]).forEach(function(k){ hist[k]=1; });
+  const cur=rdgIdx();
+  let pool=readPool();
+  if(pool.length<2) return null;
+  const others=pool.filter(function(x){ return x.i!==cur; });
+  if(others.length) pool=others;
+  const fresh=pool.filter(function(x){ return !hist[rkey(x.R)]; });
+  if(fresh.length) pool=fresh;                 /* 最近读过的先放后面 */
+  pool.forEach(function(x){ x.dist=Math.abs(x.dv-t); });
+  pool.sort(function(a,b){ return a.dist-b.dist; });
+  const top=pool.slice(0,Math.min(15,pool.length));   /* 先圈出难度最贴近的 15 篇 */
+  top.forEach(function(x){ x.wgt=1/(1+x.dist/4); });  /* 再在这 15 篇里加权随机 */
+  const tot=top.reduce(function(s,x){ return s+x.wgt; },0);
+  let r=Math.random()*tot;
+  for(let i=0;i<top.length;i++){ r-=top[i].wgt; if(r<=0) return top[i].i; }
+  return top[top.length-1].i;
 }
 function rndRead(){
   const i=pickRead();
-  if(i==null) return;
-  go('read'); RDGV=i; render();
-  window.scrollTo(0,0);
+  if(i==null){ alert('这个阶段可读的篇目还不够，等你多背几天词。'); return; }
+  openRead(i); window.scrollTo(0,0);
 }
 function redoRead(){
   const R=RDG[rdgIdx()]; if(!R) return;
@@ -6968,6 +7107,10 @@ function viewRead(){
   const i=rdgIdx(), R=RDG[i], r=rdgRec(R);
   const done=Object.keys(r.a).length, right=Object.keys(r.a).filter(function(k){ return r.a[k]===rq(R,+k)._a; }).length;
   const pct=Math.round(right/R.q.length*100);
+  const dv=diffOf(R), L=levelOf(dv), tgt=targetDiff(), TL=levelOf(tgt);
+  const wc=R.p.replace(/\s+/g,' ').split(' ').filter(Boolean).length;
+  const gap=dv-tgt;
+  const fit=Math.abs(gap)<=6?'正合你现在的水平':(gap<0?'比你现在该读的简单一点，当热身':'比你现在该读的难一点，当挑战');
 
   const body=R.p.split('\n').filter(function(x){return x.trim();})
     .map(function(pp){ return '<p>'+hlText(pp.trim(),R.w)+'</p>'; }).join('');
@@ -6990,38 +7133,87 @@ function viewRead(){
       '<span style="color:var(--ink-3);">'+esc(defOf(w))+'</span></div>';
   }).join('');
 
-  const nav=(i>0?'<button class="btn" style="padding:7px 14px;" onclick="openRead('+(i-1)+')">← 第 '+(i)+' 天</button>':'')+
-    (i<RDG.length-1?'<button class="btn" style="padding:7px 14px;" onclick="openRead('+(i+1)+')">第 '+(i+2)+' 天 →</button>':'');
+  const d0=dayNum();
+  const pv=(i>0&&RDG[i-1].d<=d0)?'<button class="btn" style="padding:6px 13px;" onclick="openRead('+(i-1)+')">← 上一篇</button>':'';
+  const nx=(i<RDG.length-1&&RDG[i+1].d<=d0)?'<button class="btn" style="padding:6px 13px;" onclick="openRead('+(i+1)+')">下一篇 →</button>':'';
+  const nav=pv+nx;
 
-  const todayFlag=(RDGV==null?'<span class="pill">今天</span>':'<span class="pill warn" style="cursor:pointer;" onclick="RDGV=null;render();">回到今天</span>');
-  const isToday=(R.d===dayNum());
+  const todayFlag=(RDGV==null?'<span class="pill">今日推荐</span>':'<span class="pill warn" style="cursor:pointer;" onclick="RDGV=null;render();">回到推荐</span>');
   const sibs=RDG.filter(function(x){ return x.d===R.d; });
-  const which=sibs.length>1?(' · 第 '+(sibs.indexOf(R)+1)+'/'+sibs.length+' 篇'):'';
+  const which=sibs.length>1?(' · 同期第 '+(sibs.indexOf(R)+1)+'/'+sibs.length+' 篇'):'';
 
-  return '<div class="vhead"><h1>每日一读 '+todayFlag+' <span class="sub">第 '+R.d+' 天 · '+(isToday?'用当天新词写的':'这些词你都学过了')+which+'</span></h1></div>'+
+  return '<div class="vhead"><h1>每日一读 '+todayFlag+' '+
+      '<span class="pill ok" style="font-size:11.6px;">难度 '+dv+' 分 · '+L.name+'</span>'+
+      ' <span class="sub">第 '+R.d+' 天为止的词'+which+'</span></h1></div>'+
 
-    '<div class="note" style="margin-top:0;"><b>先读，再做题，最后看词表。</b>'+
-      '这篇短文只用第 '+R.d+' 天的词和前面学过的词写成，下面划线的 '+R.w.length+' 个词就是要检验的。'+
-      '读的时候不许查词——卡住的词靠上下文猜，做完题再对词表。<br>'+
+    '<div class="note" style="margin-top:0;"><b>随时读，不占配额，想读几篇读几篇。</b>'+
+      '唯一的限制：正文只用你<b>已经学过</b>的词（第 '+R.d+' 天为止），所以永远不会遇到没背过的词。'+
+      '你现在该读的难度约 <b>'+tgt+' 分（'+TL.name+'）</b>，这篇 '+dv+' 分，'+fit+'。<br>'+
+      '读的时候不许查词——卡住的词靠上下文猜，做完题再对词表。'+
       '<span style="font-size:12.4px;color:var(--ink-4);">大意：'+esc(R.zh||'')+'</span></div>'+
 
-    '<div class="card"><h3>'+esc(R.t)+' <span class="sub">'+R.p.replace(/\s+/g,' ').split(' ').length+' 词 · 约 6 分钟</span></h3>'+
+    '<div class="card"><h3>'+esc(R.t)+' <span class="sub">'+wc+' 词 · '+R.q.length+' 题 · 难度 '+dv+'</span></h3>'+
       '<div class="rdgp">'+body+'</div></div>'+
 
-    '<div class="card"><h3>3 道题 <span class="sub">'+(done?'已答 '+done+'/3':'答完自动判分')+
+    '<div class="card"><h3>'+R.q.length+' 道题 <span class="sub">'+(done?'已答 '+done+'/'+R.q.length:'答完自动判分')+
       (done?'　对 '+right+' 题 · 正确率 '+pct+'%':'')+'</span></h3>'+qs+
       (done===R.q.length?
         (right===R.q.length
-          ? '<div class="note good" style="margin:10px 0 0;"><b>全对。</b>今天的词在语境里认得出来，这才叫学会了。明天照常。</div>'
+          ? '<div class="note good" style="margin:10px 0 0;"><b>全对。</b>这篇的词在语境里认得出来，这才叫学会了。再来一篇或者换个难度。</div>'
           : '<div class="note warn" style="margin:10px 0 0;"><b>错 '+(R.q.length-right)+' 题。</b>错的词回到背词页加练一轮，明天它还会出现在复习里。</div>')
         :'')+
     '</div>'+
 
     '<div class="card"><h3>本篇复现词 <span class="sub">'+R.w.length+' 个 · 卡住的抄进错词本</span></h3>'+
       '<details'+(done>=R.q.length?'':' open')+'><summary style="cursor:pointer;font-size:12.4px;color:var(--blue);font-weight:700;margin-bottom:8px;">展开中英对照</summary>'+wl+'</details>'+
-      '<div style="margin-top:12px;"><button class="btn pri" style="padding:9px 18px;" onclick="rndRead()">↻ 换一篇（按你学过的词抽）</button>'+
-      (done?'<button class="btn" style="margin-left:8px;padding:9px 16px;" onclick="redoRead()">重做本篇</button>':'')+'</div>'+
+      '<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">'+
+        '<button class="btn pri" style="padding:9px 18px;" onclick="rndRead()">↻ 再来一篇（难度≈'+tgt+'）</button>'+
+        '<button class="btn" style="padding:9px 16px;" onclick="openReadList()">篇目库</button>'+
+        (done?'<button class="btn" style="padding:9px 16px;" onclick="redoRead()">重做本篇</button>':'')+
+      '</div>'+
       '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">'+nav+'</div></div>';
+}
+
+function viewReadList(){
+  const d=dayNum(), tgt=targetDiff(), TL=levelOf(tgt);
+  const byLv={1:[],2:[],3:[],4:[]};
+  let ok=0, full=0;
+  RDG.forEach(function(R,i){
+    const dv=diffOf(R), lock=R.d>d;
+    if(!lock) ok++;
+    const rr=recOf(R);
+    if(rr && rr.n>0 && rr.n>=R.q.length) full++;
+    byLv[levelOf(dv).n].push({i:i,R:R,dv:dv,lock:lock});
+  });
+  let html='<div class="vhead"><h1>篇目库 <span class="sub">可读 '+ok+' 篇 / 共 '+RDG.length+' 篇 · 全对 '+full+' 篇 · 数量不设上限</span></h1></div>'+
+    '<div class="note" style="margin-top:0;"><b>按难度分四档，你想读哪篇读哪篇。</b>'+
+      '你现在该读的难度是 <b>'+tgt+' 分（'+TL.name+'）</b>——低于它当热身，高于它当挑战。'+
+      '灰掉的是"还没背到的词"，背到那天自动解锁；越往后文章越长、句子越绕，最后几篇就是考试真题那个密度。</div>'+
+    '<div style="margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap;">'+
+      '<button class="btn pri" style="padding:8px 16px;" onclick="rndRead()">↻ 随机来一篇（难度≈'+tgt+'）</button>'+
+      '<button class="btn" style="padding:8px 16px;" onclick="openRead(null)">读今日推荐</button></div>';
+
+  [1,2,3,4].forEach(function(n){
+    const g=byLv[n]; if(!g.length) return;
+    const L=LEVELS[n-1], unl=g.filter(function(x){ return !x.lock; }).length;
+    const rows=g.slice().sort(function(a,b){ return a.dv-b.dv || a.R.d-b.R.d; }).map(function(x){
+      const R=x.R, rr=recOf(R), got=rr?Object.keys(rr.a).length:0;
+      let st='';
+      if(x.lock) st='<span style="color:var(--ink-4);">第 '+R.d+' 天解锁</span>';
+      else if(got>=R.q.length) st=(rr.n>=R.q.length?'<span style="color:var(--ok);font-weight:700;">全对</span>':'<span style="color:var(--warn);font-weight:700;">答 '+rr.n+'/'+R.q.length+'</span>');
+      else st='<span style="color:var(--ink-4);">'+(got?'答 '+got+'/'+R.q.length:'未做')+'</span>';
+      const cnt=R.p.replace(/\s+/g,' ').split(' ').filter(Boolean).length;
+      return '<div onclick="'+(x.lock?'':'openRead('+x.i+')')+'" style="display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px dashed var(--line);'+
+        (x.lock?'opacity:.45;cursor:default;':'cursor:pointer;')+'">'+
+        '<b style="flex:none;width:36px;text-align:right;font-size:12px;color:var(--ink-4);">'+x.dv+'</b>'+
+        '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:650;color:var(--ink-1);">'+esc(R.t)+'</div>'+
+        '<div style="font-size:11.6px;color:var(--ink-4);">第 '+R.d+' 天 · '+cnt+' 词 · '+R.q.length+' 题</div></div>'+
+        '<div style="flex:none;font-size:11.8px;">'+st+'</div></div>';
+    }).join('');
+    html+='<div class="card"><h3>'+L.name+'（'+L.desc+'） <span class="sub">'+unl+' / '+g.length+' 篇可读</span></h3>'+
+      '<details'+(n===levelOf(tgt).n?' open':'')+'><summary style="cursor:pointer;font-size:12.4px;color:var(--blue);font-weight:700;margin-bottom:6px;">展开 '+g.length+' 篇</summary>'+rows+'</details></div>';
+  });
+  return html+'<div style="margin-bottom:20px;"><button class="btn" onclick="go(\'read\')">← 回到阅读</button></div>';
 }
 
 /* ---- 写作模块 ---- */
