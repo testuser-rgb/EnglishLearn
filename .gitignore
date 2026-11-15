@@ -3,3 +3,12 @@ Thumbs.db
 Desktop.ini
 ~$*
 *.tmp
+
+# IDE 元数据
+.idea/
+
+# 本机应用发布卡片（含本机绝对路径）
+*.genie
+
+# HBuilderX 本地打包产物：APK、wgt 缓存、签名 keystore，一律不入库
+hbuilder-app/unpackage/

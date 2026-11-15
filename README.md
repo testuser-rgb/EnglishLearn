@@ -27,6 +27,23 @@
 - 进度页「计划起始日」决定第几天，改它会重算天数、打卡记录保留；不填则按首次打开当天算第 1 天。
 - 每天按左侧导航从上往下走，学完一项就在该页顶部标记完成。
 
+## Web 版（在线）
+
+- `web/` 是**发布产物**，不是资料源：`index.html` 门户首页（纯静态、无外部依赖、适配手机）、`app.html` 学习台（与 `计划与资料/学位英语_55天冲刺台.html` **逐字一致**）、`data/`（7 个题库 js 与 `manifest.json` 的逐字副本）、两份说明文档。
+- **分享链接**：`https://wbapp-j0vv3qjxvkjvzrtftaciro.app.workbuddy.host/?sharecode=N5PHJYF2IR`
+- 主应用、题目、选项、答案映射、出题逻辑零改动；`verify.js` / `rebuild-baseline.js` 属开发期脚本，不随站点发布；9 份真题 PDF 不上传。
+- 学习进度仍是各浏览器自己的 localStorage：**线上站点与本地双击是两份独立存档，互不同步**。
+- 改资料一律改 `计划与资料/`，再同步到 `web/` 重新发布；`web/` 不是真相源。
+
+## HBuilder 本地打包 App
+
+- `hbuilder-app/` 是可直接导入 HBuilderX 的 **5+ App 项目**：根目录 `manifest.json`（DCloud 应用配置，`id` 为占位 AppID）、`index.html` 门户首页、`app.html` 学习台、`plan.html` / `syllabus.html` 说明文档、`data/` 题库、`app-plus.js`（Android 返回键处理，仅 5+ 运行时生效）。
+- 主学习台与 7 个题库文件同 Web 版**逐字一致**，仅在 `</body>` 前多一行返回键脚本引用；题目、选项、答案映射、出题逻辑零改动。文件名全部 ASCII，避免 Android assets 中文路径问题；固定竖屏。
+- 所有页面与题库都打进安装包，**完全离线**，不请求网络、不上传数据；9 份真题 PDF 不打包。
+- 根目录 `manifest.json` 是应用配置，`data/manifest.json` 是题库答案映射基线，两者不要混淆。
+- 打包路径：HBuilderX 导入该目录 → 发行 → 本地打包 → 生成本地 App 资源 → 把生成的 `www` 放进离线 SDK 工程的 `assets/apps/<appid>/www`，并让 `dcloud_control.xml` 的 `appid` / `appver` 与 `manifest.json` 的 `id` / `version.name` 一致 → Android Studio 出包（iOS 对应 Xcode `Pandora/apps/<appid>/www`）。
+- 学习进度存 App 本机 localStorage，与电脑浏览器、线上网页版互不相通；卸载或清数据会丢。图标未配置，使用默认。
+
 ## 题库数据管理
 
 - 26 个数据常量（词库、阅读、完形、语法题库、动态出题器、作文范文等）已从 HTML 抽出到 `data/*.js`，HTML 里对应位置只留一行来源注释。**数据文件是唯一真相源，页面只留逻辑与渲染。**

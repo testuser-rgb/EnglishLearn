@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学位英语 · 55 天冲刺台系统说明与使用约定</title>
+<style>
+  :root{
+    --ink:#16202e; --ink-2:#3d4c60; --ink-3:#6b7c91;
+    --line:#e3e9f2; --bg:#f6f8fb; --card:#ffffff;
+    --blue:#14539a; --blue-soft:#eaf1fa;
+    --teal:#0f766e; --teal-soft:#e6f4f1;
+    --amber:#b45309; --amber-soft:#fdf3e4;
+    --rose:#a8324a; --rose-soft:#fbeef1;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB","Segoe UI",system-ui,sans-serif;
+    font-size:15px; line-height:1.78; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1060px; margin:0 auto; padding:44px 28px 80px;}
+
+  header{border-bottom:2px solid var(--blue); padding-bottom:22px; margin-bottom:34px;}
+  .kicker{font-size:12.5px; letter-spacing:.18em; color:var(--blue); font-weight:700; margin-bottom:10px;}
+  h1{font-size:29px; line-height:1.35; margin:0 0 12px; letter-spacing:-.01em;}
+  .sub{color:var(--ink-3); font-size:13.5px; line-height:1.95;}
+  .sub b{color:var(--ink-2); font-weight:600;}
+
+  .params{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:20px;}
+  .pm{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px;}
+  .pm .k{font-size:11.5px; color:var(--ink-3); letter-spacing:.04em;}
+  .pm .v{font-size:16px; font-weight:700; color:var(--blue); margin-top:2px;}
+
+  section{margin-bottom:42px;}
+  .sec-head{display:flex; align-items:center; gap:12px; margin-bottom:16px;}
+  .num{flex:none; width:28px; height:28px; border-radius:8px; background:var(--blue); color:#fff;
+    font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center;}
+  h2{font-size:19px; margin:0; letter-spacing:-.01em;}
+  h2 small{font-weight:400; color:var(--ink-3); font-size:13px; margin-left:8px; letter-spacing:0;}
+  .lead{color:var(--ink-2); font-size:14px; margin:0 0 14px;}
+
+  .tcard{background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  thead th{background:#eef3fa; color:var(--ink-2); text-align:left; font-weight:700;
+    padding:11px 14px; border-bottom:1px solid var(--line); font-size:13px; white-space:nowrap;}
+  tbody td{padding:10px 14px; border-bottom:1px solid #eef1f6; vertical-align:top; color:var(--ink-2);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:nth-child(even){background:#fbfcfe;}
+  tbody td:first-child{color:var(--ink); font-weight:600;}
+  .c{text-align:center;} .nw{white-space:nowrap;}
+  .tag{display:inline-block; padding:1px 8px; border-radius:99px; font-size:11.5px; font-weight:700;
+    white-space:nowrap; line-height:1.7;}
+  .t-hi{background:var(--rose-soft); color:var(--rose);}
+  .t-mid{background:var(--amber-soft); color:var(--amber);}
+  .t-low{background:var(--teal-soft); color:var(--teal);}
+  .t-blue{background:var(--blue-soft); color:var(--blue);}
+
+  .note{background:var(--card); border-left:3px solid var(--blue); border-radius:0 8px 8px 0;
+    padding:14px 18px; margin-top:14px; font-size:13.6px; color:var(--ink-2);}
+  .note b{color:var(--ink);}
+  .note.warn{border-left-color:var(--rose);}
+  .note.good{border-left-color:var(--teal);}
+
+  .ex{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:0; overflow:hidden; margin-bottom:14px;}
+  .ex .src{padding:14px 18px; background:#f8fafd; border-bottom:1px dashed var(--line); font-size:14.5px; color:var(--ink); font-weight:600; line-height:1.9;}
+  .ex .body{padding:6px 18px 14px;}
+  .row{display:flex; gap:12px; padding:8px 0; border-bottom:1px solid #f0f3f8; font-size:13.5px;}
+  .row:last-child{border-bottom:none;}
+  .row .lab{flex:none; width:76px; color:var(--ink-3); font-size:12.5px; padding-top:2px;}
+  .row .txt{color:var(--ink-2); line-height:1.85;}
+  .row .txt em{font-style:normal; color:var(--rose); font-weight:700;}
+  .row .txt i{font-style:normal; color:var(--teal); font-weight:700;}
+  .en{font-family:"Georgia","Times New Roman",serif; letter-spacing:.01em;}
+  .cut{color:var(--blue); font-weight:700;}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .card h3{font-size:14px; margin:0 0 10px; color:var(--blue);}
+  .card ul{margin:0; padding-left:18px;}
+  .card li{font-size:13.4px; color:var(--ink-2); margin-bottom:7px; line-height:1.72;}
+  .card li b{color:var(--ink);}
+
+  ol.steps{margin:0; padding-left:0; list-style:none; counter-reset:s;}
+  ol.steps li{counter-increment:s; position:relative; padding-left:38px; margin-bottom:12px;
+    font-size:13.7px; color:var(--ink-2); line-height:1.8;}
+  ol.steps li::before{content:counter(s); position:absolute; left:0; top:1px; width:24px; height:24px;
+    border-radius:50%; background:var(--blue-soft); color:var(--blue); font-size:12.5px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;}
+  ol.steps li b{color:var(--ink);}
+
+  code{background:#f2f5fa; border:1px solid var(--line); border-radius:4px; padding:1px 5px;
+    font-family:Consolas,Monaco,monospace; font-size:12.4px; color:var(--blue);}
+
+  footer{margin-top:56px; padding-top:18px; border-top:1px solid var(--line); font-size:12.3px;
+    color:var(--ink-3); line-height:1.95;}
+
+  @media (max-width:820px){
+    .wrap{padding:28px 16px 60px;} h1{font-size:23px;}
+    .params{grid-template-columns:1fr 1fr;}
+    .grid2{grid-template-columns:1fr;}
+    table{font-size:12.7px;} thead th,tbody td{padding:9px 10px;}
+    .row .lab{width:62px;}
+  }
+  @media print{
+    body{background:#fff; font-size:11.5px;}
+    .wrap{max-width:none; padding:0;}
+    .tcard,.ex,.card{break-inside:avoid;}
+    section{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">个人备考方案 · 江苏高校联盟学士学位英语</div>
+  <h1>55 天冲刺台：系统说明与使用约定</h1>
+  <div class="sub">
+    起点：初中水平、词汇语法基本遗忘、句子读不通、翻译不出来。目标：<b>卷面 60 分过线</b>。<br>
+    本文说明的是 <b>学位英语_55天冲刺台.html 与同目录 data/ 数据文件夹实际怎么运转、每天怎么用、哪些事它做不到</b>。
+    文件名沿用旧称「两个半月过线计划」，内容只描述<b>当前这一版最终方案</b>；<b>一切以工具里的实际页面为准</b>。
+  </div>
+  <div class="params">
+    <div class="pm"><div class="k">周期</div><div class="v">55 天 / 8 周</div></div>
+    <div class="pm"><div class="k">每日投入</div><div class="v">128–145 分钟</div></div>
+    <div class="pm"><div class="k">总学时</div><div class="v">≈ 120 小时</div></div>
+    <div class="pm"><div class="k">目标分数</div><div class="v">60 分过线</div></div>
+  </div>
+</header>
+
+<!-- 1 -->
+<section>
+  <div class="sec-head"><div class="num">1</div><h2>先算清账：60 分从哪来</h2></div>
+  <p class="lead">你不需要变强，只需要在各题型里各自拿到"及格的那一份"。这张表是目标账，不是工具的功能清单。</p>
+  <div class="tcard">
+    <table>
+      <thead><tr><th>题型</th><th class="c">满分</th><th class="c">目标</th><th>拿分逻辑</th><th class="c">投入</th></tr></thead>
+      <tbody>
+        <tr><td>阅读理解</td><td class="c">20</td><td class="c">14</td><td>8 题里对 5–6 题。细节题靠"定位 + 同义替换"，不要求读懂全文</td><td class="c nw">★★★★★</td></tr>
+        <tr><td>词汇和语法（语法部分）</td><td class="c">15</td><td class="c">10</td><td>非谓语 / 从句 / 虚拟三类占大半，是"规则题"，学会就能对</td><td class="c nw">★★★★</td></tr>
+        <tr><td>完形填空</td><td class="c">20</td><td class="c">12</td><td>逻辑衔接词 + 固定搭配是送分区</td><td class="c nw">★★★</td></tr>
+        <tr><td>短文写作</td><td class="c">15</td><td class="c">10</td><td>三段式 + 120 词，语法不出大错即可</td><td class="c nw">★★★</td></tr>
+        <tr><td>汉译英</td><td class="c">15</td><td class="c">9</td><td>5 句，译出主干、时态对、无重大语法错误</td><td class="c nw">★★★</td></tr>
+        <tr><td>词汇和语法（词汇部分）</td><td class="c">15</td><td class="c">8</td><td>只打高频辨析与固定搭配，放弃生僻词</td><td class="c nw">★★</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note good">
+    <b>合计 63 分</b>（阅读 14 + 语法 10 + 完形 12 + 写作 10 + 翻译 9 + 词汇 8）。客观题 70 分是基本盘。<br>
+    工具内「考前速查」页另有一套<b>按对题数算</b>的口径（词汇语法 18 + 完形 11 + 阅读 12.5 + 汉译英 8 + 写作 10 ≈ 59.5），
+    两张表都是经验估算，不冲突；实际以当年试卷难度与院校合格线为准。
+  </div>
+</section>
+
+<!-- 2 -->
+<section>
+  <div class="sec-head"><div class="num">2</div><h2>系统是什么 <small>页面 + 数据文件夹 · 离线 · 本地存档</small></h2></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>运行方式</h3>
+      <ul>
+        <li><b>HTML 页面 + <code>data/</code> 文件夹</b>：双击 HTML 用浏览器打开，无需联网、无需安装、无需服务器；<b>两者必须放在同一目录</b>，拷贝时一起带走，缺文件页面会给红色提示。</li>
+        <li><b>题目与答案只在 <code>data/*.js</code></b>：页面只留逻辑与渲染，后续怎么改版都碰不到题目和正确答案的对应关系。改版后可在命令行运行 <code>node 计划与资料/data/verify.js</code> 核对答案映射基线。</li>
+        <li><b>数据存 localStorage</b>：学习记录只存在当前浏览器。换浏览器、换设备、清缓存都会丢失；<b>工具没有导出/备份存档功能</b>。</li>
+        <li>进度页可设置<b>计划起始日</b>（决定第几天，改它会重算天数、打卡记录保留）、导入自定义词表、手填模考成绩、清空全部记录。</li>
+        <li>用浏览器打印即可；<b>各学习页顶部的完成条在打印时会自动隐藏</b>。</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>导航动线（按学习顺序排）</h3>
+      <ul>
+        <li>今日 → <b>背词</b> → <b>课堂</b> → <b>每日一读</b> → <b>完形</b> → <b>快练</b> → <b>句子本</b> → 写作 → 实战 → 进度</li>
+        <li>另有「篇目库」和「考前速查」两个入口。</li>
+        <li>写作 D43 解锁、实战 D53 解锁；未解锁的点了会提示还差几天，不会静默无反应。</li>
+        <li>今日页是<b>只读看板</b>：显示完成度与各项状态，不接收勾选。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="tcard" style="margin-top:14px;">
+    <table>
+      <thead><tr><th>资源</th><th class="c">规模</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>词库 WORDS</td><td class="c">1433 词</td><td>A25 / B151 / R106 / C279 / D872，另有 280 个词块组（CLU）；按 9 份真题中高频词补入 69 个考点词</td></tr>
+        <tr><td>课堂 LESSONS</td><td class="c">L0–L10 共 11 课 / 140 题</td><td>L0 术语入门，L1–L7 语法主线，L8–L10 高频补充</td></tr>
+        <tr><td>每日一读 RDG</td><td class="c">68 篇 / 278 题</td><td>正文平均 323 词（真题平均 327 词），四选一，带逐题解析，难度自适应，不限篇数</td></tr>
+        <tr><td>完形 CLOZE</td><td class="c">12 套 / 160 空</td><td>294 条生词中文提示（CGLOSS）</td></tr>
+        <tr><td>汉译英题库 SQ</td><td class="c">404 句</td><td>另含长难句 40、仿写句式 18</td></tr>
+        <tr><td>写作 WRITE</td><td class="c">4 篇</td><td>D43 起开放，每篇 8 条自查</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note warn">
+    <b>题源说明：</b>工具内全部题目为<b>手写自编</b>，9 份真题只作参考（篇幅、题型、题材、中高频词），<b>不使用真题原句或原题</b>；<code>试卷练习/</code> 的 9 份历年试卷 PDF <b>没有接入学习闭环</b>（工具内无 .pdf 引用），留作考前整卷检验。
+    它们是补充材料，想练真题的设坑逻辑需自己抽一套整卷计时做。
+  </div>
+  <div class="note good">
+    <b>选项已做防蒙题处理（当前版本的最终方案）：</b>
+    ① <b>答案位置均衡</b>：完形练习、模考词汇语法、模考完形的选项在页面上按确定性规则重排，每 4 题一组 A/B/C/D 各占一次、组内顺序打乱，
+    全选 A 或按 ABCD 规律选的期望命中率约 25%；阅读沿用「篇号＋题号」确定性洗牌（实测四个位置各约 25%）。同一题每次打开顺序一致。
+    ② <b>选项等长化</b>：阅读 253 题共 607 个干扰项只补细节、字数向正确项靠拢，四个选项几乎等长，
+    「选最长项」命中率从 77.3% 降到 19.8%。
+    两处都只改<b>选项展示顺序与干扰项措辞</b>，正确选项内容与答案下标逐字未动；<code>verify.js</code> 的答案映射基线已按当前数据重建并通过校验。
+    旧存档里已作答的完形／模考记录会在打开时自动换算到新位置，作答结果不丢。
+  </div>
+</section>
+
+<!-- 3 -->
+<section>
+  <div class="sec-head"><div class="num">3</div><h2>55 天三阶段与每日任务配比</h2></div>
+  <p class="lead">工具按 <code>dayNum()</code>（起始日算第 1 天）推进，共 8 周、无休整日。每日任务清单按阶段自动切换四套：</p>
+  <div class="tcard">
+    <table>
+      <thead><tr><th class="c nw">阶段</th><th class="c nw">天数</th><th>每日任务（分钟）</th><th class="c nw">合计</th></tr></thead>
+      <tbody>
+        <tr><td class="c">① 打底</td><td class="c">D1–42</td><td>回炉到期词块 25 · 新词 18 · 课堂 20 · 每日一读 + 快练 30 · 今日输出 8 句 35</td><td class="c nw">128′</td></tr>
+        <tr><td class="c">② 写作</td><td class="c">D43–52</td><td>回炉 25 · 顽固词回炉 15 · 课堂 20 · 限时阅读/完形 30 · 今日输出 8 句 25 · 写作 30</td><td class="c nw">145′</td></tr>
+        <tr><td class="c">③ 模考</td><td class="c">D53–54</td><td>只还账 20 · 整卷模考（最多 48 题）90 · 对答案与错题归因 30</td><td class="c nw">140′</td></tr>
+        <tr><td class="c">考前日</td><td class="c">D55</td><td>回炉顽固词 25 · 总复盘 45 · 今日输出 8 句 25 · 四篇作文自查 20</td><td class="c nw">115′</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>总学时约 120 小时</b>（128×42 + 145×10 + 140×2 + 115 ≈ 7221 分钟）。总量压进 55 天，靠提高日均负荷实现，<b>没有休整日</b>。这是设计取舍，不是遗漏。<br>
+    8 周主题地图与每周验收文字保留在「进度」页，<b>仅作展示</b>：阶段按日历推进，不会因未达标而阻断或重做一周。
+  </div>
+</section>
+
+<!-- 4 -->
+<section>
+  <div class="sec-head"><div class="num">4</div><h2>背词：分层词库 + 动态词量 + 间隔复习</h2></div>
+  <p class="lead">大纲要求 4000 词 + 500 词组；工具只收 1433 个精准分层的词，并按层决定是否要求"会写"。</p>
+  <div class="tcard">
+    <table>
+      <thead><tr><th class="c nw">层</th><th class="c nw">数量</th><th class="c nw">新词配比</th><th>定位与掌握标准</th></tr></thead>
+      <tbody>
+        <tr><td class="c"><span class="tag t-low">D</span></td><td class="c">872</td><td class="c">44%</td><td><b>认知词</b>：只要求"认得"，不要求会写；认满 2 次即归档，不再占复习额度</td></tr>
+        <tr><td class="c"><span class="tag t-blue">C</span></td><td class="c">279</td><td class="c">20%</td><td><b>复用核心词</b>：会拼、会搭、能用于翻译与写作</td></tr>
+        <tr><td class="c"><span class="tag t-mid">R</span></td><td class="c">106</td><td class="c">20%</td><td><b>阅读核心词</b>：直接决定能不能读懂文章，优先安排</td></tr>
+        <tr><td class="c"><span class="tag t-mid">B</span></td><td class="c">151</td><td class="c">13%</td><td><b>主题词</b>：教育 / 科技 / 环境 / 健康 / 职场 / 社会</td></tr>
+        <tr><td class="c"><span class="tag t-hi">A</span></td><td class="c">25</td><td class="c">3%</td><td><b>功能 / 连接词</b>：断句、判结构用</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid2" style="margin-top:14px;">
+    <div class="card">
+      <h3>每天背多少，系统自己算</h3>
+      <ul>
+        <li><b>渐进起步</b>：D1 20 → D2 24 → D3 28 → D4 起 30；第 8 周上限 22。</li>
+        <li><b>看复习欠账降量</b>：到期 &gt;110 张降到 22，&gt;80 张降到 26；连续 3 天还不清，当天<b>新词为 0，只还账</b>。</li>
+        <li><b>单轮复习卡上限 120 张</b>，避免一轮拖成一小时。</li>
+        <li>新词按 280 个词块组和层配比动态挑，学了一半的组下次优先收尾。</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>复习与回炉</h3>
+      <ul>
+        <li><b>R/C/B/A 层</b>走 5 档间隔 <code>1 / 3 / 7 / 15 / 30</code> 天；<b>D 层</b>只走 <code>1 / 5</code> 天，认满 2 次归档。</li>
+        <li>词卡按"认识 / 模糊 / 不认识"三档判分，不认识的词降 box、当天最多再出现一次。</li>
+        <li><b>答错自动回炉</b>：阅读、完形、课堂里答错的关联词会被 <code>markWeak()</code> 降 box、<code>due</code> 拉回今天。</li>
+        <li><b>例外</b>：词库外 / 还没学过的词答错<b>不会</b>进背词队列（被 <code>seen</code> 挡住），要手动加词。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note good">
+    <b>唯一的"硬衔接"：</b>快练只从"已学过（seen）"的词里出题，句子练习只挖含 1–2 个已学词的句子；
+    阅读和完形则是<b>按天预设词表</b>，不查真实掌握记录（见第 11 节）。
+  </div>
+</section>
+
+<!-- 5 -->
+<section>
+  <div class="sec-head"><div class="num">5</div><h2>课堂：11 课 + 间隔复习 + 难度分级</h2></div>
+  <div class="tcard">
+    <table>
+      <thead><tr><th class="c nw">周次</th><th>主攻</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td class="c">第 1 周</td><td>L0 术语入门 + L1 句子骨架 + L2 简单句扩展</td><td>L0 未学时会先提示"先学这个"</td></tr>
+        <tr><td class="c">第 2–6 周</td><td>一周一课：L3 → L7</td><td>并列句时态、定语从句、状语从句、名词性从句、阅读题型</td></tr>
+        <tr><td class="c">第 7 周</td><td>L8 被动语态 + 虚拟语气、L9 倒装与强调</td><td>主线转为题型训练，语法缺口用补充课补</td></tr>
+        <tr><td class="c">第 8 周</td><td>L10 比较结构 + 主谓一致</td><td>配合翻译写作与整卷</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    每课 = 概念讲解 + 练习题（全库 140 题），可"换新一批"；掌握度（答对率）只用来<b>解锁更高的题难度档</b>（基础 → 进阶 → 冲刺），不影响主线进度。
+    到期课程按 <code>1 / 3 / 7 / 14</code> 天进入「混排复习」。
+  </div>
+</section>
+
+<!-- 6 -->
+<section>
+  <div class="sec-head"><div class="num">6</div><h2>每日一读与完形：按天解锁、难度自适应</h2></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>每日一读（68 篇 / 278 题 · 正文平均 323 词）</h3>
+      <ul>
+        <li>解锁条件只有一条：<code>篇目.d ≤ 今天</code>。<b>不限篇数、不限次数</b>，随时能读。</li>
+        <li>今日推荐 = 难度最接近当前水平的那篇；目标难度 <code>28 + 天数 × 1.08</code>（D1≈29、D20≈50、D40≈71、D55≈87）。</li>
+        <li>四选一 + 逐题解析，答错关联词自动回炉背词队列。</li>
+        <li><b>选项防蒙题</b>：干扰项按正确项长度补齐细节，四项字数接近，正确项不再是最长项；顺序按「篇号＋题号」确定性洗牌，A/B/C/D 各约 25%。</li>
+        <li>每篇标了一组约 22 个"刻意复现"的已学词，但<b>正文不是封闭词表</b>（平均 189 个去重词）。</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>完形填空（12 套 / 160 空）</h3>
+      <ul>
+        <li>同样按 <code>套.d ≤ 今天</code> 解锁；交卷后本套不能再改，逐空给解析。</li>
+        <li><b>选项按确定性规则重排</b>：每 4 空一组 A/B/C/D 各一次、组内顺序打乱，全选 A 期望约 25%；练习页与模考页同一空顺序一致。</li>
+        <li>完形选项多数不是词库原形，靠词形变化、基础词和 <b>294 条中文提示</b>兜底；正文里有少量词库外场景词属正常。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note warn">
+    <b>正文不是封闭词表：</b>阅读与完形按天预设一组要复现的已学词，正文允许少量生词并给中文兜底；
+    运行时不校验你实际背过哪些词，遇到没学过的词属正常。
+  </div>
+</section>
+
+<!-- 7 -->
+<section>
+  <div class="sec-head"><div class="num">7</div><h2>快练 / 句子本 / 今日输出</h2></div>
+  <div class="tcard">
+    <table>
+      <thead><tr><th>模块</th><th>实际做法</th></tr></thead>
+      <tbody>
+        <tr><td>快练</td><td>题量无上限，全部用已学过的词现算；只挖含 1–2 个已学词的句子。<b>不计入今日任务清单</b>，属于加练。</td></tr>
+        <tr><td>今日输出</td><td><b>固定 8 句</b>汉译英：2 句当周长难句 + 3 句今天新词/最近学过的词 + 2 句今天回炉/最近碰过的词 + 1 句仿写，不足由 404 句题库按日固定抽样补齐。每句有输入框 + 可折叠参考译文。</td></tr>
+        <tr><td>拆句器</td><td>并进「句子本」：<b>要自己粘一句英文进来</b>，填切意群 / 抓主干 / 写译文，再按三类错因（词不认识 · 结构看错 · 中文不顺）归因。<b>没有内置参考译文</b>，对错只能自己判断或贴给 AI。</td></tr>
+        <tr><td>句子本</td><td>收录自建句子与归因记录，可筛选回看。</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    今日输出是<b>中译英（看中文写英文）</b>；工具不承载英译中的手写精读流程，想练需自己拿真题段落加做（见第 12 节）。
+  </div>
+</section>
+
+<!-- 8 -->
+<section>
+  <div class="sec-head"><div class="num">8</div><h2>写作：D43 起，4 篇，三步走</h2></div>
+  <p class="lead">第 43 天自动开放，按 <code>[[43,3],[46,3],[49,2],[51,2]]</code> 排期：前两篇各 3 天，后两篇各 2 天，把 D53–54 腾给模考。</p>
+  <div class="tcard">
+    <table>
+      <thead><tr><th class="c nw">步骤</th><th>做什么</th><th>页面提供</th></tr></thead>
+      <tbody>
+        <tr><td class="c">①</td><td>读范文 + 填骨架</td><td>范文展示、骨架填空（自动保存）</td></tr>
+        <tr><td class="c">②</td><td>不看范文独立写，计时 20 分钟</td><td>独立文本框 + 实时字数统计（目标 ≥120 词，4 篇范文均达标）</td></tr>
+        <tr><td class="c">③</td><td>对照范文订正 + 过自查清单</td><td><b>8 条自查</b>逐条勾选</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    工具<b>不批改作文</b>：页面明确写着"想让 AI 逐句改、按 15 分制打分，把作文贴到对话里"。批改这一步要自己完成。
+  </div>
+</section>
+
+<!-- 9 -->
+<section>
+  <div class="sec-head"><div class="num">9</div><h2>整卷实战：D53 起，标称 70 分客观题卷</h2></div>
+  <div class="tcard">
+    <table>
+      <thead><tr><th>项目</th><th>实际内容</th></tr></thead>
+      <tbody>
+        <tr><td>组卷</td><td>20 道词汇语法 + 1 套完形 + 2 篇阅读（最多 48 题），按当前难度从已解锁篇目里抽；<b>标称 70 分</b></td></tr>
+        <tr><td>满分浮动</td><td>完形套有 10 / 20 空、阅读篇有 4 / 5 题，因此<b>实际满分在 60–75 之间浮动</b>；过线阈值固定按 56/70，不随卷调整。系统内分数只用来看练没练</td></tr>
+        <tr><td>选项</td><td>词汇语法与完形按确定性规则重排，<b>每 4 题一组 A/B/C/D 各占一次</b>；阅读按篇号＋题号洗牌。全选 A 或按 ABCD 规律选的期望命中率约 25%</td></tr>
+        <tr><td>计时</td><td>90 分钟倒计时，到点自动交卷；交卷后不可再改</td></tr>
+        <tr><td>反馈</td><td>分段成绩（词汇语法 / 完形 / 阅读）、全卷错题解析、最近 20 卷历史</td></tr>
+        <tr><td>判定</td><td>按 <b>56/70</b> 显示「已过线（60 分及格线下的客观题版）」，阈值不随实际满分调整</td></tr>
+        <tr><td><b>缺少</b></td><td><b>汉译英 5 句（15 分）和作文（15 分）</b>没有进模考</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note warn">
+    <b>这意味着：</b>同一段 90 分钟里少做了 30 分的产出题，时间压力被明显低估；工具内<b>无法验证"整套 100 分卷 90 分钟 ≥60 分"</b>。
+    考前务必自己拿 <code>试卷练习/</code> 里的真题整卷掐表做一次，把翻译和作文补上。
+  </div>
+</section>
+
+<!-- 10 -->
+<section>
+  <div class="sec-head"><div class="num">10</div><h2>完成判定：在学习现场点，随时可取消</h2></div>
+  <p class="lead">「今日」页只是看板，不能勾选。完成与否在<b>每个学习页顶部的完成条</b>里判定，状态与今日页共用同一份按天记录。</p>
+  <div class="tcard">
+    <table>
+      <thead><tr><th class="c nw">动作</th><th>结果</th></tr></thead>
+      <tbody>
+        <tr><td class="c">点「○ 学完了，标记完成」</td><td>该项记为已完成，按钮变「✓ 已完成 · 点击取消」，并记录<b>在哪一页、几点</b>标记</td></tr>
+        <tr><td class="c">再点一次</td><td>回到未完成，来源与时间清掉</td></tr>
+        <tr><td class="c">系统进度提示</td><td>按钮旁显示按真实记录算出的「已达标 / 未达标」与具体数字，<b>仅供参考，不自动打勾、不锁死</b></td></tr>
+        <tr><td class="c">今日页</td><td>只读同步：显示勾选状态与「在 X 页标记 · HH:MM」，未完成项提示该去哪一页点</td></tr>
+        <tr><td class="c">存储</td><td><code>S.days[日期][任务号]</code>，按天隔离，刷新不丢；跨天互不干扰</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note good">
+    <b>系统的"识别"做到哪一步：</b>进度提示全部读真实数据——到期词剩余张数、今天新学 <code>n/目标</code>、本周课已学几课、
+    本篇已答 <code>n/N</code> 题 / 本套已填 <code>n/N</code> 空、今日输出已写句数、作文字数与自查条数、今天是否交过卷。
+    <b>但判定权留给你</b>：脚本不会替你置位，所以"今天想少做一点"仍然可以不点；也不会因为未达标就禁止进入下一阶段。
+  </div>
+</section>
+
+<!-- 11 -->
+<section>
+  <div class="sec-head"><div class="num">11</div><h2>三条使用约束 <small>决定这套系统能不能跑通</small></h2></div>
+  <div class="note warn">
+    <b>前提：每天按量背满、不跳天。</b>只要满足这个前提，词 → 读 → 完形的链路是成立的（按理想路径模拟：完形 12 套的复现词 100% 落在当天累计应学里；
+    阅读与完形的复现词表已按当前词库重新校准：80 篇 / 套共 1809 个复现词次，<b>100% 落在当天累计应学里，且 100% 在该篇正文中真实出现</b>）。<b>它是"按进度兑现"的设计，不是"自适应"的设计。</b>
+  </div>
+  <ol class="steps">
+    <li><b>不能拖词量，落后先补词再往下读。</b><code>targetNew()</code> 会因复习积压把新词降到 22 / 26，连欠 3 天直接变 0；
+      而阅读和完形只看日历 <code>dayNum()</code> 解锁，既不检查你背没背，也不会等你。宁可停一天只清复习、不进新内容，
+      也别在词没补完的情况下往后读。补齐后链路自动恢复。</li>
+    <li><b>阅读和完形按天预设词表，不跟随实际掌握。</b>每篇 / 每套写死了一组"该天应该已学过"的复现词，出题时不查询你的 <code>seen</code> 记录。
+      一旦拖了进度，就会出现"标称已学、实际没背过"的词，系统既不提醒也不补。</li>
+    <li><b>遇到没学过的词是正常的，靠上下文和中文提示处理。</b>正文不是封闭词表，完形选项大量依赖词形变化与基础词兜底。
+      这些词库外的词答错<b>不会自动进背词队列</b>（<code>markWeak()</code> 被 <code>seen</code> 挡住），觉得重要就在进度页手动导入自定义词表。</li>
+  </ol>
+  <div class="note">
+    另外，完成判定是<b>手动点、不校验完成度</b>：打卡本身不检查正确率或完成量。系统给了客观进度提示，但是否算完成由你决定——
+    别把"点亮 55 天"当成"过关了"。
+  </div>
+</section>
+
+<!-- 12 -->
+<section>
+  <div class="sec-head"><div class="num">12</div><h2>已知边界</h2></div>
+  <div class="tcard">
+    <table>
+      <thead><tr><th>条目</th><th>当前状态</th><th>需要你自己补什么</th></tr></thead>
+      <tbody>
+        <tr><td>真题</td><td>9 份 PDF 未接入，题目全部自编、对齐考纲风格</td><td>自己抽真题整卷掐 90 分钟做，练设坑逻辑与考频分布</td></tr>
+        <tr><td>手写译文 / 精读五步法</td><td>无对应功能；每日一读是四选一，句子本需自粘句子且无参考译文</td><td>读完把句子用中文说一遍；想练英译中，自己拿真题段落手写</td></tr>
+        <tr><td>模考</td><td>标称 70 分客观卷（满分 60–75 浮动），缺汉译英与作文</td><td>补 5 句翻译 + 1 篇作文，按 20/15/20/15/20 分钟分段计时，换算到 100 分卷判 60 分线</td></tr>
+        <tr><td>里程碑门槛</td><td>无阻断，按日历开新阶段</td><td>自己盯每周验收文字，不达标就顺延或重做</td></tr>
+        <tr><td>休整日</td><td>55 天无休，日均 128–145′</td><td>每 7 天给自己安排一个只回炉的轻量日</td></tr>
+        <tr><td>前后测</td><td>无起点摸底、无阶段测；进度页模考分数为手填</td><td>用 1 份真题做起点摸底，D28 / D52 各测一次并记进进度页</td></tr>
+        <tr><td>存档</td><td>无导出/备份，清缓存或换浏览器会丢</td><td>重要进度自己另记一份</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note warn">
+    <b>所以"能不能有效提高"目前无法验证。</b>工具没有起点摸底、没有阶段测、没有前后对比，学习记录只存在浏览器里。
+    本文评的是"设计有没有兑现"，不是"实际提分效果"。按分值权重判断：<b>客观题 70 分支撑得住，主观题 30 分与"读懂句子"这条主线偏弱</b>。
+  </div>
+</section>
+
+<!-- 13 -->
+<section>
+  <div class="sec-head"><div class="num">13</div><h2>使用要点 <small>按当前系统避免常见误区</small></h2></div>
+  <div class="note">
+    以下只保留与当前工具操作直接相关的要点；工具未承载的动作需自行加做（见第 12 节）。
+  </div>
+
+  <h3 style="font-size:15px;color:var(--blue);margin:26px 0 10px;">六个常见误区</h3>
+  <div class="tcard">
+    <table>
+      <thead><tr><th class="c nw">坑</th><th>表现</th><th>在这套工具里怎么避免</th></tr></thead>
+      <tbody>
+        <tr><td class="c">1</td><td>看译文觉得"我懂了"</td><td>今日输出的参考译文是折叠的，<b>先自己写完再展开</b>；别一上来就点开</td></tr>
+        <tr><td class="c">2</td><td>从 A 开始背单词书</td><td>词库已按层 / 词块组排好顺序，跟着每日新词走即可</td></tr>
+        <tr><td class="c">3</td><td>先啃语法大全</td><td>只上 L0–L10 这 11 课，一周一课，别自己加料</td></tr>
+        <tr><td class="c">4</td><td>用模拟题刷量</td><td>工具题目本来就是自编的；<b>务必另外拿真题整卷练</b>，别把自编题当真题</td></tr>
+        <tr><td class="c">5</td><td>泛读刷篇数</td><td>每日一读不限量，但每篇的四题要逐题看解析、让错词回炉；<b>精做 1 篇 &gt; 刷 5 篇</b></td></tr>
+        <tr><td class="c">6</td><td>作文只背模板不动笔</td><td>D43 起 4 篇都走"独立写"那一步，写完 8 条自查逐条过</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <b>材料清单：</b>①官方推荐教材《新视野大学英语 1》（外语教学与研究出版社）、《新继教大学英语》（中国出版集团）—— 后者是联盟专门为这考试编的，优先级更高；
+  ②联盟历年真题（向学校继续教育学院索取，或官网 jsxwyy.webtrn.cn「模拟环境练考」），本目录 <code>试卷练习/</code> 有 9 份 PDF，<b>工具未接入</b>；
+  ③工具内自建记录：词卡进度 / 句子本 / 打卡 / 模考成绩，全部存在浏览器 localStorage。<br>
+  <b>文档关系：</b>《考纲范围与高频考点速查表》= 考什么（官方大纲）；本文 = 系统怎么做、怎么用、边界在哪；<code>学位英语_55天冲刺台.html</code> + <code>data/</code> = 实际执行。
+  三份以工具为准。<br>
+  <b>依据与说明：</b>本方案依据江苏联盟卷题型结构（词汇语法 30 / 完形 20 / 阅读 20 / 汉译英 15 / 写作 15，100 分卷 90 分钟、60 分合格）设计，
+  分数拆解为经验估算，实际以当年试卷难度与院校合格线为准；报名与考试时间以官方公告为准。<br>
+  <b>校订日期：</b>2026-11-15（按冲刺台与 data/ 当前最终版本校订）
+</footer>
+
+</div>
+</body>
+</html>
