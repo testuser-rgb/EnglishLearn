@@ -12,3 +12,6 @@ Desktop.ini
 
 # HBuilderX 本地打包产物：APK、wgt 缓存、签名 keystore，一律不入库
 hbuilder-app/unpackage/
+
+# 本机过程产物：PDF 提取稿、分批生成 JSON、调试截图等（非交付物）
+.workbuddy/tmp/
