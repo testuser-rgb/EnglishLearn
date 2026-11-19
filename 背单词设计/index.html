@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>词阶 · 30天抗遗忘背词</title>
+<style>
+/* ============ 设计令牌 · 墨与朱 ============ */
+:root{
+  --paper:        oklch(0.972 0.008 85);
+  --paper-raised: oklch(0.992 0.004 85);
+  --paper-sunk:   oklch(0.945 0.013 82);
+  --paper-edge:   oklch(0.915 0.016 80);
+  --ink:          oklch(0.27 0.018 255);
+  --ink-2:        oklch(0.43 0.015 255);
+  --ink-3:        oklch(0.60 0.012 255);
+  --cinnabar:     oklch(0.55 0.19 32);
+  --cinnabar-d:   oklch(0.46 0.17 30);
+  --cinnabar-w:   oklch(0.955 0.028 40);
+  --jade:         oklch(0.52 0.09 160);
+  --jade-w:       oklch(0.945 0.03 160);
+  --gold:         oklch(0.70 0.13 78);
+  --gold-w:       oklch(0.968 0.04 80);
+  --line:         oklch(0.895 0.012 82);
+  --line-soft:    oklch(0.935 0.010 82);
+  --serif: "Songti SC","STSong","Noto Serif CJK SC","Source Han Serif SC",Georgia,serif;
+  --sans: "PingFang SC","Microsoft YaHei","Hiragino Sans GB",system-ui,-apple-system,sans-serif;
+  --en: Georgia,"Times New Roman",serif;
+  --ease: cubic-bezier(0.165,0.84,0.44,1);
+  --ease-expo: cubic-bezier(0.19,1,0.22,1);
+  --shadow: 0 1px 2px oklch(0.4 0.02 60/.05), 0 8px 30px oklch(0.4 0.02 60/.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{
+  background:var(--paper);color:var(--ink);font-family:var(--sans);
+  line-height:1.65;-webkit-font-smoothing:antialiased;
+  background-image:repeating-linear-gradient(0deg,transparent 0 3px,oklch(0.6 0.02 80/.012) 3px 4px);
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+::selection{background:var(--cinnabar-w);color:var(--cinnabar-d)}
+
+/* ============ 布局骨架 ============ */
+.shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+.rail{
+  position:sticky;top:0;height:100vh;padding:34px 22px 26px;
+  display:flex;flex-direction:column;
+  border-right:1px solid var(--line);
+  background:linear-gradient(180deg,var(--paper-raised),var(--paper));
+}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.seal{
+  width:44px;height:44px;flex:none;background:var(--cinnabar);color:var(--paper-raised);
+  font-family:var(--serif);font-size:26px;line-height:44px;text-align:center;
+  border-radius:5px;box-shadow:inset 0 0 0 2px var(--cinnabar-d),inset 0 0 0 3.5px var(--paper-raised);
+}
+.brand h1{font-family:var(--serif);font-size:27px;letter-spacing:3px;font-weight:700;line-height:1}
+.brand .sub{font-size:11px;color:var(--ink-3);letter-spacing:1.5px;margin-top:5px}
+.rail .plan-tag{
+  margin:22px 0 14px;font-size:11px;letter-spacing:2px;color:var(--ink-3);
+  border-top:1px solid var(--line);padding-top:18px;
+}
+.nav{display:flex;flex-direction:column;gap:3px}
+.nav button{
+  display:flex;align-items:center;gap:13px;padding:11px 13px;border-radius:7px;
+  color:var(--ink-2);font-size:14.5px;text-align:left;position:relative;
+  transition:background .25s var(--ease),color .25s var(--ease);
+}
+.nav button .ico{width:20px;text-align:center;font-size:17px;font-family:var(--en)}
+.nav button:hover{background:var(--paper-sunk);color:var(--ink)}
+.nav button.on{background:var(--cinnabar-w);color:var(--cinnabar-d);font-weight:600}
+.nav button.on::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:3px;background:var(--cinnabar)}
+.nav .badge{margin-left:auto;font-size:11px;background:var(--cinnabar);color:#fff;padding:1px 7px;border-radius:20px;font-variant-numeric:tabular-nums}
+.rail .foot{margin-top:auto;font-size:11px;color:var(--ink-3);line-height:1.8}
+.rail .foot b{color:var(--cinnabar-d)}
+
+.main{min-width:0;padding:30px 40px 60px;max-width:1080px}
+.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:26px;flex-wrap:wrap;position:relative}
+.eyebrow{font-size:11px;letter-spacing:3px;color:var(--cinnabar);font-weight:600;margin-bottom:7px}
+.topbar h2{font-family:var(--serif);font-size:30px;line-height:1.15;letter-spacing:1px}
+.topbar h2 em{font-style:normal;color:var(--cinnabar)}
+.topbar .desc{font-size:13px;color:var(--ink-3);margin-top:7px}
+.top-actions{display:flex;align-items:center;gap:10px}
+.today-pill{font-family:var(--en);font-size:13px;color:var(--ink-3);background:var(--paper-raised);border:1px solid var(--line);border-radius:20px;padding:7px 14px}
+.today-pill b{color:var(--cinnabar-d);font-size:17px}
+.demo-btn{font-size:12px;color:var(--ink-3);border:1px dashed var(--line);border-radius:20px;padding:7px 13px;transition:.2s}
+.demo-btn:hover,.demo-btn.on{border-color:var(--cinnabar);color:var(--cinnabar-d);background:var(--cinnabar-w)}
+.demo-seed{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);flex-wrap:wrap}
+.demo-seed .demo-btn{border-style:solid;background:var(--paper-raised)}
+.demo-seed .ghost{border-style:dashed}
+.demo-drawer{
+  position:absolute;right:0;top:calc(100% - 8px);z-index:20;width:390px;
+  background:var(--paper-raised);border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 14px 40px oklch(0.3 0.02 60/.16);padding:18px 20px;
+  animation:rise .3s var(--ease) both;
+}
+.demo-drawer h4{font-family:var(--serif);font-size:15px;margin-bottom:5px}
+.demo-drawer p{font-size:11.5px;color:var(--ink-3);line-height:1.7}
+.demo-drawer .machine{margin-top:14px;box-shadow:none;background:var(--paper-sunk)}
+.demo-drawer .close{position:absolute;right:14px;top:12px;color:var(--ink-3);font-size:16px}
+.machine{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:8px 10px 8px 14px}
+.machine .day-num{font-family:var(--en);font-size:23px;font-weight:700;color:var(--cinnabar-d);line-height:1;white-space:nowrap}
+.machine .day-num small{font-size:11px;color:var(--ink-3);font-family:var(--sans);font-weight:400}
+.machine input[type=range]{flex:1;min-width:80px;accent-color:var(--cinnabar)}
+.machine .mv{width:28px;height:28px;border-radius:7px;background:var(--paper);font-size:15px;color:var(--ink-2);transition:.2s}
+.machine .mv:hover{background:var(--cinnabar-w);color:var(--cinnabar-d)}
+
+.view{display:none;animation:rise .5s var(--ease-expo) both}
+.view.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ============ 今日规划 ============ */
+.today-hero{
+  display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center;
+  background:var(--paper-raised);border:1px solid var(--line);border-radius:14px;
+  padding:20px 26px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.today-hero::after{content:"今日";position:absolute;right:-6px;top:-22px;font-family:var(--serif);font-size:120px;color:var(--paper-sunk);opacity:.55;pointer-events:none}
+.ring{position:relative;width:132px;height:132px;flex:none;z-index:1}
+.ring svg{transform:rotate(-90deg)}
+.ring .track{fill:none;stroke:var(--paper-edge);stroke-width:11}
+.ring .fill{fill:none;stroke:var(--cinnabar);stroke-width:11;stroke-linecap:round;transition:stroke-dashoffset .8s var(--ease)}
+.ring .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .center b{font-family:var(--en);font-size:30px;line-height:1;color:var(--ink)}
+.ring .center span{font-size:11px;color:var(--ink-3);margin-top:3px}
+.hero-txt{z-index:1}
+.hero-txt .big{font-family:var(--serif);font-size:21px;margin-bottom:6px}
+.hero-txt .big b{color:var(--cinnabar);font-family:var(--en);font-size:26px}
+.hero-txt p{font-size:13px;color:var(--ink-2);max-width:460px}
+.stat-row{display:flex;gap:26px;margin-top:18px;flex-wrap:wrap}
+.stat{min-width:78px}
+.stat b{display:block;font-family:var(--en);font-size:23px;line-height:1;color:var(--ink)}
+.stat span{font-size:11px;color:var(--ink-3)}
+.stat.hl b{color:var(--cinnabar)}
+
+.cal-wrap{margin-top:18px;background:var(--paper-raised);border:1px solid var(--line);border-radius:14px;padding:16px 22px;box-shadow:var(--shadow)}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;gap:12px;flex-wrap:wrap}
+.sec-head h3{font-family:var(--serif);font-size:18px;letter-spacing:1px}
+.sec-head .hint{font-size:11.5px;color:var(--ink-3)}
+.cal{display:grid;grid-template-columns:repeat(10,1fr);gap:7px}
+.cal .cell{
+  aspect-ratio:1;border:1px solid var(--line);border-radius:7px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;position:relative;background:var(--paper);
+  font-family:var(--en);font-size:13px;color:var(--ink-2);transition:.2s var(--ease);cursor:default;
+}
+.cal .cell .d{font-weight:700}
+.cal .cell .p{font-size:9px;color:var(--ink-3);margin-top:1px}
+.cal .cell.done{background:var(--jade-w);border-color:oklch(0.8 0.08 160);color:var(--jade)}
+.cal .cell.today{background:var(--cinnabar);border-color:var(--cinnabar-d);color:#fff;box-shadow:0 4px 14px oklch(0.55 0.19 32/.3);transform:translateY(-2px)}
+.cal .cell.today .p{color:oklch(1 0 0/.8)}
+.cal .cell.future{opacity:.5;background:var(--paper-sunk)}
+.cal .cell.due::after{content:"";position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.task-card{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tcard{border:1px solid var(--line);border-radius:12px;padding:14px 20px;background:var(--paper-raised);box-shadow:var(--shadow);position:relative;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.tcard .k{font-size:11px;letter-spacing:2px;color:var(--ink-3)}
+.tcard .n{font-family:var(--serif);font-size:30px;line-height:1.2;margin:2px 0}
+.tcard .n small{font-size:14px;color:var(--ink-3)}
+.tcard.new .n{color:var(--cinnabar-d)}
+.tcard.rev .n{color:var(--jade)}
+.tcard p{font-size:12px;color:var(--ink-3)}
+.btn-go{
+  margin-top:14px;display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--paper-raised);
+  padding:9px 18px;border-radius:8px;font-size:13px;transition:.25s var(--ease);
+}
+.btn-go:hover{background:var(--cinnabar);transform:translateY(-1px)}
+.btn-go .arw{font-family:var(--en)}
+
+/* ============ 助记（沿用统一格式） ============ */
+.ext-line .sep{color:var(--ink-3);margin:0 8px}
+.morph{white-space:nowrap;border-bottom:2px solid oklch(0.80 0.10 42);padding-bottom:1px}
+.morph b{font-family:var(--en);font-weight:700;font-size:1.04em}
+.result{white-space:nowrap;border-bottom:2px solid var(--cinnabar);padding-bottom:1px;color:var(--cinnabar-d);font-weight:700}
+.plus{color:var(--ink-3);margin:0 7px;font-family:var(--en)}
+.dash{color:var(--cinnabar);margin:0 9px;font-weight:700}
+.ext-line{margin:3px 0}
+.ext-line .ew{font-family:var(--en);font-weight:700;color:var(--cinnabar-d);font-size:1.03em}
+.ext-line .sep{color:var(--ink-3);margin:0 8px}
+
+/* ============ 六栏助记卡（按用户截图） ============ */
+.sixcard{background:var(--paper-raised);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.sc-head{padding:15px 20px 13px;border-bottom:1px solid var(--line-soft);display:flex;align-items:baseline;gap:11px;flex-wrap:wrap}
+.sc-head .w{font-family:var(--en);font-size:27px;font-weight:700;color:var(--ink);line-height:1.15}
+.sc-head .ph{font-family:var(--en);font-size:14px;color:var(--ink-3)}
+.sc-head .dot{color:var(--ink-3);font-size:12px}
+.sc-head .df{font-size:15px;color:var(--ink-2)}
+.sc-head .df i{font-family:var(--en);font-style:italic;color:var(--ink-3);font-size:13px;margin-right:4px}
+.sc-head .speak{margin-left:auto;flex:none}
+.sc-row{display:flex;align-items:flex-start;gap:12px;padding:9px 20px;font-size:14.5px;line-height:1.85;border-bottom:1px solid var(--line-soft)}
+.sc-row:last-child{border-bottom:none}
+.sc-row:nth-child(odd){background:oklch(0.985 0.002 85)}
+.sc-tag{flex:none;min-width:64px;text-align:center;font-size:12px;line-height:1.6;border-radius:5px;padding:1px 8px;font-weight:600;letter-spacing:.3px}
+.sc-val{flex:1;min-width:0;color:var(--ink-2)}
+.sc-val b{color:var(--cinnabar-d);font-family:var(--en);font-weight:700}
+.t-part{background:oklch(0.94 0.025 240);color:oklch(0.47 0.09 240)}
+.t-mem{background:oklch(0.95 0.045 88);color:oklch(0.52 0.10 82)}
+.t-sent{background:oklch(0.94 0.028 185);color:oklch(0.46 0.08 185)}
+.t-diff{background:oklch(0.95 0.028 15);color:oklch(0.53 0.13 20)}
+.t-extra{background:oklch(0.94 0.015 300);color:oklch(0.48 0.05 300)}
+.sixcard.noshadow{box-shadow:none}
+
+/* ============ 学新词：摊开的笔记页 ============ */
+.study-bar{display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.study-bar .prog{font-family:var(--en);font-size:13px;color:var(--ink-3);white-space:nowrap}
+.study-bar .prog b{color:var(--cinnabar);font-size:17px}
+.study-bar .line{flex:1;min-width:80px;height:3px;background:var(--paper-edge);border-radius:3px;overflow:hidden}
+.study-bar .line i{display:block;height:100%;background:var(--cinnabar);width:0;transition:width .5s var(--ease)}
+.chip{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--line);color:var(--ink-3);white-space:nowrap}
+.chip.new{background:var(--cinnabar-w);border-color:transparent;color:var(--cinnabar-d)}
+.chip.rev{background:var(--jade-w);border-color:transparent;color:var(--jade)}
+.chip.retry{background:oklch(0.95 0.04 30);border-color:transparent;color:var(--cinnabar-d)}
+.switches{display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--ink-3)}
+.auto-sw{display:flex;align-items:center;gap:5px;cursor:pointer;user-select:none}
+.auto-sw input{accent-color:var(--cinnabar);cursor:pointer}
+.accent-sw{display:flex;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.accent-sw button{padding:3px 9px;font-size:11px;color:var(--ink-3)}
+.accent-sw button.on{background:var(--cinnabar-w);color:var(--cinnabar-d);font-weight:600}
+
+.note-sheet{max-width:740px;margin:0 auto;background:var(--paper-raised);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);display:flex;overflow:hidden;min-height:360px}
+.note-margin{
+  width:36px;flex:none;background:var(--paper-sunk);border-right:1px solid var(--line);
+  writing-mode:vertical-rl;display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);letter-spacing:7px;color:var(--ink-3);font-size:12px;user-select:none;
+}
+.note-body{padding:32px 38px 36px;flex:1;min-width:0}
+.note-head{display:flex;align-items:baseline;gap:15px;flex-wrap:wrap}
+.nw{font-family:var(--en);font-size:48px;font-weight:700;color:var(--cinnabar-d);line-height:1;letter-spacing:-1px}
+.nph{font-family:var(--en);font-size:17px;color:var(--ink-3)}
+.speak{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border:1px solid var(--line);
+  border-radius:20px;font-size:12px;color:var(--ink-2);transition:.2s var(--ease);background:var(--paper);
+}
+.speak:hover{border-color:var(--cinnabar);color:var(--cinnabar-d);background:var(--cinnabar-w)}
+.speak.playing{animation:pulseSpeak .6s var(--ease)}
+@keyframes pulseSpeak{50%{transform:scale(1.08);background:var(--cinnabar-w)}}
+.note-defs{margin:16px 0 4px;padding-bottom:16px;border-bottom:1px solid var(--line-soft)}
+.def-line{font-size:19px;line-height:1.9}
+.def-line .pos{font-family:var(--en);font-style:italic;color:var(--ink-3);margin-right:9px;font-size:15px}
+.def-line .key{background:linear-gradient(transparent 62%,var(--cinnabar-w) 62%);border-bottom:2px solid var(--cinnabar);padding-bottom:1px;font-weight:600}
+.note-aids .aid{margin:13px 0}
+.aid-head{display:flex;align-items:baseline;gap:12px;font-size:15.5px;line-height:1.9;flex-wrap:wrap}
+.aid-head .tag{flex:none;color:var(--cinnabar-d);font-weight:700}
+.aid-head .tag::before{content:"【"}.aid-head .tag::after{content:"】"}
+.coll-list,.der-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:7px}
+.coll-list span,.der-list span{background:var(--paper-sunk);border-radius:6px;padding:5px 11px;font-size:13.5px}
+.coll-list span b,.der-list span b{font-family:var(--en);color:var(--cinnabar-d);font-weight:600}
+.coll-list span i,.der-list span i{font-style:normal;color:var(--ink-3);font-size:12px;margin-left:6px}
+.note-nav{max-width:740px;margin:18px auto 0;display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.note-nav button{padding:9px 16px;border:1px solid var(--line);border-radius:8px;background:var(--paper-raised);font-size:13px;transition:.2s var(--ease)}
+.note-nav button:hover:not(:disabled){border-color:var(--cinnabar);color:var(--cinnabar-d)}
+.note-nav button:disabled{opacity:.4;cursor:default}
+.note-nav .primary{background:var(--ink);color:var(--paper-raised);border-color:var(--ink);margin-left:auto}
+.note-nav .primary:hover{background:var(--cinnabar);color:#fff}
+.note-nav .soft{color:var(--ink-3)}
+.note-nav .soft.done{color:var(--jade);border-color:var(--jade)}
+
+/* ============ 自测：先回想，再揭晓 ============ */
+.recall-card{max-width:660px;margin:0 auto;background:var(--paper-raised);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:34px 38px 38px;text-align:center}
+.recall-top{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left}
+.rec-hint{font-size:12px;color:var(--ink-3)}
+.recall-word{margin:40px 0 30px}
+.recall-word .rw{font-family:var(--en);font-size:54px;font-weight:700;color:var(--cinnabar-d);line-height:1;display:inline-block}
+.recall-word .rp{font-family:var(--en);font-size:17px;color:var(--ink-3);margin-left:14px}
+.recall-word .speak{margin-left:12px;vertical-align:middle}
+.recall-word .tip{display:block;font-size:13px;color:var(--ink-3);margin-top:18px}
+.reveal-btn{padding:11px 28px;border:1px solid var(--cinnabar);color:var(--cinnabar-d);border-radius:24px;font-size:14px;background:var(--cinnabar-w);transition:.2s}
+.reveal-btn:hover{background:var(--cinnabar);color:#fff}
+.recall-answer{margin-top:26px;padding-top:22px;border-top:1px solid var(--line-soft);text-align:left;animation:rise .4s var(--ease) both}
+.recall-answer .def-line{font-size:18px}
+.recall-answer .aid{margin:12px 0}
+.recall-actions{max-width:660px;margin:18px auto 0;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.recall-actions button{padding:12px 26px;border-radius:9px;font-size:14px;border:1px solid var(--line);background:var(--paper-raised);transition:.2s}
+.recall-actions .no:hover{background:oklch(0.95 0.04 30);border-color:var(--cinnabar);color:var(--cinnabar-d)}
+.recall-actions .yes{background:var(--jade);color:#fff;border-color:var(--jade)}
+.recall-actions .yes:hover{background:var(--cinnabar);border-color:var(--cinnabar)}
+.recall-actions .ghost{color:var(--ink-3);font-size:12px;padding:9px 16px}
+.study-done{text-align:center;padding:60px 20px;max-width:640px;margin:0 auto;border:1px dashed var(--line);border-radius:16px}
+.study-done .mk{font-size:44px;color:var(--jade)}
+.study-done h3{font-family:var(--serif);font-size:22px;margin:12px 0}
+.study-done p{font-size:13px;color:var(--ink-3);margin-bottom:20px}
+.done-actions{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap}
+.done-actions .btn-back{padding:12px 24px;border-radius:9px;font-size:14px;border:1px solid var(--line);background:var(--paper-raised);transition:.2s}
+.done-actions .btn-back:hover{border-color:var(--cinnabar);color:var(--cinnabar-d)}
+
+/* ============ 回滚复习 ============ */
+.srs-hero{background:var(--ink);color:var(--paper);border-radius:14px;padding:26px 30px;display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.srs-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 20%,oklch(0.55 0.19 32/.35),transparent 55%)}
+.srs-hero .z{position:relative}
+.srs-hero h3{font-family:var(--serif);font-size:21px;margin-bottom:8px;color:var(--paper)}
+.srs-hero p{font-size:13px;color:oklch(0.85 0.01 85);max-width:480px}
+.srs-hero .btn-go{margin-top:14px;background:var(--paper-raised);color:var(--ink)}
+.srs-hero .btn-go:hover{background:var(--cinnabar);color:#fff}
+.ladder{display:flex;align-items:center;gap:5px;position:relative;z-index:1;flex-wrap:wrap;max-width:400px}
+.ladder .step{text-align:center;background:oklch(1 0 0/.08);border:1px solid oklch(1 0 0/.14);border-radius:8px;padding:9px 11px;min-width:56px}
+.ladder .step b{font-family:var(--en);font-size:18px;color:var(--gold)}
+.ladder .step span{display:block;font-size:10px;color:oklch(0.8 0.01 85)}
+.ladder .arw{color:oklch(0.6 0.01 85)}
+.theory-toggle{margin:16px 0 0;font-size:12px;color:var(--ink-3);padding:4px 0}
+.theory-toggle:hover{color:var(--cinnabar-d)}
+.theory{margin-top:14px}
+.curve-wrap{display:grid;grid-template-columns:1.15fr 1fr;gap:18px;margin-top:14px}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:var(--shadow)}
+.panel h4{font-family:var(--serif);font-size:16px;margin-bottom:4px}
+.panel .psub{font-size:11.5px;color:var(--ink-3);margin-bottom:16px}
+.curve-svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:18px;font-size:11px;color:var(--ink-3);margin-top:10px;flex-wrap:wrap}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.queue-panel{margin-top:18px}
+.qgroup{margin-bottom:14px}
+.qgroup .qh{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;margin-bottom:7px;flex-wrap:wrap}
+.qgroup .qh .when{font-family:var(--en);color:var(--cinnabar-d);background:var(--cinnabar-w);padding:1px 8px;border-radius:5px;font-size:12px}
+.qgroup .words{display:flex;flex-wrap:wrap;gap:6px}
+.qgroup .words span{font-family:var(--en);font-size:12.5px;background:var(--paper-sunk);padding:4px 9px;border-radius:5px;color:var(--ink-2)}
+.empty{font-size:13px;color:var(--ink-3);padding:20px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+
+/* ============ 每日练习 ============ */
+.quiz-wrap{max-width:660px;margin:0 auto}
+.quiz-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px;flex-wrap:wrap}
+.quiz-head .prog{font-family:var(--en);font-size:13px;color:var(--ink-3)}
+.quiz-head .prog b{color:var(--cinnabar);font-size:17px}
+.quiz-card{background:var(--paper-raised);border:1px solid var(--line);border-radius:14px;padding:32px 34px;box-shadow:var(--shadow)}
+.quiz-q .lab{font-size:11px;letter-spacing:2px;color:var(--cinnabar);margin-bottom:10px}
+.quiz-stem{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.quiz-q .stem{font-family:var(--en);font-size:34px;font-weight:700;color:var(--ink);line-height:1.2}
+.quiz-q .stem.cn{font-family:var(--sans);font-size:22px}
+.quiz-q .ph{font-family:var(--en);font-size:15px;color:var(--ink-3)}
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:26px}
+.opt{display:flex;align-items:center;gap:14px;padding:13px 16px;border:1px solid var(--line);border-radius:9px;text-align:left;font-size:15px;transition:.2s var(--ease);background:var(--paper)}
+.opt:hover:not(.locked){border-color:var(--cinnabar);background:var(--cinnabar-w)}
+.opt .idx{font-family:var(--en);font-weight:700;color:var(--ink-3);width:20px}
+.opt.right{background:var(--jade-w);border-color:var(--jade);color:var(--jade)}
+.opt.wrong{background:oklch(0.95 0.04 30);border-color:var(--cinnabar);color:var(--cinnabar-d)}
+.opt.locked{cursor:default}
+.fb{margin-top:18px;padding:14px 16px;border-radius:9px;font-size:13px;line-height:1.7;display:none}
+.fb.show{display:block;animation:rise .35s var(--ease) both}
+.fb.good{background:var(--jade-w);color:var(--jade)}
+.fb.bad{background:var(--cinnabar-w);color:var(--cinnabar-d)}
+.fb b{font-family:var(--en)}
+.fb .aid{margin-top:10px;font-size:13px;color:var(--ink-2)}
+.quiz-next{margin-top:18px;width:100%;padding:12px;background:var(--ink);color:var(--paper-raised);border-radius:9px;font-size:14px;transition:.2s}
+.quiz-next:hover{background:var(--cinnabar)}
+.quiz-done{text-align:center;padding:56px 20px;background:var(--paper-raised);border:1px solid var(--line);border-radius:14px}
+.quiz-done .score{font-family:var(--en);font-size:54px;color:var(--cinnabar);line-height:1}
+.quiz-done h3{font-family:var(--serif);font-size:20px;margin:8px 0}
+
+/* ============ 错词本 ============ */
+.wrong-list{display:flex;flex-direction:column;gap:12px;max-width:780px}
+.witem{background:var(--paper-raised);border:1px solid var(--line);border-left:3px solid var(--cinnabar);border-radius:10px;padding:18px 22px;box-shadow:var(--shadow)}
+.witem .r1{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.witem .w{font-family:var(--en);font-size:24px;font-weight:700;color:var(--cinnabar-d)}
+.witem .ph{font-family:var(--en);font-size:13px;color:var(--ink-3)}
+.witem .cnt{margin-left:auto;font-size:11px;color:var(--ink-3);background:var(--paper-sunk);padding:2px 9px;border-radius:20px}
+.witem .df{font-size:14px;margin-top:5px}
+.witem .skill{font-size:13px;color:var(--ink-2);margin-top:8px}
+.witem .why{font-size:12px;color:var(--cinnabar-d);margin-top:7px}
+.witem .acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.witem .acts button{padding:6px 13px;border:1px solid var(--line);border-radius:7px;font-size:12px;transition:.2s}
+.witem .acts .again:hover{background:var(--cinnabar-w);border-color:var(--cinnabar)}
+.witem .acts .test{background:var(--jade-w);border-color:transparent;color:var(--jade)}
+.witem .acts .test:hover{background:var(--jade);color:#fff}
+
+/* ============ 轻提示 ============ */
+.toast{position:fixed;left:50%;bottom:34px;transform:translate(-50%,20px);background:var(--ink);color:var(--paper);padding:10px 20px;border-radius:24px;font-size:13px;opacity:0;pointer-events:none;transition:.3s var(--ease);z-index:99;box-shadow:0 8px 24px oklch(0.2 0.02 60/.2)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ============ 响应式 ============ */
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:static;height:auto;flex-direction:row;align-items:center;gap:10px;padding:12px 16px;border-right:none;border-bottom:1px solid var(--line);overflow:auto}
+  .rail .plan-tag,.rail .foot,.brand .sub{display:none}
+  .brand{margin:0 14px 0 0;flex:none}
+  .seal{width:36px;height:36px;font-size:21px;line-height:36px}
+  .brand h1{font-size:20px}
+  .nav{flex-direction:row;gap:4px}
+  .nav button{padding:8px 11px;font-size:12px;white-space:nowrap}
+  .nav button.on::before{display:none}
+  .nav .badge{display:none}
+  .main{padding:22px 18px 50px}
+  .today-hero{grid-template-columns:1fr;gap:18px;text-align:center}
+  .ring{margin:0 auto}.stat-row{justify-content:center}
+  .task-card,.curve-wrap{grid-template-columns:1fr}
+  .note-body{padding:26px 22px}.recall-card{padding:26px 22px}
+  .demo-drawer{right:0;width:min(390px,92vw)}
+}
+@media(max-width:520px){
+  .cal{grid-template-columns:repeat(6,1fr)}
+  .srs-hero{grid-template-columns:1fr}
+  .nw{font-size:38px}.recall-word .rw{font-size:42px}
+  .topbar h2{font-size:24px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <!-- ============ 侧栏 ============ -->
+  <aside class="rail">
+    <div class="brand">
+      <div class="seal">词</div>
+      <div><h1>词阶</h1><div class="sub">30 DAYS · 词素助记 × 抗遗忘复习</div></div>
+    </div>
+    <div class="plan-tag">学习台</div>
+    <nav class="nav" id="nav">
+      <button data-v="today" class="on"><span class="ico">◈</span>今日规划</button>
+      <button data-v="study"><span class="ico">▤</span>学新词<span class="badge" id="navStudy">0</span></button>
+      <button data-v="review"><span class="ico">↺</span>复习自测<span class="badge" id="navRev">0</span></button>
+      <button data-v="quiz"><span class="ico">✎</span>每日练习</button>
+      <button data-v="wrong"><span class="ico">⚑</span>错词本<span class="badge" id="navWrong">0</span></button>
+    </nav>
+    <div class="foot">摊开一页就全看得见 · 到点自动回滚<br><b id="demoCount">—</b> 个示例词 · 数据存本机 · 离线可用</div>
+  </aside>
+
+  <!-- ============ 主区 ============ -->
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="eyebrow" id="crumb">DAY 1 / 30</div>
+        <h2 id="pageTitle">今日规划 · <em>稳扎稳打</em></h2>
+        <div class="desc" id="pageDesc">新词与到期的复习一起安排，学过的词按曲线回滚，不会前面背、后面忘。</div>
+      </div>
+      <div class="top-actions">
+        <div class="today-pill">第 <b id="dayNow">1</b> 天 / 30</div>
+        <button class="demo-btn" id="demoToggle">⏱ 演示时间</button>
+      </div>
+      <div class="demo-drawer" id="demoDrawer" style="display:none">
+        <button class="close" id="demoClose">×</button>
+        <h4>时间机器 · 仅用来体验回滚</h4>
+        <p>平常使用时停在你真实的天数就好。想看看"旧词怎么回到眼前"，把滑块拖到后面几天。</p>
+        <div class="machine">
+          <button class="mv" id="dayMinus">−</button>
+          <div class="day-num">D<span id="dayRangeVal">1</span><small> /30</small></div>
+          <input type="range" id="dayRange" min="1" max="30" value="1">
+          <button class="mv" id="dayPlus">＋</button>
+        </div>
+        <div class="demo-seed">
+          <button class="demo-btn" id="demoSeed">🧪 填充演示进度（看到效果）</button>
+          <button class="demo-btn ghost" id="demoReset">↺ 清空重来</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 视图1 今日规划 -->
+    <section class="view on" id="v-today">
+      <div class="today-hero">
+        <div class="ring">
+          <svg width="132" height="132" viewBox="0 0 132 132">
+            <circle class="track" cx="66" cy="66" r="56"/>
+            <circle class="fill" id="ringFill" cx="66" cy="66" r="56" stroke-dasharray="351.9" stroke-dashoffset="351.9"/>
+          </svg>
+          <div class="center"><b id="ringPct">0%</b><span>今日完成</span></div>
+        </div>
+        <div class="hero-txt">
+          <div class="big">第 <b id="heroDay">1</b> 天 / 30</div>
+          <p id="heroLine">今天没有任务，可以去右上角「演示时间」看看回滚效果。</p>
+          <div class="stat-row">
+            <div class="stat hl"><b id="stNew">0</b><span>今日新词</span></div>
+            <div class="stat"><b id="stRev">0</b><span>到期复习</span></div>
+            <div class="stat"><b id="stWrong">0</b><span>错词待清</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cal-wrap">
+        <div class="sec-head"><h3>30 天进度</h3><div class="hint">绿=已学 · 红=今天 · 金点=有旧词回来</div></div>
+        <div class="cal" id="cal"></div>
+      </div>
+
+      <div class="task-card">
+        <div class="tcard new">
+          <div class="k">NEW · 今天认识这些词</div>
+          <div class="n" id="tcNewN">0 <small>词</small></div>
+          <button class="btn-go" data-go="new">开始学新词 <span class="arw">→</span></button>
+        </div>
+        <div class="tcard rev">
+          <div class="k">REVIEW · 到点该再见一面</div>
+          <div class="n" id="tcRevN">0 <small>词</small></div>
+          <button class="btn-go" data-go="rev">开始自测 <span class="arw">→</span></button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 视图2 学新词 / 自测（同一视图，两种模式） -->
+    <section class="view" id="v-study">
+      <div class="study-bar">
+        <span class="chip" id="studyChip">学新词</span>
+        <span class="prog"><b id="studyIdx">1</b> / <span id="studyTotal">0</span></span>
+        <div class="line"><i id="studyLine"></i></div>
+        <div class="switches" id="learnSwitches">
+          <label class="auto-sw"><input type="checkbox" id="autoSpeak" checked> 自动朗读</label>
+          <div class="accent-sw"><button data-accent="en-US" class="on">美音</button><button data-accent="en-GB">英音</button></div>
+        </div>
+      </div>
+
+      <!-- 摊开式学习 -->
+      <div id="learnPane">
+        <div class="note-sheet">
+          <div class="note-margin">词阶 · 摊开一页</div>
+          <div class="note-body">
+            <div class="note-head">
+              <div class="nw" id="lWord">forecast</div>
+              <div class="nph" id="lPh"></div>
+              <button class="speak" id="lSpeak">🔊 听发音</button>
+            </div>
+            <div class="note-defs" id="lDefs"></div>
+            <div class="note-aids" id="lAids"></div>
+          </div>
+        </div>
+        <div class="note-nav">
+          <button id="prevCard">← 上一个</button>
+          <button class="soft" id="finishLearn">完成本轮 ✓</button>
+          <button class="primary" id="nextCard">下一个 →</button>
+        </div>
+      </div>
+
+      <!-- 先回想再揭晓 -->
+      <div id="recallPane" style="display:none">
+        <div class="recall-card">
+          <div class="recall-top"><span class="chip rev" id="recallChip">回忆练习</span><span class="rec-hint">先别看下面，在心里说出意思</span></div>
+          <div class="recall-word">
+            <span class="rw" id="rWord"></span><span class="rp" id="rPh"></span>
+            <button class="speak" id="rSpeak">🔊</button>
+            <span class="tip" id="rTip">想起来了再揭晓，效果更好</span>
+          </div>
+          <button class="reveal-btn" id="revealBtn">显示答案与记法 ↓</button>
+          <div class="recall-answer" id="recallAnswer" style="display:none">
+            <div id="rDefs"></div><div class="note-aids" id="rAids"></div>
+          </div>
+        </div>
+        <div class="recall-actions" id="recallBefore"><button class="ghost" id="skipRecall">先跳过这个词</button></div>
+        <div class="recall-actions" id="recallActions" style="display:none">
+          <button class="no" id="recallNo">没想起来 · 等下再来</button>
+          <button class="yes" id="recallYes">想起来了 →</button>
+        </div>
+      </div>
+
+      <div class="study-done" id="studyDone" style="display:none">
+        <div class="mk">✓</div>
+        <h3>这一轮过完了</h3>
+        <p id="studyDoneTxt">这些词已排进回滚队列，到点会自动回到今日任务。</p>
+        <div class="done-actions">
+          <button class="btn-back" id="backToLearn">← 回头翻看刚学的词</button>
+          <button class="btn-go" data-go="review">看看回滚安排 <span class="arw">→</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 视图3 回滚复习 -->
+    <section class="view" id="v-review">
+      <div class="srs-hero">
+        <div class="z">
+          <h3>为什么不会「背了后面、忘了前面」</h3>
+          <p>每个词见过一面后排进一条越来越长的间隔阶梯，到点就回到你眼前。现在是第 <b id="srsDay" style="color:var(--gold)">1</b> 天，今天有 <b id="srsDue" style="color:var(--gold)">0</b> 个旧词到期。</p>
+          <button class="btn-go" data-go="recall">开始今天的自测 <span class="arw">→</span></button>
+        </div>
+        <div class="ladder" id="ladder"></div>
+      </div>
+      <button class="theory-toggle" id="theoryToggle">为什么会忘？点开看遗忘曲线 ▾</button>
+      <div class="theory" id="theory" style="display:none">
+        <div class="curve-wrap">
+          <div class="panel">
+            <h4>艾宾浩斯遗忘曲线</h4>
+            <div class="psub">不复习时记忆快速衰减；每次在临界点回滚，记忆强度被重新拉满。</div>
+            <svg class="curve-svg" viewBox="0 0 460 230" id="curve"></svg>
+            <div class="legend">
+              <span><i style="background:var(--ink-3)"></i>不复习 · 记忆衰减</span>
+              <span><i style="background:var(--cinnabar)"></i>到期回滚 · 重新巩固</span>
+            </div>
+          </div>
+          <div class="panel">
+            <h4>一句话看懂回滚</h4>
+            <div class="psub">不是每天把所有词重背一遍，而是在你快忘掉的那天，恰好把它再送到眼前。</div>
+            <div style="font-size:13.5px;line-height:2.1;color:var(--ink-2)">
+              今天学的新词 → <b style="color:var(--cinnabar-d)">明天</b>再见一面<br>
+              答得不错 → 隔 <b style="color:var(--cinnabar-d)">2 天</b>再来<br>
+              再答对 → <b style="color:var(--cinnabar-d)">4 → 7 → 15 → 30 天</b><br>
+              忘了 → <b style="color:var(--cinnabar-d)">当场重来</b>，明天再见
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel queue-panel">
+        <h4>今天该见哪些旧词</h4>
+        <div class="psub">按什么时候学的分组，一眼看出哪些词隔得久、最该拉回来。</div>
+        <div id="queue"></div>
+      </div>
+    </section>
+
+    <!-- 视图4 每日练习 -->
+    <section class="view" id="v-quiz">
+      <div class="quiz-wrap">
+        <div class="quiz-head"><div class="eyebrow" style="margin:0">DAILY DRILL · 看词选义</div><div class="prog"><b id="quizIdx">1</b> / <span id="quizTotal">0</span></div></div>
+        <div id="quizArea">
+          <div class="quiz-card">
+            <div class="quiz-q">
+              <div class="lab" id="quizLab">这个单词的意思是？</div>
+              <div class="quiz-stem"><div class="stem" id="quizStem">forecast</div><div class="ph" id="quizPh"></div><button class="speak" id="qSpeak">🔊</button></div>
+            </div>
+            <div class="opts" id="quizOpts"></div>
+            <div class="fb" id="quizFb"></div>
+            <button class="quiz-next" id="quizNext" style="display:none">下一题 →</button>
+          </div>
+        </div>
+        <div class="quiz-done" id="quizDone" style="display:none">
+          <div class="score" id="quizScore">0</div>
+          <h3 id="quizScoreTxt">本轮练习完成</h3>
+          <p style="font-size:13px;color:var(--ink-3);margin:8px 0 20px">答错的词当场又考了一次，并收进了错词本；连对两次就会自动放出来。</p>
+          <button class="btn-go" data-go="wrong">去错词本 <span class="arw">→</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 视图5 错词本 -->
+    <section class="view" id="v-wrong">
+      <div class="sec-head"><h3>错词合集</h3><div class="hint" id="wrongHint">自测和练习里答错的词，在这里集中清理</div></div>
+      <div class="wrong-list" id="wrongList"></div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ==================== 词库 ====================
+   每条：[天, 单词, 音标, 释义[[词性,中文,重点]], 词素拆解[[词素,字面义]...], 词义, 搭配[[短语,中文]...], 拓展[[词,[[词素,义]...],词义]...], 派生[[词,中文]...]]
+   助记格式严格对标：fore前+cast投/发射—预测 / foresee : fore前+see看—预见
+==================================================================== */
+const RAW = [
+[1,"human","/'hjuːmən/",[["n.","人类；人",1],["adj.","人的；通人情的",1]],[["hum","土地"],["an","人"]],"人类",[["human beings","人类"],["human nature","人类天性"]],[],[["inhuman","adj. 不人道的"],["humanity","n. 人性"]],"真题里反复出现、写作能直接用 → 值得收进生词本","hum- 土 + -an 人（与 humid 潮湿、humble 卑微同源）→ 由土造的人 → 人类","hum 谐音『哼』+ an 人 → 一边哼歌一边干活的人 → 人类（人为联想，非词源，只抓『人』这层）","Human beings should protect the environment.","人类应当保护环境。","human 指『人类』整体，person 指具体的『一个人』；写作里 human beings 比 people 更正式","遮住中文说『人类；人的』+ 搭配 human beings；当天、隔天、隔周各一次"],
+[1,"able","/'eɪbl/",[["adj.","能够的；有能力的",1]],[["ab","加强"],["le","能"]],"能够的",[["be able to","能够"],["able-bodied","健壮的"]],[],[["ability","n. 能力"],["disable","v. 使残疾"]],"写作高频形容词，be able to 是必须掌握的句型 → 值得收进生词本","ab- 加强 + -le 能（与 ability 能力同源）→ 有力量的 → 能够的","a 一个 + ble 谐音『包』→ 一个人全包得下来 → 能够的（人为联想，非词源，只抓『能』这层）","She is able to speak three languages.","她能说三种语言。","able 强调『有能力做』，capable 强调『有潜力做』；be able to 比 can 时态更灵活","遮住中文说『能够的』+ 搭配 be able to；当天、隔天、隔周各一次"],
+[1,"create","/kriˈeɪt/",[["v.","创造；创建",1]],[["cre","生长"],["ate","使"]],"创造",[["create jobs","创造就业"],["create a record","创纪录"]],[],[["creative","adj. 有创造力的"],["creation","n. 创造"]],"阅读与写作核心动词，create jobs 是作文常用搭配 → 值得收进生词本","cre- 生长 + -ate 使（与 crescent 新月、creature 生物同源）→ 使生长出来 → 创造","cre 谐音『可瑞』+ ate 吃 → 可瑞『Eat』出一个新点子 → 创造（人为联想，非词源，只抓『造出来』这层）","Technology can create new opportunities.","科技能创造新的机会。","create 指『从无到有地造』，produce 指『批量生产』；写作里 create jobs 比 make jobs 更准","遮住中文说『创造』+ 搭配 create jobs；当天、隔天、隔周各一次"],
+[2,"establish","/ɪˈstæblɪʃ/",[["v.","建立；确立",1]],[["e","出"],["stab","立"],["lish","使"]],"建立",[["establish contact","建立联系"],["establish a rule","确立规则"]],[],[["establishment","n. 机构"],["established","adj. 既定的"]],"写作里表示『建立、确立』的高级词，比 build 更正式 → 值得收进生词本","e- 出 + stab 立 + -lish 使（与 stable 稳定同源）→ 使立起来 → 建立","e 出 + stab 谐音『死大步』+ lish → 死大步迈出去把摊子立起来 → 建立（人为联想，非词源，只抓『立起来』这层）","The company established a branch in Asia.","这家公司在亚洲设立了分公司。","establish 指『正式建立并稳固下来』，found 指『奠基创办』；establish contact 比 build contact 更地道","遮住中文说『建立；确立』+ 搭配 establish contact；当天、隔天、隔周各一次"],
+[2,"benefit","/ˈbenɪfɪt/",[["n.","益处；福利",1],["v.","受益",0]],[["bene","好"],["fit","做"]],"益处",[["benefit from","从…受益"],["for the benefit of","为…利益"]],[],[["beneficial","adj. 有益的"]],"真题高频词，benefit from 阅读写作都离不开 → 值得收进生词本","bene- 好 + -fit 做（与 benevolent 仁慈同源）→ 做好事得到好处 → 益处","bene 谐音『别你』+ fit 合适 → 别你太合适了，好处多多 → 益处（人为联想，非词源，只抓『好处』这层）","Regular exercise benefits your health.","经常锻炼有益健康。","benefit 指『好处、受益』，profit 指『利润』；benefit from 是『从…受益』，不能换成 profit from","遮住中文说『益处；受益』+ 搭配 benefit from；当天、隔天、隔周各一次"],
+[3,"significant","/sɪɡˈnɪfɪkənt/",[["adj.","重要的；显著的",1]],[["sign","标记"],["ific","做"],["ant","的"]],"重要的",[["significant change","重大变化"]],[],[["significance","n. 重要性"],["signify","v. 表明"]],"写作替换 important 的加分形容词，几乎篇篇可用 → 值得收进生词本","sign 标记 + -ific 做 + -ant 的（与 signal 信号同源）→ 有标记的、显著的 → 重要的","sign 记号 + i 我 + fic 谐音『费口』→ 带有大记号、费口舌强调的 → 重要的（人为联想，非词源，只抓『显著』这层）","There has been a significant increase in sales.","销量有了显著增长。","significant 指『有意义的、显著的』，important 泛指『重要的』；a significant change 比 a big change 更书面","遮住中文说『重要的；显著的』+ 搭配 significant change；当天、隔天、隔周各一次"],
+[3,"maintain","/meɪnˈteɪn/",[["v.","维持；维护",1]],[["main","主要"],["tain","保持"]],"维持",[["maintain balance","保持平衡"],["maintain order","维持秩序"]],[],[["maintenance","n. 维护"]],"阅读写作高频动词，maintain balance 是作文常用表达 → 值得收进生词本","main 主要 + -tain 保持（与 contain 包含、retain 保留同源）→ 保持主要状态 → 维持","main 主要 + tain 谐音『铁』→ 主要部分像铁一样牢牢保持 → 维持（人为联想，非词源，只抓『保持』这层）","It is important to maintain a healthy lifestyle.","保持健康的生活方式很重要。","maintain 指『持续保持原状』，keep 更口语，sustain 强调『支撑得住』；maintain balance 比 keep balance 更正式","遮住中文说『维持；维护』+ 搭配 maintain balance；当天、隔天、隔周各一次"],
+[4,"acquire","/əˈkwaɪə/",[["v.","获得；学到",1]],[["ac","加强"],["quir","寻求"]],"获得",[["acquire knowledge","获取知识"],["acquire a taste for","喜欢上"]],[],[["acquisition","n. 获得"]],"真题常考的『获得』高级词，acquire knowledge 作文常用 → 值得收进生词本","ac- 加强 + quir 寻求（与 inquire 询问、require 要求同源）→ 努力求得 → 获得","ac 谐音『阿可』+ quire『快』→ 阿可很快就求到了 → 获得（人为联想，非词源，只抓『求到手』这层）","Children acquire language naturally.","儿童自然而然地习得语言。","acquire 指『经努力逐渐获得』，get 泛指『得到』；acquire knowledge 比 get knowledge 更书面","遮住中文说『获得；学到』+ 搭配 acquire knowledge；当天、隔天、隔周各一次"],
+[4,"approach","/əˈprəʊtʃ/",[["n.","方法",1],["v.","接近",0]],[["ap","向"],["proach","近"]],"接近／方法",[["an approach to","…的方法"],["approach a problem","处理问题"]],[],[["approachable","adj. 易接近的"]],"阅读高频词，作名词是『方法』、作动词是『接近』，一词两用 → 值得收进生词本","ap- 向 + proach 近（与 approachable 易接近的同源）→ 向…靠近 → 接近／方法","ap 向 + proach 谐音『不啰』→ 向不啰嗦地靠近 → 接近（人为联想，非词源，只抓『靠近』这层）","We need a new approach to solving this problem.","我们需要一种解决这个问题的新方法。","approach 作名词指『处理问题的方法』，method 指『成套的系统方法』；an approach to 中 to 是介词","遮住中文说『方法；接近』+ 搭配 an approach to；当天、隔天、隔周各一次"],
+[5,"contribute","/kənˈtrɪbjuːt/",[["v.","贡献；促成",1]],[["con","共同"],["tribut","给予"]],"贡献",[["contribute to","有助于"],["contribute money","捐款"]],[],[["contribution","n. 贡献"],["contributor","n. 贡献者"]],"写作议论文高频词，contribute to 是万能句型 → 值得收进生词本","con- 共同 + trib 给予 + -ute（与 attribute 归因、distribute 分配同源）→ 共同给出 → 贡献","con 共同 + trib 谐音『吹』+ ute → 大家一起吹捧出一份力量 → 贡献（人为联想，非词源，只抓『出力』这层）","Hard work contributes to success.","努力工作有助于成功。","contribute to 中 to 是介词，后接名词或动名词；contribute 强调『出力做贡献』，donate 专指『捐钱物』","遮住中文说『贡献；促成』+ 搭配 contribute to；当天、隔天、隔周各一次"],
+[5,"efficient","/ɪˈfɪʃnt/",[["adj.","高效的；效率高的",1]],[["ef","出"],["fic","做"],["ient","的"]],"高效的",[["efficient use","有效利用"]],[],[["efficiency","n. 效率"],["efficiently","adv. 高效地"]],"写作替换 good 的形容词，efficiency 更是高频名词 → 值得收进生词本","ef- 出 + fic 做 + -ient（与 effect 效果、affect 影响同源）→ 做得又快又好 → 高效的","ef 谐音『衣服』+ fic 做 → 做衣服效率高 → 高效的（人为联想，非词源，只抓『做得快』这层）","We need a more efficient way to work.","我们需要更高效的工作方式。","efficient 指『做事高效不浪费』，effective 指『有效果、能达到目的』；improve efficiency 是固定搭配","遮住中文说『高效的』+ 搭配 efficient use；当天、隔天、隔周各一次"],
+[6,"develop","/dɪˈveləp/",[["v.","发展；开发；培养",1]],[["de","去"],["velop","包"]],"发展（展开）",[["develop skills","培养技能"],["develop a habit","养成习惯"]],[],[["development","n. 发展"],["developing","adj. 发展中的"]],"作文万能动词，develop skills、develop a habit 都常用 → 值得收进生词本","de- 去 + velop 包（与 envelope 信封同源）→ 把包裹打开、展开 → 发展","de 去 + velop 谐音『我搂』→ 把我搂着的东西展开给你看 → 发展（人为联想，非词源，只抓『展开』这层）","Reading helps develop children's imagination.","阅读有助于培养孩子的想象力。","develop 指『逐步发展、培养』，grow 强调『自然成长』；develop a habit 比 form a habit 更强调过程","遮住中文说『发展；培养』+ 搭配 develop skills；当天、隔天、隔周各一次"],
+[6,"available","/əˈveɪləbl/",[["adj.","可获得的；有空的",1]],[["avail","有用"],["able","可"]],"可获得的",[["be available to","可供…使用"],["make available","提供"]],[],[["availability","n. 可用性"]],"写作与阅读高频形容词，be available to 是必备搭配 → 值得收进生词本","a- 使 + vail 有用 + -able 可（与 avail 有用同源）→ 可用的、可获得的 → 可获得的","a 一个 + vail 谐音『微』+ able 能 → 一点点都能用得上 → 可获得的（人为联想，非词源，只抓『能用』这层）","The manager is not available today.","经理今天没空。","available 指『可获得的、有空的』，usable 指『能使用的』；be available to sb 是『可供某人使用』","遮住中文说『可获得的；有空的』+ 搭配 be available to；当天、隔天、隔周各一次"],
+[7,"reduce","/rɪˈdjuːs/",[["v.","减少；缩小",1]],[["re","回"],["duc","引导"]],"减少",[["reduce costs","降低成本"],["reduce to","减少到"]],[],[["reduction","n. 减少"]],"图表作文写下降趋势必备动词 → 值得收进生词本","re- 回 + duc 引导（与duce 引导、produce 生产同源）→ 往回引导、使变少 → 减少","re 回 + duce 谐音『赌』→ 往回赌一把、把筹码收回来 → 减少（人为联想，非词源，只抓『往回变少』这层）","We should reduce waste to protect the environment.","我们应当减少浪费以保护环境。","reduce 指『使数量程度减少』，decrease 多指『数值下降』；reduce costs 比 lower costs 更正式","遮住中文说『减少』+ 搭配 reduce costs；当天、隔天、隔周各一次"],
+[7,"require","/rɪˈkwaɪə/",[["v.","要求；需要",1]],[["re","再"],["quir","寻求"]],"要求",[["require sb to do","要求某人做"],["meet requirements","满足要求"]],[],[["requirement","n. 要求"]],"真题高频动词，require sb to do 是常考句型 → 值得收进生词本","re- 再 + quir 寻求（与 acquire 获得、inquire 询问同源）→ 一再要求 → 要求","re 再 + quire 谐音『快』→ 一而再、再而三快快催着要 → 要求（人为联想，非词源，只抓『索要』这层）","This job requires a lot of patience.","这份工作需要很大耐心。","require 指『客观需要或强制要求』，ask 更口语；require sb to do 被动为 be required to do","遮住中文说『要求；需要』+ 搭配 require sb to do；当天、隔天、隔周各一次"],
+[8,"influence","/ˈɪnfluəns/",[["n.","影响；作用",1],["v.","影响",0]],[["in","入"],["flu","流"],["ence",""]],"影响",[["have an influence on","对…有影响"]],[],[["influential","adj. 有影响力的"]],"阅读写作高频词，have an influence on 是加分句型 → 值得收进生词本","in- 入 + flu 流 + -ence（与 fluent 流利的、fluid 流体同源）→ 流入、波及 → 影响","in 里 + flu 谐音『浮』+ ence → 一股力量浮进来波及你 → 影响（人为联想，非词源，只抓『波及』这层）","Parents have a great influence on their children.","父母对孩子有很大的影响。","influence 指『潜移默化的影响』，affect 是动词『影响』；have an influence on 后接名词","遮住中文说『影响』+ 搭配 have an influence on；当天、隔天、隔周各一次"],
+[8,"consider","/kənˈsɪdə/",[["v.","考虑；认为",1]],[["con","共"],["sider","星"]],"考虑（观星）",[["consider doing","考虑做"],["consider…as","把…视为"]],[],[["consideration","n. 考虑"],["considerable","adj. 相当大的"]],"写作表达观点必备动词，consider doing 是常考结构 → 值得收进生词本","con- 共 + sider 星（与 consider 观星、sidereal 恒星的同源）→ 共同观察星象、仔细思量 → 考虑","con 共 + sider 谐音『台的』→ 大家围着台子仔细端详 → 考虑（人为联想，非词源，只抓『仔细想』这层）","We should consider the consequences carefully.","我们应当仔细考虑后果。","consider 后接动名词 consider doing，不接不定式；consider…as 把…视为","遮住中文说『考虑；认为』+ 搭配 consider doing；当天、隔天、隔周各一次"],
+[8,"opportunity","/ˌɒpəˈtjuːnəti/",[["n.","机会；时机",1]],[["op","向"],["port","港"],["unity",""]],"机会（船进港）",[["take the opportunity","抓住机会"]],[],[["opportune","adj. 恰好的"]],"写作议论文高频名词，take the opportunity 是地道表达 → 值得收进生词本","op- 向 + port 港 + -unity（与 port 港口、passport 护照同源）→ 船正向港口驶来 → 机会","op 向 + port 港 + unity 团结 → 驶向港口的好时机来了 → 机会（人为联想，非词源，只抓『时机到来』这层）","University is a good opportunity to learn.","大学是学习的好机会。","opportunity 指『有利的时机』，chance 更口语且含『偶然』意味；take the opportunity 是『抓住机会』","遮住中文说『机会』+ 搭配 take the opportunity；当天、隔天、隔周各一次"],
+[8,"improve","/ɪmˈpruːv/",[["v.","改善；提高",1]],[["im","使"],["prove","前进"]],"改善",[["improve efficiency","提高效率"]],[],[["improvement","n. 改进"]],"写作提分动词，improve efficiency 是万能搭配 → 值得收进生词本","im- 使 + prove 前进、检验（与 prove 证明、approve 赞成同源）→ 使向前变好 → 改善","im 使 + prove 谐音『普入』→ 普遍往好里推进 → 改善（人为联想，非词源，只抓『变好』这层）","Reading every day can improve your English.","每天阅读能提高你的英语。","improve 指『使变得更好』，increase 指『数量增加』；improve efficiency 比 increase efficiency 更准","遮住中文说『改善；提高』+ 搭配 improve efficiency；当天、隔天、隔周各一次"],
+[9,"explain","/ɪkˈspleɪn/",[["v.","解释；说明",1]],[["ex","出"],["plain","平"]],"解释（说平）",[["explain why","解释原因"]],[],[["explanation","n. 解释"]],"阅读高频动词，explain why 是写作解释段必备 → 值得收进生词本","ex- 出 + plain 平（与 plain 平坦的、explain 说清同源）→ 把事情说平铺开 → 解释","ex 出 + plain 平 → 把道理摊平了摆出来 → 解释（人为联想，非词源，只抓『说清楚』这层）","Can you explain why you were late?","你能解释一下为什么迟到吗？","explain 后接宾语从句 explain why/how，不能直接 explain sb sth；explanation 是名词形式","遮住中文说『解释；说明』+ 搭配 explain why；当天、隔天、隔周各一次"],
+[9,"compare","/kəmˈpeə/",[["v.","比较；对比",1]],[["com","共"],["pare","摆"]],"比较",[["compare with","与…相比"],["compared to","与…相比"]],[],[["comparison","n. 比较"]],"图表作文比较数据必备动词 → 值得收进生词本","com- 共 + pare 摆（与 pair 一对、compare 并置同源）→ 把两者摆到一起 → 比较","com 共 + pare 谐音『配』→ 把两个配成一对摆着看 → 比较（人为联想，非词源，只抓『摆一起』这层）","Compare the two pictures and find the differences.","比较这两幅图并找出不同。","compare A with B 指『把A与B比较』，compare A to B 指『把A比作B』；compared to/with 作状语","遮住中文说『比较』+ 搭配 compare with；当天、隔天、隔周各一次"],
+[10,"decide","/dɪˈsaɪd/",[["v.","决定；决断",1]],[["de","离"],["cide","切"]],"决定（切断）",[["decide on","决定"],["decide to do","决定做"]],[],[["decision","n. 决定"],["decisive","adj. 果断的"]],"写作叙事与议论都用得上，decide to do 是常考结构 → 值得收进生词本","de- 离 + cid 切（与 suicide 自杀、incise 切割同源）→ 切断其他选项、下定决心 → 决定","de 离 + cid 谐音『死的』→ 把别的念头一刀切断 → 决定（人为联想，非词源，只抓『拍板定下』这层）","They decided to leave early.","他们决定早点离开。","decide to do 后接不定式；decision 是名词，make a decision 是常用搭配","遮住中文说『决定』+ 搭配 decide to do；当天、隔天、隔周各一次"],
+[10,"suggest","/səˈdʒest/",[["v.","建议；表明",1]],[["sug","下"],["gest","带"]],"建议（带来）",[["suggest doing","建议做"]],[],[["suggestion","n. 建议"]],"写作提建议必备动词，suggest doing 是常考结构 → 值得收进生词本","sug- 下 + gest 带、送（与 gesture 手势、digest 消化同源）→ 从下面递上想法 → 建议","sug 下 + gest 谐音『jest 开玩笑』→ 私下递个小玩笑式点子 → 建议（人为联想，非词源，只抓『递点子』这层）","I suggest taking a break.","我建议休息一下。","suggest 后接动名词 suggest doing，不接 to do；表『暗示』时从句可用虚拟语气","遮住中文说『建议；表明』+ 搭配 suggest doing；当天、隔天、隔周各一次"],
+[11,"protect","/prəˈtekt/",[["v.","保护；防护",1]],[["pro","前"],["tect","盖"]],"保护",[["protect…from","保护…免受"]],[],[["protection","n. 保护"],["protective","adj. 保护的"]],"写作环保、健康话题高频词 → 值得收进生词本","pro- 前 + tect 盖（与 detect 察觉、architecture 建筑同源）→ 在前面遮盖住 → 保护","pro 前 + tect 谐音『抬壳』→ 抬个壳挡在前面 → 保护（人为联想，非词源，只抓『挡在前面』这层）","We must protect animals from extinction.","我们必须保护动物免于灭绝。","protect…from 指『保护…免受』，prevent…from 指『阻止…做』；protection 是名词","遮住中文说『保护』+ 搭配 protect…from；当天、隔天、隔周各一次"],
+[11,"provide","/prəˈvaɪd/",[["v.","提供；供给",1]],[["pro","预"],["vid","看"]],"提供（备好）",[["provide sb with sth","向某人提供"],["provide for","供养"]],[],[["provision","n. 供应"]],"写作提供类话题必备动词，provide sb with sth 是常考句型 → 值得收进生词本","pro- 预先 + vid 看（与 vision 视力、video 视频同源）→ 预先看到并准备好 → 提供","pro 预 + vide 谐音『外』→ 提前往外备好东西 → 提供（人为联想，非词源，只抓『备好给出』这层）","The school provides students with books.","学校向学生提供书籍。","provide sb with sth = provide sth for sb；provide 强调『供给所需』，offer 强调『主动提供』","遮住中文说『提供』+ 搭配 provide sb with sth；当天、隔天、隔周各一次"],
+[11,"recognize","/ˈrekəɡnaɪz/",[["v.","认出；承认",1]],[["re","再"],["cogn","知"],["ize",""]],"认出",[["recognize…as","认定为"]],[],[["recognition","n. 认可"]],"阅读高频动词，recognize…as 是写作常用表达 → 值得收进生词本","re- 再 + cogn 知（与 cognition 认知、knowledge 知识同源）→ 再次认出 → 认出、承认","re 再 + cogn 谐音『扣』+ ize → 脑子里再扣一下就对上了 → 认出（人为联想，非词源，只抓『认出来』这层）","I recognized her voice immediately.","我立刻认出了她的声音。","recognize 指『认出已知的』，realize 指『意识到』；be recognized as 被公认为","遮住中文说『认出；承认』+ 搭配 recognize…as；当天、隔天、隔周各一次"],
+[11,"balance","/ˈbæləns/",[["n.","平衡",1],["v.","使平衡",0]],[["bal","秤"],["ance",""]],"平衡",[["keep balance","保持平衡"],["work-life balance","工作生活平衡"]],[],[["balanced","adj. 均衡的"]],"写作生活、环保话题高频词，work-life balance 是热门表达 → 值得收进生词本","bal 秤 + -ance（与 balance 天平同源）→ 天平两端持平 → 平衡","bal 谐音『白』+ ance 谐音『恩施』→ 白恩施两端一样重 → 平衡（人为联想，非词源，只抓『两端持平』这层）","It is hard to balance work and life.","很难平衡工作与生活。","balance 作名词指『平衡』，作动词指『使平衡』；balanced 是形容词『均衡的』","遮住中文说『平衡』+ 搭配 keep balance；当天、隔天、隔周各一次"],
+[12,"measure","/ˈmeʒə/",[["v.","测量",1],["n.","措施",0]],[["meas","量"],["ure",""]],"测量／措施",[["take measures","采取措施"]],[],[["measurement","n. 测量"]],"图表与环保写作常用词，take measures 是加分搭配 → 值得收进生词本","meas 量 + -ure（与 measurement 测量同源）→ 测量 → 措施","meas 谐音『米』+ sure 确定 → 用米尺量确定 → 测量／措施（人为联想，非词源，只抓『量一量』这层）","We must take measures to reduce pollution.","我们必须采取措施减少污染。","measure 作动词『测量』、作名词『措施』；take measures to do 是『采取措施做』","遮住中文说『测量；措施』+ 搭配 take measures；当天、隔天、隔周各一次"],
+[12,"depend","/dɪˈpend/",[["v.","依靠；取决于",1]],[["de","下"],["pend","挂"]],"依赖",[["depend on","取决于"],["depend upon","依靠"]],[[ "independent",[["in","不"],["depend","依赖"]],"独立的"]],[["dependent","adj. 依赖的"]],"阅读写作高频动词，depend on 是必备搭配 → 值得收进生词本","de- 下 + pend 挂（与 pending 待定、suspend 悬挂同源）→ 挂在…下面 → 依靠","de 下 + pend 谐音『盼』→ 下面盼着靠山 → 依靠（人为联想，非词源，只抓『挂着依靠』这层）","Success depends on hard work.","成功取决于努力。","depend on = depend upon，后接名词或动名词；independent 是『独立的』","遮住中文说『依靠；取决于』+ 搭配 depend on；当天、隔天、隔周各一次"],
+[13,"increase","/ɪnˈkriːs/",[["v.","增加；增长",1],["n.","增加",0]],[["in","使"],["creas","生长"]],"增加",[["increase by","增加了"],["increase to","增加到"]],[],[["increasingly","adv. 日益"]],"图表作文写上升趋势必备词 → 值得收进生词本","in- 使 + creas 生长（与 create 创造、crescent 新月同源）→ 使生长变多 → 增加","in 使 + creas 谐音『可瑞斯』→ 可瑞斯让数量长起来 → 增加（人为联想，非词源，只抓『变多』这层）","The number of students increased sharply.","学生数量急剧增加。","increase 可作动词和名词，increase by 增加了、increase to 增加到；increase 指数量，improve 指质量","遮住中文说『增加』+ 搭配 increase by；当天、隔天、隔周各一次"],
+[13,"replace","/rɪˈpleɪs/",[["v.","取代；更换",1]],[["re","再"],["place","放"]],"替换",[["replace A with B","用B换A"]],[],[["replacement","n. 替代品"]],"写作表示『取代』的常用词 → 值得收进生词本","re- 再 + place 放（与 place 放置同源）→ 再放一个、把旧的换下 → 替换","re 再 + place 放 → 再放一个新的把旧的顶掉 → 替换（人为联想，非词源，只抓『换掉』这层）","Nothing can replace true friendship.","没有什么能取代真正的友谊。","replace A with B 指『用B替换A』；replace 强调『取代位置』，substitute 强调『代用』","遮住中文说『取代；更换』+ 搭配 replace A with B；当天、隔天、隔周各一次"],
+[13,"method","/ˈmeθəd/",[["n.","方法；办法",1]],[["meth","沿"],["od","路"]],"方法（沿路）",[["teaching method","教学法"]],[],[["methodology","n. 方法论"]],"写作说明文高频名词 → 值得收进生词本","meth 沿 + -od 路（与 method 方法同源）→ 沿着路走的办法 → 方法","meth 谐音『买』+ od 谐音『鹅』→ 买鹅要有门路 → 方法（人为联想，非词源，只抓『门路』这层）","We need a better method of teaching.","我们需要更好的教学方法。","method 指『系统的方法』，way 最口语，approach 指『切入角度』；teaching method 是固定搭配","遮住中文说『方法』+ 搭配 teaching method；当天、隔天、隔周各一次"],
+[14,"effect","/ɪˈfekt/",[["n.","效果；影响",1]],[["ef","出"],["fect","做"]],"效果",[["have an effect on","对…有影响"],["in effect","实际上"]],[[ "affect",[["af","向"],["fect","做"]],"影响（动）"]],[["effective","adj. 有效的"]],"写作因果段必备词，have an effect on 是加分句型 → 值得收进生词本","ef- 出 + fect 做（与 affect 影响、efficient 高效的同源）→ 做出来的结果 → 效果","ef 出 + fect 谐音『费它』→ 费它一番做出结果 → 效果（人为联想，非词源，只抓『结果』这层）","The new policy had a positive effect.","新政策产生了积极的效果。","effect 是名词『效果』，affect 是动词『影响』；have an effect on 后接名词","遮住中文说『效果；影响』+ 搭配 have an effect on；当天、隔天、隔周各一次"],
+[14,"accept","/əkˈsept/",[["v.","接受；认可",1]],[["ac","向"],["cept","拿"]],"接受",[["accept an offer","接受提议"]],[],[["acceptable","adj. 可接受的"]],"阅读写作高频动词 → 值得收进生词本","ac- 向 + cept 拿（与 receive 收到、except 除外同源）→ 主动拿过来 → 接受","ac 向 + cept 谐音『塞普特』→ 伸手向去把它塞过来 → 接受（人为联想，非词源，只抓『收下』这层）","She accepted the invitation happily.","她愉快地接受了邀请。","accept 指『主动接受』，receive 指『客观收到』；accept an offer 是『接受提议』","遮住中文说『接受；认可』+ 搭配 accept an offer；当天、隔天、隔周各一次"],
+[14,"allow","/əˈlaʊ/",[["v.","允许；准许",1]],[["al","向"],["low","放"]],"允许（放开）",[["allow sb to do","允许做"],["allow for","考虑到"]],[],[["allowance","n. 津贴"]],"写作表示『允许』的常用词，allow sb to do 是常考句型 → 值得收进生词本","al- 向 + low 放（与 allow 允许同源）→ 放开让人通过 → 允许","al 向 + low 低 → 把栏杆放低让过去 → 允许（人为联想，非词源，只抓『放行』这层）","Smoking is not allowed here.","这里不允许吸烟。","allow sb to do 后接不定式；allow for 是『考虑到』；allow 强调『许可』，let 更口语","遮住中文说『允许』+ 搭配 allow sb to do；当天、隔天、隔周各一次"],
+[15,"forecast","/'fɔːkɑːst/",[["n.","预测；预报",1],["v.","预测",0]],[["fore","前"],["cast","投/发射"]],"预测",[["weather forecast","天气预报"]],[[ "foresee",[["fore","前"],["see","看"]],"预见"]],[["forecaster","n. 预报员"]],"真题里反复出现、写作能直接用 → 值得收进生词本","fore- 前 + cast 投/发射（与 foresee 预见、forehead 前额同源）→ 提前发射出信息 → 预测","fore 前 + cast 谐音『卡斯特』→ 卡斯特提前射出一支箭预告天气 → 预测（人为联想，非词源，只抓『提前说』这层）","The weather forecast says it will rain tomorrow.","天气预报说明天会下雨。","forecast 指『基于数据的预测』，predict 更泛；weather forecast 是固定搭配","遮住中文说『预测；预报』+ 搭配 weather forecast；当天、隔天、隔周各一次"],
+[15,"enhance","/ɪnˈhɑːns/",[["v.","提高，增强",1]],[["en","使"],["hance",""]],"提高",[["enhance efficiency","提高效率"]],[],[["enhancement","n. 提高"],["enhanced","adj. 增强的"]],"真题里反复出现、写作能直接用 → 值得收进生词本","en- 使 + hance 抬高（与 high 同源）→ 使变高 → 提高","en（使）+ hance 谐音『汉子』→ 让你变硬汉、更强 → 增强（人为联想，非词源，只抓『变强』方向）","Technology can enhance work efficiency.","科技能提高工作效率。","enhance 提升质量/价值，increase 增加数量；写作里 enhance efficiency 比 increase efficiency 更准","遮住中文说『提高、增强』+ 搭配 enhance efficiency；当天、隔天、隔周各一次"],
+[15,"struggle","/ˈstrʌɡl/",[["v.","奋斗；挣扎",1],["n.","挣扎",0]],[["strug","拉扯"],["gle",""]],"挣扎",[["struggle to do","努力做"],["struggle with","与…斗争"]],[],[["struggling","adj. 挣扎的"]],"写作叙事与议论高频词，struggle to do 是加分表达 → 值得收进生词本","strug 拉扯 + -gle（与 struggle 挣扎同源）→ 用力拉扯 → 挣扎","strug 谐音『死抓』+ gle → 死抓着不放地使劲 → 挣扎（人为联想，非词源，只抓『使劲』这层）","Many people struggle to balance work and life.","许多人努力平衡工作与生活。","struggle to do 指『努力艰难地做』，try 泛指『尝试』；struggle with 是『与…作斗争』","遮住中文说『奋斗；挣扎』+ 搭配 struggle to do；当天、隔天、隔周各一次"],
+[15,"process","/ˈprəʊses/",[["n.","过程",1],["v.","处理",0]],[["pro","前"],["cess","走"]],"过程",[["in the process of","在…过程中"]],[],[["processing","n. 处理"]],"写作说明文高频词，in the process of 是地道表达 → 值得收进生词本","pro- 前 + cess 走（与 proceed 前进、access 通道同源）→ 一步步往前走 → 过程","pro 前 + cess 谐音『赛斯』→ 赛斯一步步往前走 → 过程（人为联想，非词源，只抓『一步步』这层）","Learning is a slow process.","学习是一个缓慢的过程。","process 作名词『过程』、作动词『处理』；in the process of 后接名词或动名词","遮住中文说『过程；处理』+ 搭配 in the process of；当天、隔天、隔周各一次"],
+[15,"quality","/ˈkwɒləti/",[["n.","质量；品质",1],["adj.","优质的",0]],[["qual","性质"],["ity",""]],"质量",[["quality of life","生活质量"]],[],[["qualify","v. 使合格"]],"写作评价类话题高频词 → 值得收进生词本","qual 性质 + -ity（与 qualify 使合格、quality 质量同源）→ 具备的性质 → 质量","qual 谐音『靠』+ ity → 品质全靠它 → 质量（人为联想，非词源，只抓『性质好坏』这层）","We should focus on quality rather than quantity.","我们应注重质量而非数量。","quality 指『质量』，quantity 指『数量』；quality of life 是『生活质量』","遮住中文说『质量；品质』+ 搭配 quality of life；当天、隔天、隔周各一次"],
+[15,"encourage","/ɪnˈkʌrɪdʒ/",[["v.","鼓励；激励",1]],[["en","使"],["courage","勇气"]],"鼓励",[["encourage sb to do","鼓励做"]],[],[["encouragement","n. 鼓励"],["courageous","adj. 勇敢的"]],"写作提建议必备动词，encourage sb to do 是常考句型 → 值得收进生词本","en- 使 + courage 勇气（与 courage 勇气同源）→ 使有勇气 → 鼓励","en 使 + courage 勇气 → 给人打气添勇气 → 鼓励（人为联想，非词源，只抓『给勇气』这层）","Teachers should encourage students to think.","老师应当鼓励学生思考。","encourage sb to do 后接不定式；encouragement 是名词，反义词 discourage","遮住中文说『鼓励』+ 搭配 encourage sb to do；当天、隔天、隔周各一次"],
+[15,"failure","/ˈfeɪljə/",[["n.","失败；故障",1]],[["fail","失败"],["ure",""]],"失败",[["failure to do","未能做"]],[],[["fail","v. 失败"],["failing","adj. 失败的"]],"写作议论文的常用名词，failure to do 是加分结构 → 值得收进生词本","fail 失败 + -ure（与 fail 失败同源）→ 失败的状态 → 失败","fail 失败 + ure 谐音『哦』→ 失败后『哦』了一声 → 失败（人为联想，非词源，只抓『没成功』这层）","Failure is the mother of success.","失败是成功之母。","failure 是名词，fail 是动词；failure to do 指『未能做某事』","遮住中文说『失败』+ 搭配 failure to do；当天、隔天、隔周各一次"],
+[17,"resist","/rɪˈzɪst/",[["v.","抵抗；忍住",1]],[["re","反"],["sist","站"]],"抵抗",[["resist temptation","抵抗诱惑"]],[],[["resistance","n. 抵抗"]],"阅读写作高频动词，resist temptation 是常用表达 → 值得收进生词本","re- 反 + sist 站（与 insist 坚持、persist 坚持同源）→ 反着站住、顶住 → 抵抗","re 反 + sist 谐音『死htable』→ 反着站死也不让步 → 抵抗（人为联想，非词源，只抓『顶住』这层）","It is hard to resist temptation.","很难抵抗诱惑。","resist 后接名词或动名词 resist doing；resistance 是名词『抵抗』","遮住中文说『抵抗；忍住』+ 搭配 resist temptation；当天、隔天、隔周各一次"],
+[20,"obtain","/əbˈteɪn/",[["v.","获得；取得",1]],[["ob","向"],["tain","拿"]],"获得",[["obtain permission","获得许可"]],[],[["obtainable","adj. 可获得的"]],"写作表示『获得』的正式动词 → 值得收进生词本","ob- 向 + tain 拿（与 contain 包含、maintain 维持同源）→ 朝目标拿到手 → 获得","ob 向 + tain 谐音『铁』→ 朝目标伸手拿到铁证 → 获得（人为联想，非词源，只抓『拿到』这层）","You need to obtain permission first.","你需要先获得许可。","obtain 指『经努力正式获得』，get 更口语；obtain permission 是『获得许可』","遮住中文说『获得』+ 搭配 obtain permission；当天、隔天、隔周各一次"],
+[23,"claim","/kleɪm/",[["v.","声称；索取",1],["n.","索赔",0]],[["clam","喊"]],"声称",[["claim to be","声称是"]],[],[["claimant","n. 索赔人"]],"阅读高频动词，写作表达观点也常用 → 值得收进生词本","clam 喊叫（与 exclaim 呼喊、proclaim 宣告同源）→ 大声喊出主张 → 声称","clam 谐音『可冷』→ 可冷不丁喊出一句话 → 声称（人为联想，非词源，只抓『喊出主张』这层）","He claims to be an expert.","他声称自己是专家。","claim to be 指『声称是』；claim 还可作名词『索赔、主张』","遮住中文说『声称；索取』+ 搭配 claim to be；当天、隔天、隔周各一次"],
+[26,"attempt","/əˈtempt/",[["v.","尝试；企图",1],["n.","尝试",0]],[["at","向"],["tempt","试探"]],"尝试",[["attempt to do","尝试做"]],[],[["attempted","adj. 未遂的"]],"写作叙事高频词，attempt to do 是常考表达 → 值得收进生词本","at- 向 + tempt 试探（与 temptation 诱惑同源）→ 向目标试探着做 → 尝试","at 向 + tempt 谐音『太太普特』→ 向目标试探着迈一步 → 尝试（人为联想，非词源，只抓『试探着做』这层）","She attempted to climb the mountain.","她尝试攀登那座山。","attempt to do = try to do，但 attempt 更正式；attempted 是『未遂的』","遮住中文说『尝试』+ 搭配 attempt to do；当天、隔天、隔周各一次"],
+[29,"prove","/pruːv/",[["v.","证明；证实",1]],[["prov","检验"]],"证明",[["prove to be","证明是"]],[],[["proof","n. 证据"],["proven","adj. 被证明的"]],"写作论证段必备动词 → 值得收进生词本","prov 检验（与 proof 证据、approve 赞成同源）→ 检验后成立 → 证明","prov 谐音『普入』→ 普遍入住检验通过 → 证明（人为联想，非词源，只抓『验证成立』这层）","The evidence proved his innocence.","证据证明了他无罪。","prove 可作系动词 prove to be；proof 是名词『证据』","遮住中文说『证明』+ 搭配 prove to be；当天、隔天、隔周各一次"]
+];
+
+const WORDS = RAW.map((r,i)=>({
+  id:i,day:r[0],w:r[1],ph:r[2],defs:r[3],parts:r[4],mean:r[5],coll:r[6],ext:r[7],der:r[8],
+  link:r[9],origin:r[10],mem:r[11],sentEn:r[12],sentCn:r[13],diff:r[14],recall:r[15]
+}));
+// 每日新词数 = 导入总词数 / 30（有余数向上取整），按导入顺序自动划分到 30 天
+const PER_DAY=Math.max(1,Math.ceil(WORDS.length/30));
+WORDS.forEach((w,i)=>{w.day=Math.min(30,Math.ceil((i+1)/PER_DAY))});
+// 每日复习上限：错词优先，其次最久未见的；超出的自动顺延到明天，防止复习越滚越多
+const REV_CAP=Math.max(20,PER_DAY*2);
+const INTERVALS=[1,2,4,7,15,30];
+const PRESET={1:[5,28],2:[5,29],3:[4,22],4:[4,23],5:[4,21],6:[4,24],7:[4,22],8:[4,15],9:[3,18],10:[3,18],11:[3,15],12:[2,17],13:[2,15],14:[1,15]};
+const KEY='cijie_v3';
+let S=load(), day=1,
+    learnQueue=[], learnIdx=0, learnMode='new',
+    recallQueue=[], recallIdx=0, recallOpen=false,
+    quizQueue=[], quizIdx=0, quizAnswered=false, quizRight=0,
+    autoSpeak=true, accent='en-US';
+
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.st)return s}catch(e){}return fresh()}
+function fresh(){
+  const st={};
+  WORDS.forEach(w=>{
+    if(w.day>1&&w.day<15&&PRESET[w.day]) st[w.id]={stage:PRESET[w.day][0],due:PRESET[w.day][1],seen:true,wrong:0,streak:0,result:null};
+    else st[w.id]={stage:-1,due:null,seen:false,wrong:0,streak:0,result:null};
+  });
+  return {st,done:{},quizDone:{}};
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+/* ---------- 查询 ---------- */
+function newWords(d){return WORDS.filter(w=>w.day===d)}
+function revWords(d){
+  return WORDS.filter(w=>{const x=S.st[w.id];return x.seen&&x.due!=null&&x.due<=d})
+    .sort((a,b)=>{
+      const A=S.st[a.id],B=S.st[b.id];
+      if((A.wrong>0)!==(B.wrong>0))return A.wrong>0?-1:1;
+      return A.due-B.due;
+    })
+    .slice(0,REV_CAP);
+}
+function dueGroups(d){
+  const g={};
+  revWords(d).forEach(w=>{const x=S.st[w.id];const gap=INTERVALS[Math.min(Math.max(x.stage,0),INTERVALS.length-1)];(g[gap]=g[gap]||[]).push(w)});
+  return g;
+}
+function wrongWords(){return WORDS.filter(w=>S.st[w.id].wrong>0)}
+
+/* ---------- 判定 ---------- */
+function learned(w){
+  const x=S.st[w.id];
+  if(!x.seen){x.seen=true;x.stage=0;x.due=day+1}
+  x.result='learned';S.done[w.id]=day;save();renderBadges();renderToday();
+}
+function markRecall(w,ok){
+  const x=S.st[w.id];
+  if(ok){
+    x.streak=(x.streak||0)+1;x.result='ok';
+    if(x.streak>=2){
+      x.streak=0;x.wrong=0;
+      x.stage=Math.min(Math.max(x.stage,0)+1,INTERVALS.length-1);
+      x.due=day+INTERVALS[x.stage];
+    }else x.due=day+1;
+  }else{
+    x.wrong++;x.streak=0;x.seen=true;x.stage=0;x.due=day+1;x.result='bad';
+    recallQueue.push(w);
+  }
+  S.done[w.id]=day;save();
+}
+
+/* ---------- 朗读 ---------- */
+function speak(word,btn){
+  if(!word)return;
+  try{
+    if(!('speechSynthesis' in window)){toast('当前浏览器不支持朗读');return}
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(word);
+    u.lang=accent;u.rate=.85;
+    if(btn){btn.classList.remove('playing');void btn.offsetWidth;btn.classList.add('playing');setTimeout(()=>btn.classList.remove('playing'),650)}
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ==================== 渲染 ==================== */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[<>]/g,'');
+let toastTimer;
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2100)}
+function fmtDefs(defs,keyStyle){return defs.map(d=>`<div class="def-line"><span class="pos">${d[0]}</span><span class="${d[2]?keyStyle:''}">${d[1]}</span></div>`).join('')}
+function renderMorph(parts,mean){
+  const seg=parts.map((p,i)=>`${i?'<span class="plus">+</span>':''}<span class="morph"><b>${p[0]}</b>${p[1]}</span>`).join('');
+  return seg+`<span class="dash">—</span><span class="result">${mean}</span>`;
+}
+function renderExt(w){return w.ext.map(e=>`<div class="ext-line"><span class="ew">${e[0]}</span><span class="sep">:</span>${renderMorph(e[1],e[2])}</div>`).join('')}
+function renderAids(w){
+  return `<div class="aid"><div class="aid-head"><span class="tag">技巧</span><span>${renderMorph(w.parts,w.mean)}</span></div></div>`
+   +(w.coll.length?`<div class="aid"><div class="aid-head"><span class="tag">搭配</span></div><div class="coll-list">${w.coll.map(c=>`<span><b>${c[0]}</b><i>${c[1]}</i></span>`).join('')}</div></div>`:'')
+   +(w.ext.length?`<div class="aid"><div class="aid-head"><span class="tag">拓展</span><span>${renderExt(w)}</span></div></div>`:'')
+   +(w.der.length?`<div class="aid"><div class="aid-head"><span class="tag">派生</span></div><div class="der-list">${w.der.map(d=>`<span><b>${d[0]}</b><i>${d[1]}</i></span>`).join('')}</div></div>`:'');
+}
+
+/* 助记卡：拆件 / 一秒记住 / 挂句 / 辨析（+ 拓展 / 派生） */
+function renderSix(w,opts){
+  opts=opts||{};
+  const row=(tag,cls,val)=>`<div class="sc-row"><span class="sc-tag ${cls}">${tag}</span><div class="sc-val">${val}</div></div>`;
+  const head=opts.noHead?'':`<div class="sc-head">
+    <span class="w">${w.w}</span><span class="ph">${w.ph}</span><span class="dot">·</span>
+    <span class="df">${w.defs.map(d=>`<i>${d[0]}</i>${d[1]}`).join('　')}</span>
+    <button class="speak" data-speak-w="${w.w}">🔊 听发音</button>
+  </div>`;
+  const partsTxt=w.parts.map((p,i)=>`${i?' + ':''}<b>${p[0]}</b>${p[1]?'（'+p[1]+'）':''}`).join('');
+  const collPhrase=w.coll.length?w.coll[0][0]:'';
+  const extra=opts.noExtra?'':(
+    (w.ext.length?row('拓展','t-extra',renderExt(w)):'')
+   +(w.der.length?row('派生','t-extra',w.der.map(d=>`<b>${d[0]}</b> ${d[1]}`).join('　')):''));
+  return `<div class="sixcard${opts.flat?' noshadow':''}">${head}
+    ${row('拆件','t-part',`${partsTxt}，真实来源：${w.origin}`)}
+    ${row('一秒记住','t-mem',w.mem)}
+    ${row('挂句','t-sent',`<b>${collPhrase}</b> · ${w.sentEn}（${w.sentCn}）`)}
+    ${row('辨析','t-diff',w.diff)}
+    ${extra}
+  </div>`;
+}
+
+function renderChrome(){
+  $('#dayNow').textContent=day;$('#dayRange').value=day;$('#dayRangeVal').textContent=day;$('#crumb').textContent=`DAY ${day} / 30`;
+  $('#srsDay').textContent=day;
+  return {
+    today:['今日规划 · <em>稳扎稳打</em>','新词与到期的复习一起安排，学过的词按曲线回滚，不会前面背、后面忘。'],
+    study:['学新词 · <em>摊开一页</em>','词形、读音、意思和词素记法一次全看见；复习时才先回想、再揭晓。'],
+    review:['复习自测 · <em>对抗遗忘</em>','到期的旧词先自己回想，再揭晓答案。忘了当场重来，不会蒙混过去。'],
+    quiz:['每日练习 · <em>即学即测</em>','围绕学过的词做四选一，答错当场补考并收进错词本。'],
+    wrong:['错词合集 · <em>逐个击破</em>','在这里重学或自测，连续两次答对才会自动移出。']
+  };
+}
+function renderBadges(){
+  $('#navStudy').textContent=newWords(day).length;
+  $('#navRev').textContent=revWords(day).length;
+  $('#navWrong').textContent=wrongWords().length;
+  $('#demoCount').textContent=WORDS.length;
+}
+function renderToday(){
+  const nw=newWords(day),rv=revWords(day),total=nw.length+rv.length;
+  const taskIds=new Set([...nw,...rv].map(w=>w.id));
+  const done=[...taskIds].filter(id=>S.done[id]===day).length;
+  const pct=total?Math.round(done/total*100):100;
+  $('#ringPct').textContent=pct+'%';
+  $('#ringFill').style.strokeDashoffset=351.9*(1-pct/100);
+  $('#heroDay').textContent=day;
+  $('#stNew').textContent=nw.length;$('#stRev').textContent=rv.length;
+  $('#stWrong').textContent=wrongWords().length;
+  $('#tcNewN').innerHTML=nw.length+' <small>词</small>';
+  $('#tcRevN').innerHTML=rv.length+' <small>词</small>';
+  $('#heroLine').textContent=total
+    ? (rv.length
+        ? `今天 ${nw.length} 个新词，${rv.length} 个旧词到期。`
+        : `今天 ${nw.length} 个新词，学完排进回滚队列。`)
+    : '今天没有新词也没有到期的旧词，想看回滚可以点右上角「演示时间」。';
+  let html='';
+  for(let d=1;d<=30;d++){
+    const isDone=Object.values(S.done).includes(d);
+    const cls=['cell',d===day?'today':(d<day?'done':'future'),isDone&&d!==day?'done':''].filter(Boolean).join(' ');
+    const hasDue=WORDS.some(w=>{const x=S.st[w.id];return x.seen&&x.due===d});
+    html+=`<div class="${cls}${hasDue&&d!==day?' due':''}" title="第${d}天"><span class="d">${d}</span><span class="p">${isDone?'✓':''}</span></div>`;
+  }
+  $('#cal').innerHTML=html;
+}
+function renderReview(){
+  const due=revWords(day).length;
+  $('#srsDue').textContent=due;
+  $('#ladder').innerHTML=INTERVALS.map((v,i)=>`${i?'<span class="arw">›</span>':''}<div class="step"><b>${v}天</b><span>第${i+1}阶</span></div>`).join('')+'<span class="arw">›</span><div class="step"><b>∞</b><span>长期</span></div>';
+  const X=t=>40+t*12, Y=m=>190-m*1.55, decay=t=>100*Math.exp(-t/6);
+  const plain=[];for(let t=0;t<=30;t+=1)plain.push(`${X(t)},${Y(decay(t))}`);
+  const path='M'+plain[0]+' '+plain.slice(1).map(p=>'L'+p).join(' ');
+  const marks=[0,4,10,18,26];
+  let saw='M'+X(0)+','+Y(100), rebounds='';
+  for(let i=1;i<marks.length;i++){
+    const a=marks[i-1],b=marks[i];
+    for(let t=a+1;t<=b;t++)saw+=` L${X(t)},${Y(decay(t-a))}`;
+    saw+=` L${X(b)},${Y(100)}`;
+    rebounds+=`<line x1="${X(b)}" y1="${Y(decay(b-a))}" x2="${X(b)}" y2="${Y(100)}" stroke="var(--cinnabar)" stroke-width="1.2" stroke-dasharray="2 3" opacity=".55"/><circle cx="${X(b)}" cy="${Y(100)}" r="4.5" fill="var(--cinnabar)"/>`;
+  }
+  for(let t=marks[marks.length-1]+1;t<=30;t++)saw+=` L${X(t)},${Y(decay(t-marks[marks.length-1]))}`;
+  $('#curve').innerHTML=`
+    <line x1="40" y1="190" x2="400" y2="190" stroke="var(--line)" stroke-width="1"/>
+    <line x1="40" y1="190" x2="40" y2="40" stroke="var(--line)" stroke-width="1"/>
+    <text x="8" y="48" font-size="10" fill="var(--ink-3)">100%</text>
+    <text x="16" y="193" font-size="10" fill="var(--ink-3)">0</text>
+    <text x="378" y="207" font-size="10" fill="var(--ink-3)">天</text>
+    <path d="${path}" fill="none" stroke="var(--ink-3)" stroke-width="2" stroke-dasharray="4 4" opacity=".8"/>
+    <path d="${saw}" fill="none" stroke="var(--cinnabar)" stroke-width="2.6" stroke-linejoin="round"/>
+    ${rebounds}`;
+  const g=dueGroups(day),keys=Object.keys(g).map(Number).sort((a,b)=>b-a);
+  if(!keys.length){$('#queue').innerHTML='<div class="empty">今天没有到期的旧词，可以安心学新词。</div>';return}
+  const when={1:'昨天学的',2:'两天前学的',4:'四天前学的',7:'一周前学的',15:'半月前学的',30:'一个月前学的'};
+  $('#queue').innerHTML=keys.map(k=>`<div class="qgroup"><div class="qh"><span class="when">${when[k]||k+' 天前'}</span><span>${g[k].length} 个词今天回到眼前</span></div><div class="words">${g[k].map(w=>`<span title="${esc(w.defs[0][1])}">${w.w}</span>`).join('')}</div></div>`).join('');
+}
+function renderWrong(){
+  const ws=wrongWords();
+  $('#wrongHint').textContent=`共 ${ws.length} 词 · 连对两次就会自动移出，不用手动点`;
+  if(!ws.length){$('#wrongList').innerHTML='<div class="empty">暂无错词，保持得不错。答错的词会自动收进来。</div>';return}
+  $('#wrongList').innerHTML=ws.map(w=>{const x=S.st[w.id];return `<div class="witem">
+    <div class="r1"><span class="w">${w.w}</span><span class="ph">${w.ph}</span><span class="cnt">错 ${x.wrong} 次 · 连对 ${x.streak||0}/2</span></div>
+    <div class="df">${w.defs.map(d=>`<span style="font-family:var(--en);font-style:italic;color:var(--ink-3);margin-right:6px">${d[0]}</span>${d[1]}`).join('　')}</div>
+    <div class="why">↺ 已安排回滚，下次出现：第 ${x.due} 天</div>
+    <div class="acts"><button class="again" data-note="${w.id}">看笔记重学</button><button class="test" data-test="${w.id}">自测这个词</button></div>
+  </div>`}).join('');
+}
+function renderAll(){renderChrome();renderBadges();renderToday();renderReview();renderWrong()}
+
+/* ==================== 学新词：摊开一页 ==================== */
+function startLearn(mode,one){
+  learnMode=mode||'new';
+  learnQueue=one?[one]:(learnMode==='new'?newWords(day):revWords(day));
+  learnIdx=0;
+  $('#studyDone').style.display='none';
+  $('#learnPane').style.display='';$('#recallPane').style.display='none';
+  $('#learnSwitches').style.display='';
+  $('#prevCard').style.display='';
+  if(!learnQueue.length){showStudyDone('今天没有要学的词，换一栏试试。');switchView('study');return}
+  showLearnCard();switchView('study');
+}
+function showLearnCard(){
+  const w=learnQueue[learnIdx];if(!w){showStudyDone();return}
+  $('#lWord').textContent=w.w;$('#lPh').textContent=w.ph;
+  $('#lSpeak').setAttribute('data-speak-w',w.w);
+  $('#lDefs').innerHTML=fmtDefs(w.defs,'key');
+  $('#lAids').innerHTML=renderSix(w,{noHead:true,flat:true});
+  const chip=$('#studyChip');
+  chip.textContent=learnMode==='new'?'学新词':'重看笔记';
+  chip.className='chip '+(learnMode==='new'?'new':'rev');
+  const n=learnQueue.length;
+  $('#studyIdx').textContent=learnIdx+1;$('#studyTotal').textContent=n;
+  $('#studyLine').style.width=((learnIdx+1)/n*100)+'%';
+  $('#prevCard').disabled=false;
+  $('#nextCard').textContent=learnIdx+1>=n?'看完了，结束 →':'下一个 →';
+  if(autoSpeak)setTimeout(()=>speak(w.w,$('#lSpeak')),260);
+}
+function nextLearn(){
+  const w=learnQueue[learnIdx];if(w)learned(w);
+  if(learnIdx+1>=learnQueue.length){finishLearn();return}
+  learnIdx++;showLearnCard();
+}
+function prevLearn(){
+  if(!learnQueue.length)return;
+  learnIdx=learnIdx<=0?learnQueue.length-1:learnIdx-1;
+  showLearnCard();
+}
+function finishLearn(){
+  $('#studyLine').style.width='100%';
+  showStudyDone(learnQueue.length+' 个词已看过，明天会回到复习队列。想再看一遍就点「回头翻看」。');
+}
+function backToLearn(){
+  if(!learnQueue.length)return;
+  learnIdx=0;
+  $('#studyDone').style.display='none';$('#learnPane').style.display='';$('#recallPane').style.display='none';
+  $('#learnSwitches').style.display='';$('#prevCard').style.display='';
+  showLearnCard();
+}
+function showStudyDone(txt){
+  $('#learnPane').style.display='none';$('#recallPane').style.display='none';$('#studyDone').style.display='';
+  $('#studyDoneTxt').textContent=txt||`本轮 ${learnQueue.length} 个词已排进回滚队列，到点会自动回到今日任务。`;
+  $('#backToLearn').style.display=learnQueue.length?'':'none';
+}
+
+/* ==================== 自测：先回想，再揭晓 ==================== */
+function startRecall(one){
+  const pool=one?[one]:[...revWords(day),...wrongWords()];
+  recallQueue=[...new Map(pool.map(w=>[w.id,w])).values()];
+  recallIdx=0;
+  if(!recallQueue.length){
+    if(!one){toast('今天还没有到期的旧词。新词学过后，明天就会开始回到复习队列。');return}
+    showStudyDone('这个词暂时不在自测队列里。');switchView('study');return;
+  }
+  $('#studyDone').style.display='none';
+  $('#learnPane').style.display='none';$('#recallPane').style.display='';
+  $('#learnSwitches').style.display='';
+  showRecall();switchView('study');
+}
+function showRecall(){
+  const w=recallQueue[recallIdx];if(!w){showStudyDone();return}
+  const isRetry=$('#recallChip').dataset.retry==='1';
+  $('#studyChip').textContent='自测中';$('#studyChip').className='chip rev';
+  $('#recallChip').textContent=isRetry?'刚才没想起 · 再来一次':'回忆练习';
+  $('#rWord').textContent=w.w;$('#rPh').textContent=w.ph;
+  $('#rSpeak').setAttribute('data-speak-w',w.w);
+  $('#rTip').textContent='想起来了再揭晓，效果更好';
+  $('#rDefs').innerHTML=fmtDefs(w.defs,'key');
+  $('#rAids').innerHTML=renderSix(w,{noHead:true,flat:true});
+  $('#recallAnswer').style.display='none';
+  $('#recallBefore').style.display='';$('#recallActions').style.display='none';
+  $('#revealBtn').textContent='显示答案与记法 ↓';
+  recallOpen=false;
+  $('#studyIdx').textContent=recallIdx+1;$('#studyTotal').textContent=recallQueue.length;
+  $('#studyLine').style.width=(recallIdx/recallQueue.length*100)+'%';
+  window._recallWord=w;
+  if(autoSpeak)setTimeout(()=>speak(w.w,$('#rSpeak')),260);
+}
+function revealRecall(){
+  recallOpen=true;
+  $('#recallAnswer').style.display='';
+  $('#recallBefore').style.display='none';$('#recallActions').style.display='';
+  $('#revealBtn').textContent='答案就在上面';
+  $('#rTip').textContent='对照一下：你刚才想到了吗？';
+}
+function answerRecall(ok){
+  const w=window._recallWord;
+  if(!w)return;
+  const wasRetry=$('#recallChip').dataset.retry==='1';
+  markRecall(w,ok);
+  if(!ok){$('#recallChip').dataset.retry='1';toast('没关系，这个词待会儿在本轮再考你一次')}
+  else if(wasRetry){$('#recallChip').dataset.retry='0';toast('这次想起来了，连对两次就放它走')}
+  else $('#recallChip').dataset.retry='0';
+  renderAll();
+  recallIdx++;
+  if(recallIdx>=recallQueue.length){$('#studyLine').style.width='100%';setTimeout(()=>showStudyDone('本轮自测完成。没想起来的词已经在刚才又考过一次。'),260);return}
+  showRecall();
+}
+
+/* ==================== 每日练习 ==================== */
+function startQuiz(){
+  const pool=[...newWords(day),...revWords(day),...wrongWords()];
+  const uniq=[...new Map(pool.map(w=>[w.id,w])).values()].slice(0,8).map(w=>({w,retry:false}));
+  quizQueue=uniq;quizIdx=0;quizRight=0;
+  $('#quizArea').style.display='';$('#quizDone').style.display='none';
+  if(!quizQueue.length){$('#quizDone').style.display='';$('#quizScore').textContent='—';$('#quizScoreTxt').textContent='今天还没有可练习的词';return}
+  showQuiz();switchView('quiz');
+}
+function showQuiz(){
+  const item=quizQueue[quizIdx],w=item.w;quizAnswered=false;
+  $('#quizIdx').textContent=quizIdx+1;$('#quizTotal').textContent=quizQueue.length;
+  const cnMode=quizIdx%3===2;
+  $('#quizLab').textContent=item.retry?'补考 · 刚才这个词':'这个单词的意思是？';
+  $('#quizStem').textContent=cnMode?w.defs[0][1]:w.w;
+  $('#quizStem').className='stem'+(cnMode?' cn':'');
+  $('#quizPh').textContent=cnMode?'':w.ph;
+  $('#qSpeak').style.display=cnMode?'none':'';
+  $('#qSpeak').setAttribute('data-speak-w',w.w);
+  const others=WORDS.filter(x=>x.id!==w.id).sort(()=>Math.random()-.5).slice(0,3);
+  const right=cnMode?w.w:w.defs.map(d=>d[1]).join('；');
+  const opts=others.map(x=>cnMode?x.w:x.defs.map(d=>d[1]).join('；'));
+  const list=[{t:right,ok:true},...opts.map(t=>({t,ok:false}))].sort(()=>Math.random()-.5);
+  window._quizRight=right;window._quizWord=w;
+  $('#quizOpts').innerHTML=list.map((o,i)=>`<button class="opt" data-ok="${o.ok}" data-t="${esc(o.t)}"><span class="idx">${'ABCD'[i]}</span><span>${esc(o.t)}</span></button>`).join('');
+  $('#quizFb').className='fb';$('#quizFb').textContent='';$('#quizNext').style.display='none';
+}
+function answerQuiz(btn){
+  if(quizAnswered)return;quizAnswered=true;
+  const ok=btn.dataset.ok==='true',w=window._quizWord;
+  $$('#quizOpts .opt').forEach(b=>{b.classList.add('locked');if(b.dataset.ok==='true')b.classList.add('right')});
+  if(ok){quizRight++;btn.classList.add('right')}else btn.classList.add('wrong');
+  const x=S.st[w.id];
+  if(ok){
+    x.streak=(x.streak||0)+1;x.result='ok';
+    if(x.streak>=2&&x.wrong>0){x.wrong=0;x.streak=0;toast('连对两次，这个词已从错词本放出')}
+  }else{
+    x.wrong++;x.streak=0;x.seen=true;x.stage=0;x.due=day+1;x.result='bad';
+    quizQueue.push({w,retry:true});
+  }
+  save();
+  const fb=$('#quizFb');
+  fb.className='fb show '+(ok?'good':'bad');
+  fb.innerHTML=ok
+    ?`✓ 正确。<b>${w.w}</b> ${w.defs.map(d=>d[0]+d[1]).join(' ')}`
+    :`✗ 答错了，正确答案是 <b>${window._quizRight}</b>。这个词已收进错词本，本轮末尾还会再考你一次。<div class="aid"><div class="aid-head"><span class="tag">拆件</span><span>${renderMorph(w.parts,w.mean)}</span></div></div>`;
+  $('#quizNext').style.display='block';
+  $('#quizNext').textContent=quizIdx+1>=quizQueue.length?'查看结果 →':'下一题 →';
+  renderBadges();renderWrong();
+}
+function nextQuiz(){
+  quizIdx++;
+  if(quizIdx>=quizQueue.length){
+    $('#quizDone').style.display='';$('#quizArea').style.display='none';
+    $('#quizScore').textContent=quizRight+'/'+quizQueue.length;
+    $('#quizScoreTxt').textContent=quizRight===quizQueue.length?'全对，稳！':'本轮练习完成';
+  }else showQuiz();
+}
+
+/* ==================== 视图与事件 ==================== */
+function switchView(v){
+  $$('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));
+  $$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  const t=renderChrome()[v];
+  $('#pageTitle').innerHTML=t[0];$('#pageDesc').textContent=t[1];
+  if(v==='study'&&$('#recallPane').style.display!=='none'){
+    $('#pageTitle').innerHTML='复习自测 · <em>先回想再揭晓</em>';
+    $('#pageDesc').textContent='先自己想词义，再点开答案对照。想不起来的词会在本轮末尾再考你一次。';
+  }
+  if(v==='review')renderReview();
+  if(v==='wrong')renderWrong();
+}
+$('#nav').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-v]');if(!b)return;
+  const v=b.dataset.v;
+  if(v==='study'&&!learnQueue.length&&!recallQueue.length)startLearn('new');
+  else switchView(v);
+});
+document.addEventListener('click',e=>{
+  const sp=e.target.closest('[data-speak-w]');if(sp){speak(sp.dataset.speakW,sp);return}
+  const go=e.target.closest('[data-go]');if(go){
+    const g=go.dataset.go;
+    if(g==='new')startLearn('new');
+    else if(g==='rev'||g==='recall')startRecall();
+    else switchView(g);
+    return;
+  }
+  const note=e.target.closest('[data-note]');if(note){startLearn('rev',WORDS.find(x=>x.id==note.dataset.note));return}
+  const test=e.target.closest('[data-test]');if(test){startRecall(WORDS.find(x=>x.id==test.dataset.test));return}
+});
+$('#autoSpeak').addEventListener('change',e=>{autoSpeak=e.target.checked;if(autoSpeak)speak(window._recallWord?.w||learnQueue[learnIdx]?.w||'')});
+$$('.accent-sw button').forEach(b=>b.addEventListener('click',()=>{
+  accent=b.dataset.accent;
+  $$('.accent-sw button').forEach(x=>x.classList.toggle('on',x===b));
+  speak(window._recallWord?.w||learnQueue[learnIdx]?.w||'');
+}));
+$('#nextCard').addEventListener('click',nextLearn);
+$('#prevCard').addEventListener('click',prevLearn);
+$('#finishLearn').addEventListener('click',finishLearn);
+$('#backToLearn').addEventListener('click',backToLearn);
+$('#revealBtn').addEventListener('click',revealRecall);
+$('#recallNo').addEventListener('click',()=>answerRecall(false));
+$('#recallYes').addEventListener('click',()=>answerRecall(true));
+$('#skipRecall').addEventListener('click',()=>{recallIdx++;if(recallIdx>=recallQueue.length)showStudyDone('已跳过，可以稍后再来。');else showRecall()});
+$('#quizOpts').addEventListener('click',e=>{const b=e.target.closest('.opt');if(b)answerQuiz(b)});
+$('#quizNext').addEventListener('click',nextQuiz);
+$('#theoryToggle').addEventListener('click',()=>{
+  const t=$('#theory'),open=t.style.display!=='none';
+  t.style.display=open?'none':'';$('#theoryToggle').textContent=open?'为什么会忘？点开看遗忘曲线 ▾':'收起遗忘曲线 ▴';
+});
+$('#demoToggle').addEventListener('click',()=>{const d=$('#demoDrawer'),open=d.style.display!=='none';d.style.display=open?'none':'';$('#demoToggle').classList.toggle('on',!open)});
+$('#demoClose').addEventListener('click',()=>{$('#demoDrawer').style.display='none';$('#demoToggle').classList.remove('on')});
+$('#demoSeed').addEventListener('click',()=>{
+  const target=12;
+  WORDS.forEach(w=>{
+    if(w.day<target){
+      const x=S.st[w.id];
+      const stage=w.day<=3?2:(w.day<=7?1:0);
+      x.seen=true;x.stage=stage;x.due=w.day+INTERVALS[stage];x.wrong=0;x.streak=0;x.result='ok';
+      S.done[w.id]=w.day;
+    }
+  });
+  // 5 个词答错过：进错词本，且今天到期
+  WORDS.filter(w=>w.day>=4&&w.day<=8).slice(0,5).forEach(w=>{
+    const x=S.st[w.id];x.wrong=1;x.streak=0;x.due=target;x.result='bad';
+  });
+  // 今日 2 个新词里学完 1 个，进度环有内容
+  const today=newWords(target);if(today[0]){S.done[today[0].id]=target;S.st[today[0].id]={stage:0,due:target+1,seen:true,wrong:0,streak:0,result:'learned'}}
+  save();$('#demoDrawer').style.display='none';$('#demoToggle').classList.remove('on');
+  setDay(target);toast('已填充 11 天演示进度，第 12 天开始。学新词、自测、错词本都有内容了。');
+});
+$('#demoReset').addEventListener('click',()=>{try{localStorage.removeItem(KEY)}catch(e){}location.reload()});
+function setDay(d){
+  day=Math.max(1,Math.min(30,d));renderAll();
+  if($('#v-study').classList.contains('on')&&learnQueue.length&&$('#learnPane').style.display!=='none')startLearn(learnMode);
+  if($('#v-study').classList.contains('on')&&recallQueue.length&&$('#recallPane').style.display!=='none')startRecall();
+  if($('#v-quiz').classList.contains('on'))startQuiz();
+}
+$('#dayMinus').onclick=()=>setDay(day-1);
+$('#dayPlus').onclick=()=>setDay(day+1);
+$('#dayRange').oninput=e=>setDay(+e.target.value);
+document.addEventListener('keydown',e=>{
+  if(!$('#v-study').classList.contains('on'))return;
+  if(e.code==='Space'&&!e.target.closest('button')){e.preventDefault();speak(window._recallWord?.w||learnQueue[learnIdx]?.w||'')}
+  if($('#learnPane').style.display!=='none'){
+    if(e.key==='ArrowRight'){e.preventDefault();nextLearn()}
+    if(e.key==='ArrowLeft'){e.preventDefault();prevLearn()}
+  }else if($('#recallPane').style.display!=='none'){
+    if(e.key==='Enter'&&!recallOpen){e.preventDefault();revealRecall()}
+    if(recallOpen&&e.key==='1')answerRecall(false);
+    if(recallOpen&&e.key==='2')answerRecall(true);
+  }
+});
+
+/* ---------- 启动 ---------- */
+renderAll();switchView('today');
+</script>
+</body>
+</html>
